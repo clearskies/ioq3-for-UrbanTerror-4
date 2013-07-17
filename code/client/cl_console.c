@@ -50,7 +50,7 @@ typedef struct {
 
 	int		times[NUM_CON_TIMES];	// cls.realtime time the line was generated
 								// for transparent notify lines
-	vec4_t	color;
+	vec4_t color;
 } console_t;
 
 extern	console_t	con;
@@ -586,7 +586,7 @@ void Con_DrawSolidConsole( float frac ) {
 	int				lines;
 //	qhandle_t		conShader;
 	int				currentColor;
-	vec4_t			color;
+	vec4_t			colorBG, colorBlack;
 
 	lines = cls.glconfig.vidHeight * frac;
 	if (lines <= 0)
@@ -605,19 +605,30 @@ void Con_DrawSolidConsole( float frac ) {
 		y = 0;
 	}
 	else {
-		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+		//SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+	  colorBlack[0] = 0.0/255.0;
+	  colorBlack[1] = 0.0/255.0;
+	  colorBlack[2] = 0.0/255.0;
+	  colorBlack[3] = 0.9;
+		SCR_FillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
 	}
 
-	color[0] = 1;
-	color[1] = 0;
-	color[2] = 0;
-	color[3] = 1;
-	SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
+	// color[0] = 1;
+	// color[1] = 0;
+	// color[2] = 0;
+	// color[3] = 1;
+	// SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
 
+	colorBG[0] = 0.0/255.0;
+	colorBG[1] = 100.0/255.0;
+	colorBG[2] = 100.0/255.0;
+	colorBG[3] = 1;
+	SCR_FillRect(0, y, SCREEN_WIDTH, 2, colorBG);
 
 	// draw the version number
 
-	re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
+	// re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
+	re.SetColor(colorBG);
 
 	i = strlen( SVN_VERSION );
 
@@ -640,7 +651,7 @@ void Con_DrawSolidConsole( float frac ) {
 	if (con.display != con.current)
 	{
 	// draw arrows to show the buffer is backscrolled
-		re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
+		re.SetColor(colorBG);
 		for (x=0 ; x<con.linewidth ; x+=4)
 			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
 		y -= SMALLCHAR_HEIGHT;
