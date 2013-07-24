@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "snd_codec.h"
 #include "client.h"
 #include "snd_dmahd.h"
+#include "snd_ignoresounds.h"
 
 void S_Play_f(void);
 void S_SoundList_f(void);
@@ -88,6 +89,8 @@ cvar_t		*s_dev;
 cvar_t		*s_show;
 cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
+cvar_t		*s_soundhax;
+cvar_t		*s_debug;
 
 loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
@@ -484,6 +487,19 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 
 	sfx = &s_knownSfx[ sfxHandle ];
 
+	if (s_soundhax->integer == 1) {
+		for (i = 0; ; i++) {
+			if (!s_ignoredSounds[i])
+				break;
+			if (!Q_stricmp(sfx->soundName, s_ignoredSounds[i]))
+				return;
+		}
+	}
+
+	if (s_debug->integer == 1) {
+		Com_Printf("Playing: %s\n", sfx->soundName);
+	}
+
 	if (sfx->inMemory == qfalse) {
 		S_memoryLoad(sfx);
 	}
@@ -494,7 +510,6 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 
 	time = Com_Milliseconds();
 
-//	Com_Printf("playing %s\n", sfx->soundName);
 	// pick a channel to play on
 
 	allowed = 16;
@@ -758,6 +773,7 @@ Include velocity in case I get around to doing doppler...
 ==================
 */
 void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
+	int i;
 	sfx_t *sfx;
 
 	if ( !s_soundStarted || s_soundMuted ) {
@@ -770,6 +786,19 @@ void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_
 	}
 
 	sfx = &s_knownSfx[ sfxHandle ];
+
+	if (s_soundhax->integer == 1) {
+		for (i = 0; ; i++) {
+			if (!s_ignoredSounds[i])
+				break;
+			if (!Q_stricmp(sfx->soundName, s_ignoredSounds[i]))
+				return;
+		}
+	}
+
+	if (s_debug->integer == 1) {
+		Com_Printf("Playing: %s\n", sfx->soundName);
+	}
 
 	if (sfx->inMemory == qfalse) {
 		S_memoryLoad(sfx);
@@ -1477,6 +1506,8 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_show = Cvar_Get ("s_show", "0", CVAR_CHEAT);
 	s_testsound = Cvar_Get ("s_testsound", "0", CVAR_CHEAT);
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
+	s_soundhax = Cvar_Get ("s_soundhax", "0", CVAR_ARCHIVE);
+	s_debug = Cvar_Get ("s_debug", "0", CVAR_ARCHIVE);
 
 	Cmd_AddCommand( "s_devlist", S_dmaHD_devlist );
 	
