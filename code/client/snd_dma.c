@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "snd_codec.h"
 #include "client.h"
 #include "snd_dmahd.h"
-#include "snd_ignoresounds.h"
+#include "snd_ignoredsounds.h"
 
 void S_Play_f(void);
 void S_SoundList_f(void);
