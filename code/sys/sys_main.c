@@ -542,6 +542,7 @@ int main( int argc, char **argv )
 {
 	int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
+	char cignoreList = Z_Malloc(sizeof(char)* 64);
 
 #ifndef DEDICATED
 	// SDL version check
