@@ -1408,9 +1408,9 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 			} else if (!sv_allowWeapdrop->integer && !Q_stricmp("ut_weapdrop", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow dropping weapons.\n\"");
 				return;
-			} else if (!sv_allowRadio->integer && !Q_stricmp("ut_radio", Cmd_Argv(0))) {
-				SV_SendServerCommand(cl, "print \"This server doesn't allow using radio.\n\"");
-				return;
+			// } else if (!sv_allowRadio->integer && !Q_stricmp("ut_radio", Cmd_Argv(0))) {
+			// 	SV_SendServerCommand(cl, "print \"This server doesn't allow using radio.\n\"");
+			// 	return;
 			} else if (!sv_allowTell->integer && !Q_stricmp("tell", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow telling.\n\"");
 				return;

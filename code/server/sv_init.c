@@ -936,7 +936,7 @@ void SV_Init (void) {
   sv_allowSuicide = Cvar_Get ("sv_allowSuicide", "1", CVAR_ARCHIVE );
 	sv_allowItemdrop = Cvar_Get ("sv_allowItemdrop", "1", CVAR_ARCHIVE );
   sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
-  sv_allowRadio = Cvar_Get ("sv_allowRadio", "1", CVAR_ARCHIVE );
+  // sv_allowRadio = Cvar_Get ("sv_allowRadio", "1", CVAR_ARCHIVE );
   sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
   
 	#ifdef USE_AUTH
