@@ -1,5 +1,6 @@
 code/tools/*
 build/*
+Makefile.local
 .cproject
 .project
 .settings/org.eclipse.cdt.codan.core.prefs
