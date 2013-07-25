@@ -1029,6 +1029,56 @@ void Key_Bind_f (void)
 }
 
 /*
+===================
+Key_Rebind_f
+===================
+*/
+void Key_Rebind_f (void)
+{
+	int			c, b;
+	char		cmd[1024];
+	char		*target_cvar;
+	
+	c = Cmd_Argc();
+
+	if (c < 2)
+	{
+		Com_Printf ("rebind <key> [cvar] : bind a cvar and its current value to a key\n");
+		return;
+	}
+	b = Key_StringToKeynum (Cmd_Argv(1));
+	if (b==-1)
+	{
+		Com_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		return;
+	}
+
+	if (c == 2)
+	{
+		if (keys[b].binding)
+			Com_Printf ("\"%s\" = \"%s\"\n", Cmd_Argv(1), keys[b].binding );
+		else
+			Com_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
+		return;
+	}
+
+	target_cvar = Cvar_VariableString(Cmd_Argv(2));
+
+	if (!Q_stricmp("", target_cvar)) {
+		Com_Printf("The cvar %s doesn't exist.\n", Cmd_Argv(2));
+		return;
+	}
+
+	cmd[0] = 0; // C is dumb...
+
+	strcat(cmd, Cmd_Argv(2));
+	strcat(cmd, " ");
+	strcat(cmd, target_cvar);
+
+	Key_SetBinding (b, cmd);
+}
+
+/*
 ============
 Key_WriteBindings
 
@@ -1089,6 +1139,8 @@ void CL_InitKeyCommands( void ) {
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
 	Cmd_AddCommand ("bindlist",Key_Bindlist_f);
+
+	Cmd_AddCommand ("rebind", Key_Rebind_f);
 }
 
 /*
