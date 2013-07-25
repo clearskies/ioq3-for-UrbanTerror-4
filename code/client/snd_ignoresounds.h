@@ -273,6 +273,7 @@ char *s_ignoredSounds[] = {
 "sound/waterfall/munch.wav",
 "sound/waterfall/waterfallbase.wav",
 "sound/waterfall/waterfall.wav",
+"sound/weapons/smokegren/spray.wav",
 "sound/world/ambience03.wav",
 "/sound/world/annoyinghum.wav",
 "sound/world/fan4.wav",

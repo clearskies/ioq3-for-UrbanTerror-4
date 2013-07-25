@@ -773,8 +773,11 @@ Include velocity in case I get around to doing doppler...
 ==================
 */
 void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
-	int i;
 	sfx_t *sfx;
+
+	if (s_soundhax->integer == 1) {
+		return;
+	}
 
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
@@ -787,17 +790,8 @@ void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_
 
 	sfx = &s_knownSfx[ sfxHandle ];
 
-	if (s_soundhax->integer == 1) {
-		for (i = 0; ; i++) {
-			if (!s_ignoredSounds[i])
-				break;
-			if (!Q_stricmp(sfx->soundName, s_ignoredSounds[i]))
-				return;
-		}
-	}
-
 	if (s_debug->integer == 1) {
-		Com_Printf("Playing: %s\n", sfx->soundName);
+		Com_Printf("Playing looping sound: %s\n", sfx->soundName);
 	}
 
 	if (sfx->inMemory == qfalse) {
