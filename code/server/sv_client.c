@@ -1389,19 +1389,32 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 			argsFromOneMaxlen = -1;
 			if (Q_stricmp("say", Cmd_Argv(0)) == 0 || Q_stricmp("say_team", Cmd_Argv(0)) == 0) {
 				argsFromOneMaxlen = MAX_SAY_STRLEN;
-			}
-			else if (Q_stricmp("tell", Cmd_Argv(0)) == 0) {
+			} else if (Q_stricmp("tell", Cmd_Argv(0)) == 0) {
 				// A command will look like "tell 12 hi" or "tell foo hi".  The "12"
 				// and "foo" in the examples will be counted towards MAX_SAY_STRLEN,
 				// plus the space.
 				argsFromOneMaxlen = MAX_SAY_STRLEN;
-			}
-			else if (Q_stricmp("ut_radio", Cmd_Argv(0)) == 0) {
+			} else if (Q_stricmp("ut_radio", Cmd_Argv(0)) == 0) {
 				// We add 4 to this value because in a command such as
 				// "ut_radio 1 1 affirmative", the args at indices 1 and 2 each
 				// have length 1 and there is a space after them.
 				argsFromOneMaxlen = MAX_RADIO_STRLEN + 4;
-			}
+			} else if (!sv_allowSuicide->integer && !Q_stricmp("kill", Cmd_Argv(0))) {
+				SV_SendServerCommand(cl, "print \"This server doesn't allow suiciding.\n\"");
+				return;
+			} else if (!sv_allowItemdrop->integer && !Q_stricmp("ut_itemdrop", Cmd_Argv(0))) {
+				SV_SendServerCommand(cl, "print \"This server doesn't allow dropping items.\n\"");
+				return;
+			} else if (!sv_allowWeapdrop->integer && !Q_stricmp("ut_weapdrop", Cmd_Argv(0))) {
+				SV_SendServerCommand(cl, "print \"This server doesn't allow dropping weapons.\n\"");
+				return;
+			} else if (!sv_allowRadio->integer && !Q_stricmp("ut_radio", Cmd_Argv(0))) {
+				SV_SendServerCommand(cl, "print \"This server doesn't allow using radio.\n\"");
+				return;
+			} else if (!sv_allowTell->integer && !Q_stricmp("tell", Cmd_Argv(0))) {
+				SV_SendServerCommand(cl, "print \"This server doesn't allow telling.\n\"");
+				return;
+			} 
 			if (argsFromOneMaxlen >= 0) {
 				charCount = 0;
 				dollarCount = 0;

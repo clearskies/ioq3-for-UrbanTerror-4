@@ -932,7 +932,13 @@ void SV_Init (void) {
 	sv_sayprefix = Cvar_Get ("sv_sayprefix", "console: ", CVAR_ARCHIVE );	
 	sv_tellprefix = Cvar_Get ("sv_tellprefix", "console_tell: ", CVAR_ARCHIVE );
 	sv_demofolder = Cvar_Get ("sv_demofolder", "serverdemos", CVAR_ARCHIVE );
-	
+
+  sv_allowSuicide = Cvar_Get ("sv_allowSuicide", "1", CVAR_ARCHIVE );
+	sv_allowItemdrop = Cvar_Get ("sv_allowItemdrop", "1", CVAR_ARCHIVE );
+  sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
+  sv_allowRadio = Cvar_Get ("sv_allowRadio", "1", CVAR_ARCHIVE );
+  sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
+  
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);
 	sv_auth_engine = Cvar_Get("sv_auth_engine", "1", CVAR_ROM);
