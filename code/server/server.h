@@ -310,6 +310,8 @@ extern  cvar_t  *sv_allowWeapdrop;
 // extern  cvar_t  *sv_allowRadio;
 extern  cvar_t  *sv_allowTell;
 
+extern	cvar_t *sv_antiblock;
+
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;
 extern  cvar_t  *sv_auth_engine;

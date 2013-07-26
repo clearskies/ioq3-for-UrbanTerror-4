@@ -58,15 +58,17 @@ cvar_t	*sv_lanForceRate;			// dedicated 1 (LAN) server forces local client rates
 cvar_t	*sv_strictAuth;
 
 cvar_t	*sv_demonotice;				// notice to print to a client being recorded server-side
-cvar_t  *sv_tellprefix;
-cvar_t  *sv_sayprefix;
-cvar_t 	*sv_demofolder;				//@Barbatos - the name of the folder that contains server-side demos
+cvar_t	*sv_tellprefix;
+cvar_t	*sv_sayprefix;
+cvar_t	*sv_demofolder;				//@Barbatos - the name of the folder that contains server-side demos
 
-cvar_t  *sv_allowSuicide;
-cvar_t  *sv_allowItemdrop;
-cvar_t  *sv_allowWeapdrop;
-// cvar_t  *sv_allowRadio;
-cvar_t  *sv_allowTell;
+cvar_t	*sv_allowSuicide;
+cvar_t	*sv_allowItemdrop;
+cvar_t	*sv_allowWeapdrop;
+// cvar_t	*sv_allowRadio;
+cvar_t	*sv_allowTell;
+
+cvar_t	*sv_antiblock;
 
 //@Barbatos
 #ifdef USE_AUTH
