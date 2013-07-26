@@ -84,6 +84,8 @@ cvar_t 	*com_logfileName;
 
 cvar_t  *com_nosplash;
 
+cvar_t  *con_nochat;
+
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
 #endif
@@ -104,8 +106,6 @@ char	com_errorMessage[MAXPRINTMSG];
 
 void Com_WriteConfig_f( void );
 void CIN_CloseAllVideos( void );
-
-// char *cignoreList[64];
 
 //============================================================================
 
@@ -150,19 +150,15 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	char		msg[MAXPRINTMSG];
   static qboolean opening_qconsole = qfalse;
 
-  // int i;
-
 	va_start (argptr,fmt);
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
-  // for (i = 0; i < 64; i++) {
-  // 	if (cignoreList[i]) {
-  // 		if (strcasestr(strcat(cignoreList[i], ":"), msg) >= 0) {
-  // 			return;
-  // 		}
-  // 	}
-  // }
+	if (con_nochat && con_nochat->integer) {
+		if (strstr(msg, "^3: ^3")) {
+			return;
+		}
+	}
 
 	if ( rd_buffer ) {
 		if ((strlen (msg) + strlen(rd_buffer)) > (rd_buffersize - 1)) {
@@ -2504,6 +2500,8 @@ void Com_Init( char *commandLine ) {
 	com_nosplash = Cvar_Get("com_nosplash", "0", CVAR_ARCHIVE);
 
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE);
+
+	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
 
 #if defined(_WIN32) && defined(_DEBUG)
 	com_noErrorInterrupt = Cvar_Get( "com_noErrorInterrupt", "0", 0 );
