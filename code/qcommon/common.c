@@ -81,6 +81,9 @@ cvar_t  *cl_packetdelay;
 cvar_t  *sv_packetdelay;
 cvar_t	*com_cameraMode;
 cvar_t 	*com_logfileName;
+
+cvar_t  *com_nosplash;
+
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
 #endif
@@ -147,7 +150,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	char		msg[MAXPRINTMSG];
   static qboolean opening_qconsole = qfalse;
 
-  int i;
+  // int i;
 
 	va_start (argptr,fmt);
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
@@ -2498,6 +2501,8 @@ void Com_Init( char *commandLine ) {
 	com_cl_running = Cvar_Get ("cl_running", "0", CVAR_ROM);
 	com_buildScript = Cvar_Get( "com_buildScript", "0", 0 );
 
+	com_nosplash = Cvar_Get("com_nosplash", "0", CVAR_ARCHIVE);
+
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE);
 
 #if defined(_WIN32) && defined(_DEBUG)
@@ -2542,7 +2547,12 @@ void Com_Init( char *commandLine ) {
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
 		if ( !com_dedicated->integer ) {
-			Cbuf_AddText ("cinematic idlogo.RoQ\n");
+			if (com_nosplash->integer) {
+				Cvar_Set(com_introPlayed -> name, "1");
+				Cvar_Set("nextmap", "cinematic intro.RoQ");
+			} else {
+				Cbuf_AddText ("cinematic idlogo.RoQ\n");
+			}
 			if( !com_introPlayed->integer ) {
 				Cvar_Set( com_introPlayed->name, "1" );
 				Cvar_Set( "nextmap", "cinematic intro.RoQ" );
