@@ -932,6 +932,62 @@ void	Cvar_Update( vmCvar_t *vmCvar ) {
 	vmCvar->integer = cv->integer;
 }
 
+/*
+=====================
+Cvar_Increase_f
+=====================
+*/
+void Cvar_Increase_f(void) {
+	float oldval, incrval;
+
+	if (Cmd_Argc() < 3) {
+		Com_Printf("cvar_incr <cvar> <amount>: Increases the cvar by the specified amount.\n");
+		return;
+	}
+
+	oldval = Cvar_VariableValue(Cmd_Argv(1));
+	if (!oldval) {
+		Com_Printf("The cvar %s doesn't exist.\n", Cmd_Argv(1));
+		return;
+	}
+
+	incrval = strtod(Cmd_Argv(2), NULL);
+	if (!incrval) {
+		Com_Printf("%s is not a valid number.\n", Cmd_Argv(2));
+		return;
+	}
+
+	Cvar_SetValue(Cmd_Argv(1), oldval + incrval);
+}
+
+/*
+=====================
+Cvar_Decrease_f
+=====================
+*/
+void Cvar_Decrease_f(void) {
+	float oldval, decrval;
+
+	if (Cmd_Argc() < 3) {
+		Com_Printf("cvar_decr <cvar> <amount>: Decreases the cvar by the specified amount.\n");
+		return;
+	}
+
+	oldval = Cvar_VariableValue(Cmd_Argv(1));
+	if (!oldval) {
+		Com_Printf("The cvar %s doesn't exist.\n", Cmd_Argv(1));
+		return;
+	}
+
+	decrval = strtod(Cmd_Argv(2), NULL);
+	if (!decrval) {
+		Com_Printf("%s is not a valid number.\n", Cmd_Argv(2));
+		return;
+	}
+
+	Cvar_SetValue(Cmd_Argv(1), oldval - decrval);
+}
+
 
 /*
 ============
@@ -951,4 +1007,7 @@ void Cvar_Init (void) {
 	Cmd_AddCommand ("reset", Cvar_Reset_f);
 	Cmd_AddCommand ("cvarlist", Cvar_List_f);
 	Cmd_AddCommand ("cvar_restart", Cvar_Restart_f);
+
+	Cmd_AddCommand ("cvar_incr", Cvar_Increase_f);
+	Cmd_AddCommand ("cvar_decr", Cvar_Decrease_f);
 }
