@@ -1335,7 +1335,7 @@ void CL_Connect_f( void ) {
   // server connection string
   Cvar_Set( "cl_currentServerAddress", server );
 
-  CL_IgnoreClear();
+  // CL_IgnoreClear();
 }
 
 #define MAX_RCON_MESSAGE 1024
