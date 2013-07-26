@@ -102,7 +102,7 @@ char	com_errorMessage[MAXPRINTMSG];
 void Com_WriteConfig_f( void );
 void CIN_CloseAllVideos( void );
 
-char *cignoreList[64];
+// char *cignoreList[64];
 
 //============================================================================
 
@@ -153,13 +153,13 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
-  for (i = 0; i < 64; i++) {
-  	if (cignoreList[i]) {
-  		if (strcasestr(strcat(cignoreList[i], ":"), msg) >= 0) {
-  			return;
-  		}
-  	}
-  }
+  // for (i = 0; i < 64; i++) {
+  // 	if (cignoreList[i]) {
+  // 		if (strcasestr(strcat(cignoreList[i], ":"), msg) >= 0) {
+  // 			return;
+  // 		}
+  // 	}
+  // }
 
 	if ( rd_buffer ) {
 		if ((strlen (msg) + strlen(rd_buffer)) > (rd_buffersize - 1)) {

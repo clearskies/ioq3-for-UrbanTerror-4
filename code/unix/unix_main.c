@@ -1584,8 +1584,6 @@ int main ( int argc, char* argv[] )
   int   len, i;
   char  *cmdline;
   char cdpath[PATH_MAX] = {0};
-  // cignoreList = Z_Malloc(sizeof(char) * 64);
-  // char *cignoreList[64] = {NULL};
   void Sys_SetDefaultCDPath(const char *path);
 
   Sys_ParseArgs( argc, argv );  // bk010104 - added this for support
