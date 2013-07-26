@@ -124,12 +124,12 @@ void CL_ServerStatus_f(void);
 void CL_ServerStatusResponse( netadr_t from, msg_t *msg );
 
 
-void CL_Ignore(void);
-void CL_UnIgnore(void);
-void CL_IgnoreClear(void);
-void CL_IgnoreList(void);
+// void CL_Ignore(void);
+// void CL_UnIgnore(void);
+// void CL_IgnoreClear(void);
+// void CL_IgnoreList(void);
 
-char *cignoreList[64];
+// char *cignoreList[64];
 
 /*
 ===============
@@ -3000,10 +3000,10 @@ void CL_Init( void ) {
   Cmd_AddCommand ("video", CL_Video_f );
   Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 
-  Cmd_AddCommand ("cignore", CL_Ignore);
-  Cmd_AddCommand ("cunignore", CL_UnIgnore);
-  Cmd_AddCommand ("cignoreclear", CL_IgnoreClear);
-  Cmd_AddCommand ("cignorelist", CL_IgnoreList);
+  // Cmd_AddCommand ("cignore", CL_Ignore);
+  // Cmd_AddCommand ("cunignore", CL_UnIgnore);
+  // Cmd_AddCommand ("cignoreclear", CL_IgnoreClear);
+  // Cmd_AddCommand ("cignorelist", CL_IgnoreList);
 
   CL_InitRef();
 
@@ -3877,90 +3877,90 @@ void CL_ShowIP_f(void) {
   Sys_ShowIP();
 }
 
-/*
-==================
-CL_Ignore
-==================
-*/
-void CL_Ignore(void) {
-	int i;
-  char *pl;
+// /*
+// ==================
+// CL_Ignore
+// ==================
+// */
+// void CL_Ignore(void) {
+// 	int i;
+//   char *pl;
   
-  if (Cmd_Argc() != 2) {
-    Com_Printf ("cignore <playername>\n");
-    return;
-  }
+//   if (Cmd_Argc() != 2) {
+//     Com_Printf ("cignore <playername>\n");
+//     return;
+//   }
 
-  pl = Q_CleanStr(Cmd_Argv(1));
+//   pl = Q_CleanStr(Cmd_Argv(1));
 
-  for (i = 0; i < 64; i++) {
-		if (!cignoreList[i]) {
-			cignoreList[i] = Z_Malloc(strlen(pl) + 1);
-			Q_strncpyz(cignoreList[i], pl, strlen(pl) + 1);
-			return;
-		}
-	}
-  Com_Printf("Your ignore list is full. Maybe you should consider disabling chat.\n");
-}
+//   for (i = 0; i < 64; i++) {
+// 		if (!cignoreList[i]) {
+// 			cignoreList[i] = Z_Malloc(strlen(pl) + 1);
+// 			Q_strncpyz(cignoreList[i], pl, strlen(pl) + 1);
+// 			return;
+// 		}
+// 	}
+//   Com_Printf("Your ignore list is full. Maybe you should consider disabling chat.\n");
+// }
 
-/*
-==================
-CL_UnIgnore
-==================
-*/
-void CL_UnIgnore(void) {
-  int i;
-  char *pl;
+// /*
+// ==================
+// CL_UnIgnore
+// ==================
+// */
+// void CL_UnIgnore(void) {
+//   int i;
+//   char *pl;
   
-  if (Cmd_Argc() != 2) {
-    Com_Printf ("cignore <playername>\n");
-    return;
-  }
+//   if (Cmd_Argc() != 2) {
+//     Com_Printf ("cignore <playername>\n");
+//     return;
+//   }
 
-  pl = Q_CleanStr(Cmd_Argv(1));
+//   pl = Q_CleanStr(Cmd_Argv(1));
 
-	for (i = 0; i < 64; i++) {
-		if (!Q_stricmp(cignoreList[i], pl)) {
-			Z_Free(cignoreList[i]);
-      cignoreList[i] = NULL;
-    }
-	}
-}
+// 	for (i = 0; i < 64; i++) {
+// 		if (!Q_stricmp(cignoreList[i], pl)) {
+// 			Z_Free(cignoreList[i]);
+//       cignoreList[i] = NULL;
+//     }
+// 	}
+// }
 
-/*
-==================
-CL_IgnoreClear
-==================
-*/
-void CL_IgnoreClear(void) {
-	int i;
-	for (i = 0; i < 64; i++) {
-		if (cignoreList[i]) {
-			Z_Free(cignoreList[i]);
-      cignoreList[i] = NULL;
-		}
-	}
-}
+// /*
+// ==================
+// CL_IgnoreClear
+// ==================
+// */
+// void CL_IgnoreClear(void) {
+// 	int i;
+// 	for (i = 0; i < 64; i++) {
+// 		if (cignoreList[i]) {
+// 			Z_Free(cignoreList[i]);
+//       cignoreList[i] = NULL;
+// 		}
+// 	}
+// }
 
-/*
-==================
-CL_IgnoreList
-==================
-*/
-void CL_IgnoreList(void) {
-	int i;
-	int count = 0;
+// /*
+// ==================
+// CL_IgnoreList
+// ==================
+// */
+// void CL_IgnoreList(void) {
+// 	int i;
+// 	int count = 0;
 
-	Com_Printf("Ignoring:\n");
-	for (i = 0; i < 64; i++) {
-		if (cignoreList[i]) {
-			Com_Printf("%s\n", cignoreList[i]);
-			count++;
-		}
-	}
-	if (!count)
-		Com_Printf("You are not ignoring anybody.\n");
-}
+// 	Com_Printf("Ignoring:\n");
+// 	for (i = 0; i < 64; i++) {
+// 		if (cignoreList[i]) {
+// 			Com_Printf("%s\n", cignoreList[i]);
+// 			count++;
+// 		}
+// 	}
+// 	if (!count)
+// 		Com_Printf("You are not ignoring anybody.\n");
+// }
 
 /*
 =================
