@@ -938,6 +938,8 @@ void SV_Init (void) {
   sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
   // sv_allowRadio = Cvar_Get ("sv_allowRadio", "1", CVAR_ARCHIVE );
   sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
+
+  sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);
