@@ -37,6 +37,7 @@ USE_SDL          =1
 USE_OPENAL       =0
 USE_CURL         =1
 USE_CODEC_VORBIS =0
+USE_IRC          =0
 
 # Barbatos - Urban Terror 4.2 auth system
 # You're not forced to use it.
@@ -139,6 +140,10 @@ endif
 
 ifndef USE_LOCAL_HEADERS
 USE_LOCAL_HEADERS=1
+endif
+
+ifndef USE_IRC
+USE_IRC = 0
 endif
 
 ifeq ($(PLATFORM),darwin)
@@ -295,6 +300,10 @@ ifeq ($(PLATFORM),linux)
 
   ifeq ($(USE_CODEC_VORBIS),1)
     CLIENT_LDFLAGS += -lvorbisfile -lvorbis -logg
+  endif
+
+  ifeq ($(USE_IRC),1)
+    LDFLAGS += -lpthread
   endif
 
   ifeq ($(ARCH),i386)
@@ -1135,6 +1144,10 @@ else
     $(B)/client/linux_qgl.o \
     $(B)/client/linux_snd.o \
     $(B)/client/sdl_snd.o
+
+  ifeq (USE_IRC,1)
+    Q3OBJ += $(B)/client/irc.o
+  endif
 
   ifeq ($(PLATFORM),linux)
     Q3OBJ += $(B)/client/linux_joystick.o
