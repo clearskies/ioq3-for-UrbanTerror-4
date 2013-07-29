@@ -291,6 +291,10 @@ ifeq ($(PLATFORM),linux)
     CLIENT_LDFLAGS=-L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
+  ifeq ($(USE_IRC),1)
+    LDFLAGS += -lpthread
+  endif
+
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
       CLIENT_LDFLAGS += -lopenal
@@ -306,10 +310,6 @@ ifeq ($(PLATFORM),linux)
   ifeq ($(USE_CODEC_VORBIS),1)
     CLIENT_LDFLAGS += -lvorbisfile -lvorbis -logg
   endif
-
-  # ifeq ($(USE_IRC),1)
-  #   LDFLAGS += -lpthread
-  # endif
 
   ifeq ($(ARCH),i386)
     # linux32 make ...
@@ -434,6 +434,14 @@ ifeq ($(PLATFORM),darwin)
 
   ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
+  endif
+
+  ifeq ($(USE_IRC),1)
+    BASE_CFLAGS += -DUSE_IRC=1
+  endif
+
+  ifeq ($(USE_IRC),1)
+    LDFLAGS += -lpthread
   endif
 
   DEBUG_CFLAGS = $(BASE_CFLAGS) -g -O0
@@ -1151,7 +1159,12 @@ else
     $(B)/client/sdl_snd.o
 
   ifeq ($(USE_IRC),1)
-    Q3OBJ += $(B)/client/irc.o
+  	ifeq ($(PLATFORM),linux)
+        Q3OBJ += $(B)/client/irc.o
+    endif
+    ifeq ($(PLATFORM),darwin)
+        Q3OBJ += $(B)/client/irc.o
+    endif
   endif
 
   ifeq ($(PLATFORM),linux)

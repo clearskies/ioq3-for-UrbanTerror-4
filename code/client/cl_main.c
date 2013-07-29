@@ -23,6 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 #include <limits.h>
+#if USE_IRC
+#include <pthread.h>
+#endif
 
 cvar_t  *cl_nodelta;
 cvar_t  *cl_debugMove;
@@ -2400,7 +2403,8 @@ void CL_Frame ( int msec ) {
   }
 
 #if USE_IRC
-  IRC_HandleData();
+  pthread_t threads[1];
+  pthread_create(&threads[0], NULL, IRC_HandleData, NULL);
 #endif
 
 #if USE_CURL

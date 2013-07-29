@@ -7,7 +7,6 @@
 *
 */
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,10 +16,20 @@
 #include "client.h"
 
 int sock;
-static int irc_ready, irc_connected;
-static int irc_joining, irc_parting, irc_saying, irc_msging;
+int irc_ready, irc_connected;
+int irc_joining, irc_parting, irc_saying, irc_msging;
+
+int nextRead = 0;
+
+char curServer[128];
 
 void IRC_HandleData(void) {
+	if (nextRead < 10) {
+		nextRead++;
+		return;
+	} else {
+		nextRead = 0;
+	}
 	char buffer[256];
 	char obuf[256];
 	char idata[10][256];
@@ -105,7 +114,10 @@ void IRC_Connect(void) {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	char obuf[256];
-	pthread_t threads[1];
+
+	if (irc_connected) {
+		IRC_Disconnect();
+	}
 
 	irc_connected = 0;
 	irc_ready = 0;
@@ -144,6 +156,7 @@ void IRC_Connect(void) {
 	}
 
 	irc_connected = 1;
+	strcpy(curServer, Cmd_Argv(1));
 
 	sprintf(obuf, "USER %s * * :%s\r\n", Cmd_Argv(3), Cmd_Argv(3));
 	Com_Printf(obuf);
@@ -168,7 +181,8 @@ void IRC_Connect(void) {
 
 void IRC_Disconnect(void) {
 	close(sock);
-	Com_Printf("IRC disconnected.\n");
+	Com_Printf("IRC disconnected: %s.\n", curServer);
+	bzero(curServer, 128);
 }
 
 void IRC_Join(void) {
@@ -193,7 +207,6 @@ void IRC_Join(void) {
 	s = write(sock, joinstr, strlen(joinstr));
 	if (s < 0) {
 		Com_Printf("Error sending data to server.\n");
-		return;
 	}
 	irc_joining = 1;
 }
@@ -220,7 +233,6 @@ void IRC_Leave(void) {
 	s = write(sock, leavestr, strlen(leavestr));
 	if (s < 0) {
 		Com_Printf("Error sending data to server.\n");
-		return;
 	}
 	irc_parting = 1;
 }
@@ -231,7 +243,7 @@ void IRC_Say(void) {
 		return;
 	}
 	if (!irc_ready) {
-		Com_Printf("We are not ready to leave a channel yet, please wait.\n");
+		Com_Printf("We are not ready to say anything, please wait.\n");
 		return;
 	}
 
@@ -243,11 +255,10 @@ void IRC_Say(void) {
 	char saystr[MAX_STRING_CHARS];
 	int s;
 
-	sprintf(saystr, "PRIVMSG %s %s\n", Cmd_Argv(1), Cmd_ArgsFrom(2));
+	sprintf(saystr, "PRIVMSG %s :%s\n", Cmd_Argv(1), Cmd_ArgsFrom(2));
 	s = write(sock, saystr, strlen(saystr));
 	if (s < 0) {
 		Com_Printf("Error sending data to server.\n");
-		return;
 	}
 	irc_saying = 1;
 }
@@ -258,7 +269,7 @@ void IRC_Msg(void) {
 		return;
 	}
 	if (!irc_ready) {
-		Com_Printf("We are not ready to leave a channel yet, please wait.\n");
+		Com_Printf("We are not ready to send a message yet, please wait.\n");
 		return;
 	}
 
@@ -269,13 +280,36 @@ void IRC_Msg(void) {
 	char msgstr[MAX_STRING_CHARS];
 	int s;
 
-	sprintf(msgstr, "PRIVMSG %s %s\n", Cmd_Argv(1), Cmd_ArgsFrom(2));
+	sprintf(msgstr, "PRIVMSG %s :%s\n", Cmd_Argv(1), Cmd_ArgsFrom(2));
 	s = write(sock, msgstr, strlen(msgstr));
 	if (s < 0) {
 		Com_Printf("Error sending data to server.\n");
-		return;
 	}
 	irc_msging = 1;
+}
+
+void IRC_Nick(void) {
+	if (!irc_connected) {
+		Com_Printf("Connect to an IRC server first.\n");
+		return;
+	}
+	if (!irc_ready) {
+		Com_Printf("We are not ready to leave a channel yet, please wait.\n");
+		return;
+	}
+
+	if (Cmd_Argc() < 2) {
+		Com_Printf("Usage: irc_nick <nick>\n");
+		return;
+	}
+	int nickstr[MAX_STRING_CHARS];
+	int s;
+
+	sprintf(nickstr, "NICK %s\n", Cmd_Argv(1));
+	s = write(sock, nickstr, strlen(nickstr));
+	if (s < 0) {
+		Com_Printf("Error sending data to server.\n");
+	}
 }
 
 void IRC_Init(void) {
@@ -285,4 +319,5 @@ void IRC_Init(void) {
 	Cmd_AddCommand("irc_leave", IRC_Leave);
 	Cmd_AddCommand("irc_say", IRC_Say);
 	Cmd_AddCommand("irc_msg", IRC_Msg);
+	Cmd_AddCommand("irc_nick", IRC_Nick);
 }
