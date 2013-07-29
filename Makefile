@@ -37,7 +37,7 @@ USE_SDL          =1
 USE_OPENAL       =0
 USE_CURL         =1
 USE_CODEC_VORBIS =0
-USE_IRC          =0
+USE_IRC          =1
 
 # Barbatos - Urban Terror 4.2 auth system
 # You're not forced to use it.
@@ -243,6 +243,11 @@ ifeq ($(PLATFORM),linux)
   else
     BASE_CFLAGS += -I/usr/X11R6/include
   endif
+
+  ifeq ($(USE_IRC),1)
+    BASE_CFLAGS += -DUSE_IRC=1
+  endif
+
  #Anything more then -O2 and *mmx *msse/2/ causes hitching with urbanterror\
 #also -march is illrelavent unless you know your target cpu
   OPTIMIZE = -O2 -mmmx -msse -msse2 -msse3
@@ -302,9 +307,9 @@ ifeq ($(PLATFORM),linux)
     CLIENT_LDFLAGS += -lvorbisfile -lvorbis -logg
   endif
 
-  ifeq ($(USE_IRC),1)
-    LDFLAGS += -lpthread
-  endif
+  # ifeq ($(USE_IRC),1)
+  #   LDFLAGS += -lpthread
+  # endif
 
   ifeq ($(ARCH),i386)
     # linux32 make ...
@@ -1145,7 +1150,7 @@ else
     $(B)/client/linux_snd.o \
     $(B)/client/sdl_snd.o
 
-  ifeq (USE_IRC,1)
+  ifeq ($(USE_IRC),1)
     Q3OBJ += $(B)/client/irc.o
   endif
 

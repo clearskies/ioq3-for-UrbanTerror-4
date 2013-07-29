@@ -574,9 +574,11 @@ void CL_WriteAVIAudioFrame( const byte *pcmBuffer, int size );
 qboolean CL_CloseAVI( void );
 qboolean CL_VideoRecording( void );
 
-#ifdef USE_IRC
+#if USE_IRC
 //
 // irc.c
 //
 void IRC_Init(void);
+void IRC_HandleData(void);
+void IRC_Disconnect(void);
 #endif

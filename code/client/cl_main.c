@@ -2399,6 +2399,10 @@ void CL_Frame ( int msec ) {
     return;
   }
 
+#if USE_IRC
+  IRC_HandleData();
+#endif
+
 #if USE_CURL
   if(clc.downloadCURLM) {
     CL_cURL_PerformDownload();
@@ -3004,7 +3008,7 @@ void CL_Init( void ) {
   CL_GenerateQKey();  
   Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
   CL_UpdateGUID( NULL, 0 );
-#ifdef USE_IRC
+#if USE_IRC
   IRC_Init();
 #endif
   Com_Printf( "----- Client Initialization Complete -----\n" );
@@ -3066,7 +3070,7 @@ void CL_Shutdown( void ) {
   recursive = qfalse;
 
   Com_Memset( &cls, 0, sizeof( cls ) );
-#ifdef USE_IRC
+#if USE_IRC
   IRC_Disconnect();
 #endif
   Com_Printf( "-----------------------\n" );

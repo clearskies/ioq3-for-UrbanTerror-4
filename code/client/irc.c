@@ -26,15 +26,18 @@ void IRC_HandleData(void) {
 	char idata[10][256];
 	int s;
 
-	while (1) {
+	if (!irc_connected)
+		return;
+
+	//while (1) {
 		if (sock < 0) {
-			break;
+			return;
 		}
 		bzero(buffer, 256);
 		s = read(sock, buffer, 255);
 		if (s < 0) {
 			 Com_Printf("Error getting data from server.\n");
-			 continue;
+			 return;
 		}
 		Com_Printf(buffer);
 
@@ -44,13 +47,13 @@ void IRC_HandleData(void) {
 			write(sock, obuf, strlen(obuf));
 			bzero(obuf, 256);
 			bzero(idata[0], 256);
-			continue;
+			return;
 		}
 
 		if (strstr(buffer, "001") && !irc_ready) {
 			Com_Printf("IRC is ready to go!\n");
 			irc_ready = 1;
-			continue;
+			return;
 		}
 
 		if (strstr(buffer, "PRIVMSG")) {
@@ -62,34 +65,33 @@ void IRC_HandleData(void) {
 			}
 			bzero(idata[0], 256);
 			bzero(idata[1], 256);
-			continue;
+			return;
 		}
 
 		if (irc_parting && (strstr(buffer, "403") || strstr(buffer, "442"))) {
 			Com_Printf("Channel leave failed. You might not be on that channel, or it may not exist.\n");
 			irc_parting = 0;
-			continue;
+			return;
 		}
 
 		if (irc_joining && (strstr(buffer, "403") || strstr(buffer, "473"))) {
 			Com_Printf("Channel join failed. That channel might not exist.\n");
 			irc_joining = 0;
-			continue;
+			return;
 		}
 
 		if (irc_saying && strstr(buffer, "404")) {
 			Com_Printf("You can't say stuff on that channel. You're probably not in it.\n");
 			irc_saying = 0;
-			continue;
+			return;
 		}
 
 		if (irc_msging && strstr(buffer, "401")) {
 			Com_Printf("That person doesn't exist.\n");
 			irc_msging = 0;
-			continue;
+			return;
 		}
-	}
-	pthread_exit(NULL);
+	//}
 }
 
 void IRC_Connect(void) {
@@ -161,7 +163,6 @@ void IRC_Connect(void) {
 	}
 	bzero(obuf, 256);
 
-	pthread_create(&threads[0], NULL, IRC_HandleData, NULL);
 	return;
 }
 
