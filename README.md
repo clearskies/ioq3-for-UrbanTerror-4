@@ -21,8 +21,8 @@ Client
    + `cvar_decr <cvar> <amount>` - Decreases a cvar by a specified amount
 
 ### Other ###
-   + Paste support on Linux (Ctrl-V)
-   + Paste support on Mac (Ctrl-V; Command-V doesn't work)
+   + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client
+   + <del>Paste support on Mac (Ctrl-V; Command-V doesn't work)</del> - This has been integrated into the official client
 
 **********
 
