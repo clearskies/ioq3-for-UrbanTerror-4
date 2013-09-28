@@ -259,6 +259,8 @@ static	int			fs_packFiles;			// total number of files in packs
 static int fs_fakeChkSum;
 static int fs_checksumFeed;
 
+int gameFolder = 42;
+
 typedef union qfile_gus {
 	FILE*		o;
 	unzFile		z;
@@ -3338,7 +3340,11 @@ void FS_Restart( int checksumFeed ) {
 	FS_ClearPakReferences(0);
 
 	// try to start up normally
-	FS_Startup( BASEGAME );
+	if (gameFolder == 42) {
+		FS_Startup( BASEGAME );
+	} else if (gameFolder == 41) {
+		FS_Startup("q3ut41");
+	}
 
 	FS_CheckPak0( );
 
@@ -3355,6 +3361,11 @@ void FS_Restart( int checksumFeed ) {
 			lastValidBase[0] = '\0';
 			lastValidGame[0] = '\0';
 			FS_Restart(checksumFeed);
+			if (gameFolder == 41) {
+				gameFolder = 42;
+			} else if (gameFolder == 42) {
+				gameFolder = 41;
+			}
 			Com_Error( ERR_DROP, "Invalid game folder\nIt may be because you are running a different version from this server. Please check that you are up to date on www.urbanterror.info\n" );
 			return;
 		}
