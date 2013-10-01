@@ -307,8 +307,8 @@ extern  cvar_t  *sv_demofolder;
 extern  cvar_t  *sv_allowSuicide;
 extern  cvar_t  *sv_allowItemdrop;
 extern  cvar_t  *sv_allowWeapdrop;
-// extern  cvar_t  *sv_allowRadio;
 extern  cvar_t  *sv_allowTell;
+extern  cvar_t  *sv_allowKnife;
 
 extern	cvar_t *sv_antiblock;
 

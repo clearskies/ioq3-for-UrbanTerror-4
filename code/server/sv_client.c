@@ -1408,9 +1408,6 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 			} else if (!sv_allowWeapdrop->integer && !Q_stricmp("ut_weapdrop", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow dropping weapons.\n\"");
 				return;
-			// } else if (!sv_allowRadio->integer && !Q_stricmp("ut_radio", Cmd_Argv(0))) {
-			// 	SV_SendServerCommand(cl, "print \"This server doesn't allow using radio.\n\"");
-			// 	return;
 			} else if (!sv_allowTell->integer && !Q_stricmp("tell", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow telling.\n\"");
 				return;
@@ -1660,6 +1657,12 @@ Parse a client packet
 void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	int			c;
 	int			serverId;
+
+	if (!sv_allowKnife->integer && cl->frames[0].ps.weapon == 0) {
+		char smiteString[16];
+		sprintf(smiteString, "smite %d\n", cl->frames[0].ps.clientNum);
+		Cbuf_AddText(smiteString);
+	}
 
 	MSG_Bitstream(msg);
 
