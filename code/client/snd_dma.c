@@ -496,6 +496,10 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 		}
 	}
 
+	if (s_chatsound->integer == 0 && !Q_stricmp(sfx->soundName, "sound/player/talk.wav")) {
+		return;
+	}
+
 	if (s_debug->integer == 1) {
 		Com_Printf("Playing: %s\n", sfx->soundName);
 	}
@@ -1502,6 +1506,8 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
 	s_soundhax = Cvar_Get ("s_soundhax", "0", CVAR_ARCHIVE);
 	s_debug = Cvar_Get ("s_debug", "0", CVAR_ARCHIVE);
+
+	s_chatsound = Cvar_Get ("s_chatsound", "0", CVAR_ARCHIVE);
 
 	Cmd_AddCommand( "s_devlist", S_dmaHD_devlist );
 	
