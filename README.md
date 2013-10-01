@@ -23,7 +23,8 @@ Client
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client
    + <del>Paste support on Mac (Ctrl-V; Command-V doesn't work)</del> - This has been integrated into the official client
-   + Can sort of auto switch between 4.2 and 4.1 assets. This feature is experimental and may cause some interesting game behaviour. To use it, rename your 4.1 q3ut4 folder to q3ut41 and copy it folder into your game directory. When connecting to a 4.1 server, you'll still get an "Invalid game folder" error. Just reconnect, and it should work.
+   + Can sort of auto switch between 4.2 and 4.1 assets. This feature is experimental and may cause some interesting game behaviour. To use it, rename your 4.1 q3ut4 folder to q3ut41 and copy the folder into your game directory. When connecting to a 4.1 server, you'll still get an "Invalid game folder" error. Just reconnect, and it should work.
+   + I made it not send a bunch of userinfo that really isn't necessary
 
 **********
 
