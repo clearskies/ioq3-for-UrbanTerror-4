@@ -38,6 +38,7 @@ Server
    + `sv_allowTell <0|1>` - Disables or enables private messaging
    + `sv_antiblock <0|1>` - Enables or disables player collisions
    + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. This only works on 4.2 and it will kill the player when they switch to the knife. There is a delay of around 0.5-3 seconds.
+   + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
 
 ### Commands ###
    + None
