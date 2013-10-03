@@ -91,6 +91,7 @@ cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
 cvar_t		*s_soundhax;
 cvar_t		*s_debug;
+cvar_t		*s_chatsound;
 
 loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;

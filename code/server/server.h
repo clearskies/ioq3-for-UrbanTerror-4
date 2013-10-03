@@ -312,6 +312,8 @@ extern  cvar_t  *sv_allowKnife;
 
 extern	cvar_t *sv_antiblock;
 
+extern	cvar_t *sv_forceGear;
+
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;
 extern  cvar_t  *sv_auth_engine;

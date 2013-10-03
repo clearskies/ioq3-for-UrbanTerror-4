@@ -65,10 +65,12 @@ cvar_t	*sv_demofolder;				//@Barbatos - the name of the folder that contains ser
 cvar_t	*sv_allowSuicide;
 cvar_t	*sv_allowItemdrop;
 cvar_t	*sv_allowWeapdrop;
-// cvar_t	*sv_allowRadio;
 cvar_t	*sv_allowTell;
+cvar_t	*sv_allowKnife;
 
 cvar_t	*sv_antiblock;
+
+cvar_t	*sv_forceGear;
 
 //@Barbatos
 #ifdef USE_AUTH
