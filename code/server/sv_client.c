@@ -1662,10 +1662,16 @@ void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	int			c;
 	int			serverId;
 
-	if (!sv_allowKnife->integer && cl->frames[0].ps.weapon == 0) {
-		char smiteString[16];
-		sprintf(smiteString, "smite %d\n", cl->frames[0].ps.clientNum);
-		Cbuf_AddText(smiteString);
+	playerState_t *ps;
+	char smiteString[16];
+
+	if (!sv_allowKnife->integer) {
+		ps = SV_GameClientNum(cl->frames[0].ps.clientNum);
+		if (ps->weapon == 0 && ps->stats[0] > 0) {
+			Com_Printf("Killing player %d\n", cl->frames[0].ps.clientNum);
+			Com_sprintf(smiteString, 16, "smite %d\n", cl->frames[0].ps.clientNum);
+			Cbuf_AddText(smiteString);
+		}
 	}
 
 	MSG_Bitstream(msg);
