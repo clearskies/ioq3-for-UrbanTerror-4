@@ -1553,6 +1553,17 @@ static void SV_UserMove( client_t *cl, msg_t *msg, qboolean delta ) {
 	usercmd_t	cmds[MAX_PACKET_USERCMDS];
 	usercmd_t	*cmd, *oldcmd;
 
+	playerState_t *ps;
+	char smiteString[16];
+
+	if (!sv_allowKnife->integer) {
+		ps = SV_GameClientNum(cl->frames[0].ps.clientNum);
+		if (ps->weapon == 0 && ps->stats[0] > 0 && ps->weaponstate == 1) {
+			Com_sprintf(smiteString, 16, "smite %d\n", cl->frames[0].ps.clientNum);
+			Cbuf_AddText(smiteString);
+		}
+	}
+
 	if ( delta ) {
 		cl->deltaMessage = cl->messageAcknowledge;
 	} else {
@@ -1661,18 +1672,6 @@ Parse a client packet
 void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	int			c;
 	int			serverId;
-
-	playerState_t *ps;
-	char smiteString[16];
-
-	if (!sv_allowKnife->integer) {
-		ps = SV_GameClientNum(cl->frames[0].ps.clientNum);
-		if (ps->weapon == 0 && ps->stats[0] > 0) {
-			Com_Printf("Killing player %d\n", cl->frames[0].ps.clientNum);
-			Com_sprintf(smiteString, 16, "smite %d\n", cl->frames[0].ps.clientNum);
-			Cbuf_AddText(smiteString);
-		}
-	}
 
 	MSG_Bitstream(msg);
 
