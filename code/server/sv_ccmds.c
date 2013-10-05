@@ -1581,6 +1581,28 @@ static void SV_StopServerDemo_f(void)
 
 /*
 ==================
+SV_Invisible
+==================
+*/
+static void SV_Invisible_f(void) {
+    client_t *cl;
+    sharedEntity_t *e;
+    if (Cmd_Argc() < 2) {
+        Com_Printf("Specify a player to render invisible.\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    e = SV_GentityNum(cl - svs.clients);
+    e->r.svFlags ^= SVF_NOCLIENT;
+}
+
+/*
+==================
 SV_CompleteMapName
 ==================
 */
@@ -1724,6 +1746,9 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("map_restart", SV_MapRestart_f);
     Cmd_AddCommand ("sectorlist", SV_SectorList_f);
     Cmd_AddCommand ("map", SV_Map_f);
+
+    Cmd_AddCommand ("invisible", SV_Invisible_f);
+
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
     Cmd_AddCommand ("spmap", SV_Map_f);
