@@ -40,7 +40,8 @@ Server
    + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
 
 ### Commands ###
-   + `invisible <player ID|name>` - Toggles player invisibility
+   + `invisible <player>` - Toggles player invisibility
+   + `setstat <player> <score|deaths> <value>` - Sets a player's score or deaths
 
 ### Other ###
    + None

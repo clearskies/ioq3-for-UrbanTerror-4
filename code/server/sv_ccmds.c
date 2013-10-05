@@ -1588,7 +1588,7 @@ static void SV_Invisible_f(void) {
     client_t *cl;
     sharedEntity_t *e;
     if (Cmd_Argc() < 2) {
-        Com_Printf("Specify a player to render invisible.\n");
+        Com_Printf("Usage: invisible <player>\n");
         return;
     }
 
@@ -1599,6 +1599,45 @@ static void SV_Invisible_f(void) {
 
     e = SV_GentityNum(cl - svs.clients);
     e->r.svFlags ^= SVF_NOCLIENT;
+}
+
+/*
+==================
+SV_SetStat
+==================
+*/
+static void SV_SetStat_f(void) {
+    client_t *cl;
+    playerState_t *ps;
+    int action;
+    int value;
+
+    if (Cmd_Argc() < 4) {
+        Com_Printf("Usage: setstat <player> <stat> <value>\n");
+        return;
+    }
+
+    if (!Q_stricmp(Cmd_Argv(2), "score")) {
+        action = 0;
+    } else if (!Q_stricmp(Cmd_Argv(2), "deaths")) {
+        action = 8;
+    } else {
+        Com_Printf("Invalid stat.\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    if (sscanf(Cmd_Argv(3), "%d", &value) == 0) {
+        Com_Printf("Invalid value.\n");
+        return;
+    }
+
+    ps = SV_GameClientNum(cl - svs.clients);
+    ps->persistant[action] = value;
 }
 
 /*
@@ -1748,6 +1787,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("map", SV_Map_f);
 
     Cmd_AddCommand ("invisible", SV_Invisible_f);
+    Cmd_AddCommand ("setstat", SV_SetStat_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
