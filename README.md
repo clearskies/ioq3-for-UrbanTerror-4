@@ -41,7 +41,8 @@ Server
 
 ### Commands ###
    + `invisible <player>` - Toggles player invisibility
-   + `setstat <player> <score|deaths> <value>` - Sets a player's score or deaths
+   + `setscore <player> <value>` - Sets a player's score
+   + `setdeaths <player> <value>` - Sets a player's deaths
 
 ### Other ###
    + None
