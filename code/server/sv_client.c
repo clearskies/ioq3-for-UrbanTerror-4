@@ -1557,9 +1557,9 @@ static void SV_UserMove( client_t *cl, msg_t *msg, qboolean delta ) {
 	char smiteString[16];
 
 	if (!sv_allowKnife->integer) {
-		ps = SV_GameClientNum(cl->frames[0].ps.clientNum);
+		ps = SV_GameClientNum(cl - svs.clients);
 		if (ps->weapon == 0 && ps->stats[0] > 0 && ps->weaponstate == 1) {
-			Com_sprintf(smiteString, 16, "smite %d\n", cl->frames[0].ps.clientNum);
+			Com_sprintf(smiteString, 16, "smite %d\n", cl - svs.clients);
 			Cbuf_AddText(smiteString);
 		}
 	}
