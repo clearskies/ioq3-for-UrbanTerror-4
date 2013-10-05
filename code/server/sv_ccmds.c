@@ -1603,26 +1603,16 @@ static void SV_Invisible_f(void) {
 
 /*
 ==================
-SV_SetStat
+SV_SetScore
 ==================
 */
-static void SV_SetStat_f(void) {
+static void SV_SetScore_f(void) {
     client_t *cl;
     playerState_t *ps;
-    int action;
     int value;
 
-    if (Cmd_Argc() < 4) {
-        Com_Printf("Usage: setstat <player> <stat> <value>\n");
-        return;
-    }
-
-    if (!Q_stricmp(Cmd_Argv(2), "score")) {
-        action = 0;
-    } else if (!Q_stricmp(Cmd_Argv(2), "deaths")) {
-        action = 8;
-    } else {
-        Com_Printf("Invalid stat.\n");
+    if (Cmd_Argc() < 3) {
+        Com_Printf("Usage: setscore <player> <value>\n");
         return;
     }
 
@@ -1631,13 +1621,42 @@ static void SV_SetStat_f(void) {
         return;
     }
 
-    if (sscanf(Cmd_Argv(3), "%d", &value) == 0) {
+    if (sscanf(Cmd_Argv(2), "%d", &value) == 0) {
         Com_Printf("Invalid value.\n");
         return;
     }
 
     ps = SV_GameClientNum(cl - svs.clients);
-    ps->persistant[action] = value;
+    ps->persistant[0] = value;
+}
+
+/*
+==================
+SV_SetDeaths
+==================
+*/
+static void SV_SetDeaths_f(void) {
+    client_t *cl;
+    playerState_t *ps;
+    int value;
+
+    if (Cmd_Argc() < 3) {
+        Com_Printf("Usage: setdeaths <player> <value>\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    if (sscanf(Cmd_Argv(2), "%d", &value) == 0) {
+        Com_Printf("Invalid value.\n");
+        return;
+    }
+
+    ps = SV_GameClientNum(cl - svs.clients);
+    ps->persistant[8] = value;
 }
 
 /*
@@ -1787,7 +1806,8 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("map", SV_Map_f);
 
     Cmd_AddCommand ("invisible", SV_Invisible_f);
-    Cmd_AddCommand ("setstat", SV_SetStat_f);
+    Cmd_AddCommand ("setscore", SV_SetScore_f);
+    Cmd_AddCommand ("setdeaths", SV_SetDeaths_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
