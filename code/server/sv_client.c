@@ -1328,7 +1328,7 @@ void SV_UpdateUserinfo_f( client_t *cl ) {
 
 	Q_strncpyz( cl->userinfo, Cmd_Argv(1), sizeof(cl->userinfo) );
 
-	if (sv_forceGear && Q_stricmp(sv_forceGear->string, "null")) {
+	if (sv_forceGear && Q_stricmp(sv_forceGear->string, "null") && cl->state > CS_ZOMBIE) {
 		Info_SetValueForKey(cl->userinfo, "gear", sv_forceGear->string);
 	}
 
