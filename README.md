@@ -39,10 +39,14 @@ Server
    + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. This only works on 4.2 and it will kill the player when they switch to the knife. <del>There may be a delay of around 0.5-3 seconds.</del> No more delay!
    + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
 
-### Commands ###
+### Server Commands ###
    + `invisible <player>` - Toggles player invisibility
    + `setscore <player> <value>` - Sets a player's score
    + `setdeaths <player> <value>` - Sets a player's deaths
+
+### Client Commands ###
+   + `ff?` - Informs the player of the status of g_friendlyfire
+   + `maplist` - Sends the player a list of all of the maps loaded on the server
 
 ### Other ###
    + None

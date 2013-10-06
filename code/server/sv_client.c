@@ -1415,7 +1415,28 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 			} else if (!sv_allowTell->integer && !Q_stricmp("tell", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow telling.\n\"");
 				return;
-			} 
+			} else if (!Q_stricmp("ff?", Cmd_Argv(0))) {
+				cvar_t *ff;
+				ff = Cvar_Get("g_friendlyfire", "", 0);
+				if (!ff->integer) {
+					SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^1OFF^7. Go crazy.\"");
+				} else {
+					SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^2ON^7. DON'T SHOOT YOUR TEAMMATES.\"");
+				}
+				return;
+			} else if (!Q_stricmp("maplist", Cmd_Argv(0))) {
+				int numMaps, j;
+				char **maplist;
+				maplist = FS_ListFiles("maps", ".bsp", &numMaps);
+				Com_Printf("NumMaps: %d\n", numMaps);
+				SV_SendServerCommand(cl, "print \"Maps:\"");
+				for ( j = 0; j < numMaps; j++ ) {
+					maplist[j][strlen(maplist[j])-4] = 0;
+					Com_Printf("Sending map: %s\n", maplist[j]);
+					SV_SendServerCommand(cl, "print \"%s\"", maplist[j]);
+				}
+				return;
+			}
 			if (argsFromOneMaxlen >= 0) {
 				charCount = 0;
 				dollarCount = 0;
