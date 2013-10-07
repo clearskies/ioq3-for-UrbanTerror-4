@@ -43,6 +43,7 @@ Server
    + `invisible <player>` - Toggles player invisibility
    + `setscore <player> <value>` - Sets a player's score
    + `setdeaths <player> <value>` - Sets a player's deaths
+   + `invulnerable <player>` - Makes a player invulnerable until they die
 
 ### Client Commands ###
    + `ff?` - Informs the player of the status of g_friendlyfire

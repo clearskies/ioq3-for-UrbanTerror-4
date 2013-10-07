@@ -1667,6 +1667,28 @@ static void SV_SetDeaths_f(void) {
 
 /*
 ==================
+SV_Invulnerable
+==================
+*/
+static void SV_Invulnerable_f(void) {
+    client_t *cl;
+    sharedEntity_t *e;
+    if (Cmd_Argc() < 2) {
+        Com_Printf("Usage: invulnerable <player>\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    e = SV_GentityNum(cl - svs.clients);
+    e->r.contents = 0;              
+}
+
+/*
+==================
 SV_CompleteMapName
 ==================
 */
@@ -1814,6 +1836,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("invisible", SV_Invisible_f);
     Cmd_AddCommand ("setscore", SV_SetScore_f);
     Cmd_AddCommand ("setdeaths", SV_SetDeaths_f);
+    Cmd_AddCommand ("invulnerable", SV_Invulnerable_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
