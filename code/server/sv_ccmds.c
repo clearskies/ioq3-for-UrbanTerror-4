@@ -1599,6 +1599,12 @@ static void SV_Invisible_f(void) {
 
     e = SV_GentityNum(cl - svs.clients);
     e->r.svFlags ^= SVF_NOCLIENT;
+
+    if (e->r.svFlags & SVF_NOCLIENT) {
+        Com_Printf("Invisible ON for %s\n", Cmd_Argv(1));
+    } else {
+        Com_Printf("Invisibility OFF for %s\n", Cmd_Argv(1));
+    }
 }
 
 /*
