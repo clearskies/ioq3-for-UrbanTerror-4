@@ -219,12 +219,12 @@ void SV_LinkEntity( sharedEntity_t *gEnt ) {
 		SV_UnlinkEntity( gEnt );	// unlink from old position
 	}
 
-	if (sv_antiblock -> integer > 0) {
-		if(gEnt->r.contents & CONTENTS_BODY){
-				if(gEnt->s.number >= 0 && gEnt->s.number < sv_maxclients->integer){
-							gEnt->r.contents &= ~CONTENTS_BODY;
-							gEnt->r.contents |= CONTENTS_CORPSE;
-				}
+	if (sv_antiblock->integer) {
+		if (gEnt->r.contents & CONTENTS_BODY){
+			if(gEnt->s.number >= 0 && gEnt->s.number < sv_maxclients->integer){
+				gEnt->r.contents &= ~CONTENTS_BODY;
+				gEnt->r.contents |= CONTENTS_CORPSE;
+			}
 		}
 	}
 

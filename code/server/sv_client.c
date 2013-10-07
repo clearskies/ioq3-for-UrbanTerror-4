@@ -1436,6 +1436,32 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 					SV_SendServerCommand(cl, "print \"%s\"", maplist[j]);
 				}
 				return;
+			} else if (!Q_stricmp("mapcycle", Cmd_Argv(0))) {
+				int s;
+				fileHandle_t h;
+				cvar_t *g_mapcycle;
+				char *allMaps;
+				char *singleMap;
+				g_mapcycle = Cvar_Get("g_mapcycle", "", 0);
+				s = FS_FOpenFileRead(g_mapcycle->string, &h, qtrue);
+				if (s != NULL) {
+					allMaps = Z_Malloc(s + 1);
+					if (FS_Read(allMaps, s, h)) {
+						SV_SendServerCommand(cl, "print \"Mapcycle:\"");
+						singleMap = strtok(allMaps, "\r\n");
+						while (singleMap) {
+							if (!Q_stricmp(sv_mapname->string, singleMap)) {
+								SV_SendServerCommand(cl, "print \"^2%s <- We are here\"", singleMap);
+							} else {
+								SV_SendServerCommand(cl, "print \"%s\"", singleMap);
+							}
+							singleMap = strtok(NULL, "\r\n");
+						}
+					}
+				} else {
+					SV_SendServerCommand(cl, "print \"Mapcycle retrieval failed.\"");
+				}
+				return;
 			}
 			if (argsFromOneMaxlen >= 0) {
 				charCount = 0;
