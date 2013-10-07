@@ -2831,6 +2831,39 @@ static void CL_GenerateQKey(void)
 
 /*
 ====================
+CL_Myhealth_f
+====================
+*/
+void CL_Myhealth_f(void) {
+  if (cls.state != CA_ACTIVE) {
+    Com_Printf("Not in game; health could not be retrieved.\n");
+    return;
+  }
+
+  char healthStr[32];
+  Com_sprintf(healthStr, 32, "ut_echo \"Current health: ^2%d%%\"\n", cl.snap.ps.stats[0]);
+  Cbuf_AddText(healthStr);
+}
+
+/*
+====================
+CL_Whereami_f
+====================
+*/
+void CL_Whereami_f(void) {
+  if (cls.state != CA_ACTIVE) {
+    Com_Printf("Not in game; location could not be retrieved.\n");
+    return;
+  }
+
+  char locStr[64];
+  Com_sprintf(locStr, 64, "ut_echo \"Current coordinates: ^2%f, %f, %f\"\n", cl.snap.ps.origin[0], cl.snap.ps.origin[1], cl.snap.ps.origin[2]);
+  Cbuf_AddText(locStr);
+}
+
+
+/*
+====================
 CL_Init
 ====================
 */
@@ -2992,6 +3025,9 @@ void CL_Init( void ) {
   Cmd_AddCommand ("model", CL_SetModel_f );
   Cmd_AddCommand ("video", CL_Video_f );
   Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
+
+  Cmd_AddCommand("myhealth", CL_Myhealth_f);
+  Cmd_AddCommand("whereami", CL_Whereami_f);
 
   CL_InitRef();
 
@@ -3929,5 +3965,3 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 
   return qfalse;
 }
-
-

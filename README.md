@@ -20,6 +20,8 @@ Client
    + `chatdump <file>` - Dumps chat from the console to a file (chat is basically anything with a colon in it, sorry)
    + `cvar_incr <cvar> <amount>` - Increases a cvar by a specified amount
    + `cvar_decr <cvar> <amount>` - Decreases a cvar by a specified amount
+   + `myhealth` - Displays current health while in game
+   + `whereami` - Displays current location while in game
 
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client
