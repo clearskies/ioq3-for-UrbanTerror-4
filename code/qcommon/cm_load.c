@@ -108,6 +108,22 @@ void CMod_LoadShaders( lump_t *l ) {
 	out = cm.shaders;
 	for ( i=0 ; i<count ; i++, in++, out++ ) {
 		out->contentFlags = LittleLong( out->contentFlags );
+
+		#ifdef DEDICATED
+		cvar_t *sv_fallDamage;
+		cvar_t *sv_skatingRink;
+
+		sv_fallDamage = Cvar_Get("sv_falldamage", "1", CVAR_ARCHIVE | CVAR_LATCH);
+		sv_skatingRink = Cvar_Get("sv_skatingRink", "0", CVAR_ARCHIVE | CVAR_LATCH);
+
+		if (!sv_fallDamage->value) {
+			out->surfaceFlags |= SURF_NODAMAGE;
+		}
+		if (sv_skatingRink->value) {
+			out->surfaceFlags |= SURF_SLICK;
+		}
+		#endif
+
 		out->surfaceFlags = LittleLong( out->surfaceFlags );
 	}
 }

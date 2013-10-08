@@ -310,9 +310,9 @@ extern  cvar_t  *sv_allowWeapdrop;
 extern  cvar_t  *sv_allowTell;
 extern  cvar_t  *sv_allowKnife;
 
-extern	cvar_t *sv_antiblock;
+extern	cvar_t  *sv_antiblock;
 
-extern	cvar_t *sv_forceGear;
+extern	cvar_t  *sv_forceGear;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

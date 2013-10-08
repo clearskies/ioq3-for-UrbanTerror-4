@@ -40,6 +40,8 @@ Server
    + `sv_antiblock <0|1>` - Enables or disables player collisions
    + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. This only works on 4.2 and it will kill the player when they switch to the knife. <del>There may be a delay of around 0.5-3 seconds.</del> No more delay!
    + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
+   + `sv_fallDamage <0|1>` - Disables or enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode
+   + `sv_skatingRink <0|1>` - The world is your skating rink (all surfaces become icy)!
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility
