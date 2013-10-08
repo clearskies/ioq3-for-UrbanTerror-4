@@ -2831,36 +2831,35 @@ static void CL_GenerateQKey(void)
 
 /*
 ====================
-CL_Myhealth_f
+CL_Health_f
 ====================
 */
-void CL_Myhealth_f(void) {
+void CL_Health_f(void) {
   if (cls.state != CA_ACTIVE) {
     Com_Printf("Not in game; health could not be retrieved.\n");
     return;
   }
 
-  char healthStr[32];
-  Com_sprintf(healthStr, 32, "ut_echo \"Current health: ^2%d%%\"\n", cl.snap.ps.stats[0]);
+  char healthStr[36];
+  Com_sprintf(healthStr, 36, "ut_echo \"Current health: ^2%d%%\"\n", cl.snap.ps.stats[0]);
   Cbuf_AddText(healthStr);
 }
 
 /*
 ====================
-CL_Whereami_f
+CL_Loc_f
 ====================
 */
-void CL_Whereami_f(void) {
+void CL_Loc_f(void) {
   if (cls.state != CA_ACTIVE) {
     Com_Printf("Not in game; location could not be retrieved.\n");
     return;
   }
 
   char locStr[64];
-  Com_sprintf(locStr, 64, "ut_echo \"Current coordinates: ^2%f, %f, %f\"\n", cl.snap.ps.origin[0], cl.snap.ps.origin[1], cl.snap.ps.origin[2]);
+  Com_sprintf(locStr, 64, "ut_echo \"Current coordinates: ^2%.2f, %.2f, %.2f\"\n", cl.snap.ps.origin[0], cl.snap.ps.origin[1], cl.snap.ps.origin[2]);
   Cbuf_AddText(locStr);
 }
-
 
 /*
 ====================
@@ -3026,8 +3025,8 @@ void CL_Init( void ) {
   Cmd_AddCommand ("video", CL_Video_f );
   Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 
-  Cmd_AddCommand("myhealth", CL_Myhealth_f);
-  Cmd_AddCommand("whereami", CL_Whereami_f);
+  Cmd_AddCommand("health", CL_Health_f);
+  Cmd_AddCommand("loc", CL_Loc_f);
 
   CL_InitRef();
 
