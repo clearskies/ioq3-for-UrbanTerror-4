@@ -107,14 +107,15 @@ void CMod_LoadShaders( lump_t *l ) {
 
 	out = cm.shaders;
 	for ( i=0 ; i<count ; i++, in++, out++ ) {
-		out->contentFlags = LittleLong( out->contentFlags );
 
 		#ifdef DEDICATED
 		cvar_t *sv_fallDamage;
 		cvar_t *sv_iceEverywhere;
+		cvar_t *sv_specialWater;
 
 		sv_fallDamage = Cvar_Get("sv_falldamage", "1", CVAR_ARCHIVE | CVAR_LATCH);
 		sv_iceEverywhere = Cvar_Get("sv_iceEverywhere", "0", CVAR_ARCHIVE | CVAR_LATCH);
+		sv_specialWater = Cvar_Get("sv_specialWater", "0", CVAR_ARCHIVE | CVAR_LATCH);
 
 		if (!sv_fallDamage->value) {
 			out->surfaceFlags |= SURF_NODAMAGE;
@@ -122,8 +123,20 @@ void CMod_LoadShaders( lump_t *l ) {
 		if (sv_iceEverywhere->value) {
 			out->surfaceFlags |= SURF_SLICK;
 		}
+
+		if (out->contentFlags & CONTENTS_WATER) {
+			if (sv_specialWater->value == 1) {
+				out->contentFlags &= ~CONTENTS_WATER;
+				out->contentFlags |= CONTENTS_SOLID;
+				out->surfaceFlags |= SURF_SLICK;
+			} else if (sv_specialWater->value == 2) {
+				out->contentFlags &= ~CONTENTS_WATER;
+				out->contentFlags |= CONTENTS_LAVA;
+			}
+		}
 		#endif
 
+		out->contentFlags = LittleLong( out->contentFlags );
 		out->surfaceFlags = LittleLong( out->surfaceFlags );
 	}
 }
