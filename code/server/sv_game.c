@@ -295,6 +295,19 @@ void SV_GetUsercmd( int clientNum, usercmd_t *cmd ) {
 		Com_Error( ERR_DROP, "SV_GetUsercmd: bad clientNum:%i", clientNum );
 	}
 	*cmd = svs.clients[clientNum].lastUsercmd;
+
+	client_t *cl;
+	cl = &svs.clients[clientNum];
+
+	if (cl->frozen) {
+		cmd->forwardmove = ClampChar(0);
+		cmd->rightmove = ClampChar(0);
+		cmd->upmove = ClampChar(0);
+	}
+
+	if (!sv_allowKnife->integer && cmd->weapon == 1) {
+		cmd->buttons &= ~BUTTON_ATTACK;
+	}
 }
 
 //==============================================

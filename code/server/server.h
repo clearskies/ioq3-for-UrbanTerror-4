@@ -177,6 +177,8 @@ typedef struct client_s {
 	
 	int				oldServerTime;
 	qboolean			csUpdated[MAX_CONFIGSTRINGS+1];	
+
+	short frozen;
 } client_t;
 
 //=============================================================================

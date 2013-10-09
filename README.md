@@ -38,7 +38,7 @@ Server
    + `sv_allowWeapdrop <0|1>` - Disables or enables weapon dropping
    + `sv_allowTell <0|1>` - Disables or enables private messaging
    + `sv_antiblock <0|1>` - Enables or disables player collisions. *Players must respawn for this to take effect*
-   + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. This only works on 4.2 and it will kill the player when they switch to the knife. <del>There may be a delay of around 0.5-3 seconds.</del> No more delay!
+   + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. <del>This only works on 4.2 and it will kill the player when they switch to the knife. There may be a delay of around 0.5-3 seconds. No more delay!</del> This makes the knife deal 0 damage. Players will still see the slashing animation, but no damage occurs
    + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
    + `sv_fallDamage <0|1>` - Disables or enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. *Requires reload*
    + `sv_iceEverywhere <0|1>` - All surfaces become icy. *Requires reload*
@@ -48,6 +48,7 @@ Server
    + `setscore <player> <value>` - Sets a player's score
    + `setdeaths <player> <value>` - Sets a player's deaths
    + `invulnerable <player>` - Makes a player invulnerable until they die
+   + `freeze <player>` - Prevents a player from moving
 
 ### Player Commands (commands a player can call while connected to the server) ###
    + `ff?` - Informs the player of the status of g_friendlyfire

@@ -1689,6 +1689,32 @@ static void SV_Invulnerable_f(void) {
 
 /*
 ==================
+SV_Freeze
+==================
+*/
+static void SV_Freeze_f(void) {
+    client_t *cl;
+    if (Cmd_Argc() < 2) {
+        Com_Printf("Usage: freeze <player>\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    cl->frozen ^= 1;
+
+    if (cl->frozen) {
+        Com_Printf("Player %s FROZEN.\n", Cmd_Argv(1));
+    } else {
+        Com_Printf("Player %s UNFROZEN.\n", Cmd_Argv(1));
+    }
+}
+
+/*
+==================
 SV_CompleteMapName
 ==================
 */
@@ -1837,6 +1863,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("setscore", SV_SetScore_f);
     Cmd_AddCommand ("setdeaths", SV_SetDeaths_f);
     Cmd_AddCommand ("invulnerable", SV_Invulnerable_f);
+    Cmd_AddCommand ("freeze", SV_Freeze_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
