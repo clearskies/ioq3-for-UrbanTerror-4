@@ -32,6 +32,8 @@ cvar_t		*cl_graphscale;
 cvar_t		*cl_graphshift;
 cvar_t		*cl_drawclock;
 
+cvar_t		*cl_drawHealth;
+
 /*
 ================
 SCR_DrawNamedPic
@@ -359,6 +361,19 @@ void SCR_DrawClock( void ) {
 	}
 }
 
+/*
+=================
+SCR_DrawHealth
+=================
+*/
+void SCR_DrawHealth( void ) {
+	char health[16];
+	if (cl_drawHealth->value) {
+		Com_sprintf(health, 16, "Health: %d%%", cl.snap.ps.stats[0]);
+		SCR_DrawStringExt(5, 390, 8, health, g_color_table[7], qtrue );
+	}
+}
+
 
 /*
 ===============================================================================
@@ -440,6 +455,8 @@ void SCR_Init( void ) {
 	cl_graphshift = Cvar_Get ("graphshift", "0", CVAR_CHEAT);
 	cl_drawclock = Cvar_Get ("cl_drawclock", "0", CVAR_ARCHIVE);
 
+	cl_drawHealth = Cvar_Get("cl_drawHealth", "0", CVAR_ARCHIVE);
+
 	scr_initialized = qtrue;
 }
 
@@ -509,6 +526,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			CL_CGameRendering( stereoFrame );
 			SCR_DrawDemoRecording();
 			SCR_DrawClock();
+			SCR_DrawHealth();
 			break;
 		}
 	}

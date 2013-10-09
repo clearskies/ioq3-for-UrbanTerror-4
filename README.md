@@ -14,6 +14,7 @@ Client
    + `com_nosplash <0|1>` - Enables or disables the FrozenSand animation
    + `con_nochat <0|1>` - Enables or disables console chat output (when disabled, it will output a newline in the place of a chat message - I don't know why)
    + `s_chatsound <0|1>` - Disables or enabled the little tick sound when a line of chat comes in. This is really only useful for 4.1 because 4.2 already has this in the QVM.
+   + `cl_drawHealth <0|1>` - Disables or enables an on-screen health display (in percent)
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
