@@ -367,10 +367,27 @@ SCR_DrawHealth
 =================
 */
 void SCR_DrawHealth( void ) {
-	char health[16];
+	char healthStr[6];
+	int health;
+	int healthCol;
+	vec4_t boxCol;
+
+	health = cl.snap.ps.stats[0];
+	boxCol[0] = 0.0;
+	boxCol[0] = 0.0;
+	boxCol[0] = 0.0;
+	boxCol[3] = 0.65;
 	if (cl_drawHealth->value) {
-		Com_sprintf(health, 16, "Health: %d%%", cl.snap.ps.stats[0]);
-		SCR_DrawStringExt(5, 390, 8, health, g_color_table[7], qtrue );
+		Com_sprintf(healthStr, 6, "%d%%", health);
+		SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
+		if (health > 35) {
+			healthCol = 2;
+		} else if (health <= 35 && health > 20) {
+			healthCol = 3;
+		} else {
+			healthCol = 1;
+		}
+		SCR_DrawStringExt(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
 	}
 }
 
