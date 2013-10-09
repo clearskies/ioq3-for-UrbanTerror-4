@@ -1332,6 +1332,19 @@ void SV_UpdateUserinfo_f( client_t *cl ) {
 		Info_SetValueForKey(cl->userinfo, "gear", sv_forceGear->string);
 	}
 
+	Info_RemoveKey(cl->userinfo, "model");
+	Info_RemoveKey(cl->userinfo, "headmodel");
+	Info_RemoveKey(cl->userinfo, "handicap");
+	Info_RemoveKey(cl->userinfo, "g_redTeam");
+	Info_RemoveKey(cl->userinfo, "g_blueTeam");
+	Info_RemoveKey(cl->userinfo, "team_model");
+	Info_RemoveKey(cl->userinfo, "team_headmodel");
+	Info_RemoveKey(cl->userinfo, "sex");
+	Info_RemoveKey(cl->userinfo, "cg_predictitems");
+	Info_RemoveKey(cl->userinfo, "teamtask");
+	Info_RemoveKey(cl->userinfo, "cl_anonymous");
+	Info_RemoveKey(cl->userinfo, "ut_timenudge");
+
 	SV_UserinfoChanged( cl );
 	// call prog code to allow overrides
 	VM_Call( gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients );

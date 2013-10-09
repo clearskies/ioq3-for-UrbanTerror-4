@@ -58,4 +58,4 @@ Server
    + `mapcycle` - Sends the player the mapcycle
 
 ### Other ###
-   + None
+   + It removes unnecessary userinfo on the server side, which potentially fixes `badinfo` clients
