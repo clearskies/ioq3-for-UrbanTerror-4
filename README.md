@@ -49,6 +49,7 @@ Server
    + `setdeaths <player> <value>` - Sets a player's deaths
    + `invulnerable <player>` - Makes a player invulnerable until they die
    + `freeze <player>` - Prevents a player from moving
+   + `teleport <player> <toPlayer>` - Teleports `player` to `toPlayer`
 
 ### Player Commands (commands a player can call while connected to the server) ###
    + `ff?` - Informs the player of the status of g_friendlyfire

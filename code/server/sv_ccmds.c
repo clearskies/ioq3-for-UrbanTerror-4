@@ -1587,6 +1587,12 @@ SV_Invisible
 static void SV_Invisible_f(void) {
     client_t *cl;
     sharedEntity_t *e;
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+    
     if (Cmd_Argc() < 2) {
         Com_Printf("Usage: invisible <player>\n");
         return;
@@ -1617,6 +1623,11 @@ static void SV_SetScore_f(void) {
     playerState_t *ps;
     int value;
 
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
     if (Cmd_Argc() < 3) {
         Com_Printf("Usage: setscore <player> <value>\n");
         return;
@@ -1646,6 +1657,11 @@ static void SV_SetDeaths_f(void) {
     playerState_t *ps;
     int value;
 
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
     if (Cmd_Argc() < 3) {
         Com_Printf("Usage: setdeaths <player> <value>\n");
         return;
@@ -1673,6 +1689,12 @@ SV_Invulnerable
 static void SV_Invulnerable_f(void) {
     client_t *cl;
     sharedEntity_t *e;
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
     if (Cmd_Argc() < 2) {
         Com_Printf("Usage: invulnerable <player>\n");
         return;
@@ -1694,6 +1716,12 @@ SV_Freeze
 */
 static void SV_Freeze_f(void) {
     client_t *cl;
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
     if (Cmd_Argc() < 2) {
         Com_Printf("Usage: freeze <player>\n");
         return;
@@ -1711,6 +1739,50 @@ static void SV_Freeze_f(void) {
     } else {
         Com_Printf("Player %s UNFROZEN.\n", Cmd_Argv(1));
     }
+}
+
+/*
+==================
+SV_Teleport
+==================
+*/
+static void SV_Teleport_f(void) {
+    client_t *clFrom, *clTo;
+    playerState_t *psFrom, *psTo;
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
+    if (Cmd_Argc() < 3) {
+        Com_Printf("Usage: teleport <player> <toPlayer>\n");
+        return;
+    }
+
+    clFrom = SV_BetterGetPlayerByHandle(Cmd_Argv(1));
+    if (!clFrom) {
+        Com_Printf("Invalid source player.\n");
+        return;
+    }
+
+    clTo = SV_BetterGetPlayerByHandle(Cmd_Argv(2));
+    if (!clTo) {
+        Com_Printf("Invalid target player.\n");
+        return;
+    }
+
+    psFrom = SV_GameClientNum(clFrom - svs.clients);
+    psTo = SV_GameClientNum(clTo - svs.clients);
+
+    if (psTo->persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+        Com_Printf("Can't teleport to a spectator.\n");
+    }
+
+    VectorCopy(psTo->origin, psFrom->origin);
+    VectorClear(psFrom->velocity);
+
+    Com_Printf("Teleported %s to %s\n", Cmd_Argv(1), Cmd_Argv(2));
 }
 
 /*
@@ -1864,6 +1936,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("setdeaths", SV_SetDeaths_f);
     Cmd_AddCommand ("invulnerable", SV_Invulnerable_f);
     Cmd_AddCommand ("freeze", SV_Freeze_f);
+    Cmd_AddCommand ("teleport", SV_Teleport_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
