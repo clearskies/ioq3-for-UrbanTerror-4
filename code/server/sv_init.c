@@ -940,7 +940,7 @@ void SV_Init (void) {
 
 	sv_allowKnife = Cvar_Get ("sv_allowKnife", "1", CVAR_ARCHIVE);
 
-	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE | CVAR_LATCH);
+	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
 
 	sv_forceGear = Cvar_Get("sv_forceGear", "NULL", CVAR_ARCHIVE);
   
