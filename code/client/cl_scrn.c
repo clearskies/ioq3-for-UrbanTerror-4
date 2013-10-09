@@ -243,6 +243,33 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 }
 
 
+void SCR_DrawStringExtNoShadow( int x, int y, float size, const char *string, float *setColor, qboolean forceColor ) {
+	vec4_t		color;
+	const char	*s;
+	int			xx;
+
+	// draw the colored text
+	s = string;
+	xx = x;
+	re.SetColor( setColor );
+	while ( *s ) {
+		if ( Q_IsColorString( s ) ) {
+			if ( !forceColor ) {
+				Com_Memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
+				color[3] = setColor[3];
+				re.SetColor( color );
+			}
+			s += 2;
+			continue;
+		}
+		SCR_DrawChar( xx, y, size, *s );
+		xx += size;
+		s++;
+	}
+	re.SetColor( NULL );
+}
+
+
 void SCR_DrawBigString( int x, int y, const char *s, float alpha ) {
 	float	color[4];
 
@@ -342,7 +369,7 @@ void SCR_DrawDemoRecording( void ) {
 	pos = FS_FTell( clc.demofile );
 	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExt( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
+	SCR_DrawStringExtNoShadow( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
 }
 
 
@@ -373,10 +400,14 @@ void SCR_DrawHealth( void ) {
 	vec4_t boxCol;
 
 	health = cl.snap.ps.stats[0];
+
+	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+		return;
+	}
 	boxCol[0] = 0.0;
 	boxCol[0] = 0.0;
 	boxCol[0] = 0.0;
-	boxCol[3] = 0.65;
+	boxCol[3] = 0.85;
 	if (cl_drawHealth->value) {
 		Com_sprintf(healthStr, 6, "%d%%", health);
 		SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
@@ -387,7 +418,7 @@ void SCR_DrawHealth( void ) {
 		} else {
 			healthCol = 1;
 		}
-		SCR_DrawStringExt(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
+		SCR_DrawStringExtNoShadow(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
 	}
 }
 
