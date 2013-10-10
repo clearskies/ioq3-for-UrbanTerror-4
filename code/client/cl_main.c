@@ -2831,22 +2831,6 @@ static void CL_GenerateQKey(void)
 
 /*
 ====================
-CL_Health_f
-====================
-*/
-void CL_Health_f(void) {
-  if (cls.state != CA_ACTIVE) {
-    Com_Printf("Not in game; health could not be retrieved.\n");
-    return;
-  }
-
-  char healthStr[36];
-  Com_sprintf(healthStr, 36, "ut_echo \"Current health: ^2%d%%\"\n", cl.snap.ps.stats[0]);
-  Cbuf_AddText(healthStr);
-}
-
-/*
-====================
 CL_Loc_f
 ====================
 */
@@ -3025,7 +3009,6 @@ void CL_Init( void ) {
   Cmd_AddCommand ("video", CL_Video_f );
   Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 
-  Cmd_AddCommand("health", CL_Health_f);
   Cmd_AddCommand("loc", CL_Loc_f);
 
   CL_InitRef();

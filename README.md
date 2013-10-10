@@ -21,7 +21,6 @@ Client
    + `chatdump <file>` - Dumps chat from the console to a file (chat is basically anything with a colon in it, sorry)
    + `cvar_incr <cvar> <amount>` - Increases a cvar by a specified amount
    + `cvar_decr <cvar> <amount>` - Decreases a cvar by a specified amount
-   + `health` - Displays current health while in game
    + `loc` - Displays current location while in game
 
 ### Other ###
