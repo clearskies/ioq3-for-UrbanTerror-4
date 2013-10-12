@@ -22,6 +22,7 @@ Client
    + `cvar_incr <cvar> <amount>` - Increases a cvar by a specified amount
    + `cvar_decr <cvar> <amount>` - Decreases a cvar by a specified amount
    + `loc` - Displays current location while in game
+   + `messagemodec` - Console message mode - enter and execute a console command without toggling the console
 
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client

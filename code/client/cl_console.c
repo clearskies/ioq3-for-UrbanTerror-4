@@ -92,6 +92,22 @@ Con_MessageMode_f
 void Con_MessageMode_f (void) {
 	chat_playerNum = -1;
 	chat_team = qfalse;
+	chat_console = qfalse;
+	Field_Clear( &chatField );
+	chatField.widthInChars = 30;
+
+	cls.keyCatchers ^= KEYCATCH_MESSAGE;
+}
+
+/*
+================
+Con_MessageModeC_f
+================
+*/
+void Con_MessageModeC_f (void) {
+	chat_playerNum = -1;
+	chat_team = qfalse;
+	chat_console = qtrue;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
@@ -106,6 +122,7 @@ Con_MessageMode2_f
 void Con_MessageMode2_f (void) {
 	chat_playerNum = -1;
 	chat_team = qtrue;
+	chat_console = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 25;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -123,6 +140,7 @@ void Con_MessageMode3_f (void) {
 		return;
 	}
 	chat_team = qfalse;
+	chat_console = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -140,6 +158,7 @@ void Con_MessageMode4_f (void) {
 		return;
 	}
 	chat_team = qfalse;
+	chat_console = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -388,6 +407,7 @@ void Con_Init (void) {
 
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
+	Cmd_AddCommand ("messagemodec", Con_MessageModeC_f);
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
 	Cmd_AddCommand ("messagemode3", Con_MessageMode3_f);
 	Cmd_AddCommand ("messagemode4", Con_MessageMode4_f);
@@ -621,6 +641,10 @@ void Con_DrawNotify (void)
 		{
 			SCR_DrawBigString (8, v, "say_team:", 1.0f );
 			skip = 10;
+		}
+		else if (chat_console) {
+			SCR_DrawBigString(8, v, "console:", 1.0f);
+			skip = 9;
 		}
 		else
 		{

@@ -36,6 +36,7 @@ int			historyLine;	// the line being displayed from history buffer
 field_t		g_consoleField;
 field_t		chatField;
 qboolean	chat_team;
+qboolean	chat_console;
 
 int			chat_playerNum;
 
@@ -733,18 +734,18 @@ void Message_Key( int key ) {
 	{
 		if ( chatField.buffer[0] && cls.state == CA_ACTIVE ) {
 			if (chat_playerNum != -1 )
-
 				Com_sprintf( buffer, sizeof( buffer ), "tell %i \"%s\"\n", chat_playerNum, chatField.buffer );
-
 			else if (chat_team)
-
 				Com_sprintf( buffer, sizeof( buffer ), "say_team \"%s\"\n", chatField.buffer );
+			else if (chat_console)
+				Com_sprintf(buffer, sizeof(buffer), "%s\n", chatField.buffer);
 			else
 				Com_sprintf( buffer, sizeof( buffer ), "say \"%s\"\n", chatField.buffer );
 
-
-
-			CL_AddReliableCommand( buffer );
+			if (chat_console)
+				Cbuf_AddText(buffer);
+			else
+				CL_AddReliableCommand( buffer );
 		}
 		cls.keyCatchers &= ~KEYCATCH_MESSAGE;
 		Field_Clear( &chatField );
