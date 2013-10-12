@@ -93,6 +93,7 @@ void Con_MessageMode_f (void) {
 	chat_playerNum = -1;
 	chat_team = qfalse;
 	chat_console = qfalse;
+	chat_rcon = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
@@ -108,6 +109,23 @@ void Con_MessageModeC_f (void) {
 	chat_playerNum = -1;
 	chat_team = qfalse;
 	chat_console = qtrue;
+	chat_rcon = qfalse;
+	Field_Clear( &chatField );
+	chatField.widthInChars = 30;
+
+	cls.keyCatchers ^= KEYCATCH_MESSAGE;
+}
+
+/*
+================
+Con_MessageModeR_f
+================
+*/
+void Con_MessageModeR_f (void) {
+	chat_playerNum = -1;
+	chat_team = qfalse;
+	chat_console = qfalse;
+	chat_rcon = qtrue;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
@@ -123,6 +141,7 @@ void Con_MessageMode2_f (void) {
 	chat_playerNum = -1;
 	chat_team = qtrue;
 	chat_console = qfalse;
+	chat_rcon = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 25;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -141,6 +160,7 @@ void Con_MessageMode3_f (void) {
 	}
 	chat_team = qfalse;
 	chat_console = qfalse;
+	chat_rcon = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -159,6 +179,7 @@ void Con_MessageMode4_f (void) {
 	}
 	chat_team = qfalse;
 	chat_console = qfalse;
+	chat_rcon = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
@@ -408,6 +429,7 @@ void Con_Init (void) {
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
 	Cmd_AddCommand ("messagemodec", Con_MessageModeC_f);
+	Cmd_AddCommand ("messagemoder", Con_MessageModeR_f);
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
 	Cmd_AddCommand ("messagemode3", Con_MessageMode3_f);
 	Cmd_AddCommand ("messagemode4", Con_MessageMode4_f);
@@ -645,6 +667,10 @@ void Con_DrawNotify (void)
 		else if (chat_console) {
 			SCR_DrawBigString(8, v, "console:", 1.0f);
 			skip = 9;
+		}
+		else if (chat_rcon) {
+			SCR_DrawBigString(8, v, "rcon:", 1.0f);
+			skip = 6;
 		}
 		else
 		{

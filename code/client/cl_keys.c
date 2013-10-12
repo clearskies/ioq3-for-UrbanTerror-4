@@ -37,6 +37,7 @@ field_t		g_consoleField;
 field_t		chatField;
 qboolean	chat_team;
 qboolean	chat_console;
+qboolean	chat_rcon;
 
 int			chat_playerNum;
 
@@ -739,10 +740,12 @@ void Message_Key( int key ) {
 				Com_sprintf( buffer, sizeof( buffer ), "say_team \"%s\"\n", chatField.buffer );
 			else if (chat_console)
 				Com_sprintf(buffer, sizeof(buffer), "%s\n", chatField.buffer);
+			else if (chat_rcon)
+				Com_sprintf(buffer, sizeof(buffer), "rcon %s\n", chatField.buffer);
 			else
 				Com_sprintf( buffer, sizeof( buffer ), "say \"%s\"\n", chatField.buffer );
 
-			if (chat_console)
+			if (chat_console || chat_rcon)
 				Cbuf_AddText(buffer);
 			else
 				CL_AddReliableCommand( buffer );
