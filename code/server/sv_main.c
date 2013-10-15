@@ -67,10 +67,9 @@ cvar_t	*sv_allowItemdrop;
 cvar_t	*sv_allowWeapdrop;
 cvar_t	*sv_allowTell;
 cvar_t	*sv_allowKnife;
-
 cvar_t	*sv_antiblock;
-
 cvar_t	*sv_forceGear;
+cvar_t	*sv_chatColor;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -152,6 +151,8 @@ not have future snapshot_t executed before it is executed
 */
 void SV_AddServerCommand( client_t *client, const char *cmd ) {
 	int		index, i;
+	char	*cPos;
+	int		chatColor;
 
 	// this is very ugly but it's also a waste to for instance send multiple config string updates
 	// for the same config string index in one snapshot
@@ -162,6 +163,14 @@ void SV_AddServerCommand( client_t *client, const char *cmd ) {
 	// do not send commands until the gamestate has been sent
 	if( client->state < CS_PRIMED )
 		return;
+
+	if (sv_chatColor) {
+		chatColor = sv_chatColor->value;
+		cPos = strstr(cmd, ": ^3");
+		if (cPos && chatColor < 10 && chatColor > -1) {
+			*(cPos + 3) = chatColor + 48;
+		}
+	}
 
 	client->reliableSequence++;
 	// if we would be losing an old command that hasn't been acknowledged,

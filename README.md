@@ -45,6 +45,7 @@ Server
    + `sv_fallDamage <0|1>` - Disables or enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. *Requires reload*
    + `sv_iceEverywhere <0|1>` - All surfaces become icy. *Requires reload*
    + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. *Requires reload*
+   + `sv_chatColor <0-9>` - Changes the colour of players' chat messages
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility
