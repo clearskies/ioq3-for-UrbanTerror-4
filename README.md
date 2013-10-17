@@ -41,7 +41,7 @@ Server
    + `sv_allowTell <0|1>` - Disables or enables private messaging
    + `sv_antiblock <0|1>` - Enables or disables player collisions. *Players must respawn for this to take effect*
    + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. <del>This only works on 4.2 and it will kill the player when they switch to the knife. There may be a delay of around 0.5-3 seconds. No more delay!</del> This makes the knife deal 0 damage. Players will still see the slashing animation, but no damage occurs
-   + `sv_forceGear <NULL>|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not "NULL", every client's `gear` userinfo setting will be set to this value
+   + `sv_forceGear <"">|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not an empty string, every client's `gear` userinfo setting will be set to this value
    + `sv_fallDamage <0|1>` - Disables or enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. *Requires reload*
    + `sv_iceEverywhere <0|1>` - All surfaces become icy. *Requires reload*
    + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. *Requires reload*

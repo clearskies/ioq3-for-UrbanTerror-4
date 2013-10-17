@@ -939,7 +939,7 @@ void SV_Init (void) {
 	sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
 	sv_allowKnife = Cvar_Get ("sv_allowKnife", "1", CVAR_ARCHIVE);
 	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
-	sv_forceGear = Cvar_Get("sv_forceGear", "NULL", CVAR_ARCHIVE);
+	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
 	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
