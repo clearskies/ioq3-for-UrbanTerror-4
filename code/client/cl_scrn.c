@@ -369,7 +369,7 @@ void SCR_DrawDemoRecording( void ) {
 	pos = FS_FTell( clc.demofile );
 	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExtNoShadow( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
+	SCR_DrawStringExt( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
 }
 
 
@@ -401,12 +401,10 @@ void SCR_DrawHealth( void ) {
 
 	health = cl.snap.ps.stats[0];
 
-	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR)
 		return;
-	}
-	boxCol[0] = 0.0;
-	boxCol[0] = 0.0;
-	boxCol[0] = 0.0;
+
+	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
 	boxCol[3] = 0.85;
 	if (cl_drawHealth->value) {
 		Com_sprintf(healthStr, 6, "%d%%", health);
