@@ -70,6 +70,7 @@ cvar_t	*sv_allowKnife;
 cvar_t	*sv_antiblock;
 cvar_t	*sv_forceGear;
 cvar_t	*sv_chatColor;
+cvar_t	*sv_allowVote;
 
 //@Barbatos
 #ifdef USE_AUTH

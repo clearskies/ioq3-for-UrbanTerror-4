@@ -46,6 +46,7 @@ Server
    + `sv_iceEverywhere <0|1>` - All surfaces become icy. *Requires reload*
    + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. *Requires reload*
    + `sv_chatColor <0-9>` - Changes the colour of players' chat messages
+   + `sv_allowVote <0|1>` - Completely disables or enables voting
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility
@@ -54,6 +55,7 @@ Server
    + `invulnerable <player>` - Makes a player invulnerable until they die
    + `freeze <player>` - Prevents a player from moving
    + `teleport <player> <toPlayer>` - Teleports `player` to `toPlayer`
+   + `callvoteas <player> <vote type> [vote value]` - Calls a vote as a certain player. Useful in conjunction with `sv_allowVote 0` so that votes can be called through rcon but not by the players themselves
 
 ### Player Commands (commands a player can call while connected to the server) ###
    + `ff?` - Informs the player of the status of g_friendlyfire

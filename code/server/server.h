@@ -314,6 +314,7 @@ extern  cvar_t  *sv_allowKnife;
 extern	cvar_t  *sv_antiblock;
 extern	cvar_t  *sv_forceGear;
 extern	cvar_t  *sv_chatColor;
+extern	cvar_t  *sv_allowVote;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

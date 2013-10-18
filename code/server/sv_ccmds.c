@@ -1787,6 +1787,36 @@ static void SV_Teleport_f(void) {
 
 /*
 ==================
+SV_CallVoteAs
+==================
+*/
+static void SV_CallVoteAs_f(void) {
+    client_t *cl;
+    char voteCommand[MAX_STRING_CHARS];
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
+    if (Cmd_Argc() < 3) {
+        Com_Printf("Usage: callvoteas <player> <vote type> [vote value]\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    Com_sprintf(voteCommand, MAX_STRING_CHARS, "callvote %s", Cmd_ArgsFrom(2));
+    Cmd_TokenizeString(voteCommand);
+
+    VM_Call(gvm, GAME_CLIENT_COMMAND, (int)(cl - svs.clients));
+}
+
+/*
+==================
 SV_CompleteMapName
 ==================
 */
@@ -1937,6 +1967,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("invulnerable", SV_Invulnerable_f);
     Cmd_AddCommand ("freeze", SV_Freeze_f);
     Cmd_AddCommand ("teleport", SV_Teleport_f);
+    Cmd_AddCommand ("callvoteas", SV_CallVoteAs_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);

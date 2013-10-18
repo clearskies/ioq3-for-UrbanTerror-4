@@ -1463,6 +1463,11 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 					SV_SendServerCommand(cl, "print \"Mapcycle retrieval failed.\"");
 				}
 				return;
+			} else if (!Q_stricmp("callvote", Cmd_Argv(0))) {
+				if (!sv_allowVote->integer) {
+					SV_SendServerCommand(cl, "print \"^8You are not allowed to vote, sorry.\n\"");
+					return;
+				}
 			}
 			if (argsFromOneMaxlen >= 0) {
 				charCount = 0;
