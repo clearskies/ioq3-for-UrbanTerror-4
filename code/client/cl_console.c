@@ -665,8 +665,8 @@ void Con_DrawNotify (void)
 			skip = 10;
 		}
 		else if (chat_console) {
-			SCR_DrawBigString(8, v, "console:", 1.0f);
-			skip = 9;
+			SCR_DrawBigString(8, v, "/", 1.0f);
+			skip = 1;
 		}
 		else if (chat_rcon) {
 			SCR_DrawBigString(8, v, "rcon:", 1.0f);

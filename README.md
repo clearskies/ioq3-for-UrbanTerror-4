@@ -1,5 +1,6 @@
 Clearskies' ioquake3 for Urban Terror
 =====================================
+### Version 4.2.019 ###
 
 This is the official ioquake3 for Urban Terror with my various client and server additions.
 
@@ -9,11 +10,11 @@ Client
 ------
 
 ### Cvars ###
-   + `s_soundhax <0|1>` - Disables or enables background and looping sounds. ***Warning: this is frowned upon or prohibited in at least most leagues. Use at your own discretion***
+   + `s_soundhax <0|1>` - Disables or enables background and looping sounds. ***Warning: this is frowned upon or prohibited in most, if not all, leagues. Use at your own discretion***
    + `s_debug <0|1>` - Disables or enables output of sounds being played
    + `com_nosplash <0|1>` - Enables or disables the FrozenSand animation
    + `con_nochat <0|1>` - Enables or disables console chat output (when disabled, it will output a newline in the place of a chat message - I don't know why)
-   + `s_chatsound <0|1>` - Disables or enabled the little tick sound when a line of chat comes in. This is really only useful for 4.1 because 4.2 already has this in the QVM.
+   + `s_chatsound <0|1>` - Disables or enabled the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM.
    + `cl_drawHealth <0|1>` - Disables or enables an on-screen health display (in percent)
 
 ### Commands ###
@@ -28,7 +29,7 @@ Client
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client
    + <del>Paste support on Mac (Ctrl-V; Command-V doesn't work)</del> - This has been integrated into the official client
-   + Can sort of auto switch between 4.2 and 4.1 assets. This feature is experimental and may cause some interesting game behaviour. To use it, rename your 4.1 q3ut4 folder to q3ut41 and copy the folder into your game directory. <del>When connecting to a 4.1 server, you'll still get an "Invalid game folder" error. Just reconnect, and it should work.</del> Reconnects automatically now!
+   + <del>Can sort of auto switch between 4.2 and 4.1 assets. This feature is experimental and may cause some interesting game behaviour. To use it, rename your 4.1 q3ut4 folder to q3ut41 and copy the folder into your game directory. When connecting to a 4.1 server, you'll still get an "Invalid game folder" error. Just reconnect, and it should work. Reconnects automatically now!</del> Very messy, so I removed it.
 
 **********
 
@@ -61,6 +62,3 @@ Server
    + `ff?` - Informs the player of the status of g_friendlyfire
    + `maplist` - Sends the player a list of all of the maps loaded on the server
    + `mapcycle` - Sends the player the mapcycle
-
-### Other ###
-   + It removes unnecessary userinfo on the server side, which potentially fixes `badinfo` clients
