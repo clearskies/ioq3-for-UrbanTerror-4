@@ -401,13 +401,13 @@ void SCR_DrawHealth( void ) {
 
 	health = cl.snap.ps.stats[0];
 
-	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR)
+	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
 		return;
 
 	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
 	boxCol[3] = 0.85;
 	if (cl_drawHealth->value) {
-		Com_sprintf(healthStr, 6, "%d%%", health);
+		Com_sprintf(healthStr, 6, "%3d%%", health);
 		SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
 		if (health > 35) {
 			healthCol = 2;
