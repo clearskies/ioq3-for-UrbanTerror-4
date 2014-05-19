@@ -719,8 +719,11 @@ static int GLW_SetMode( const char *drivername, int mode, qboolean fullscreen )
     flags |= SDL_FULLSCREEN;
     glConfig.isFullscreen = qtrue;
   }
-  else
+  else {
+    if (r_noBorder->integer)
+      flags |= SDL_NOFRAME;
     glConfig.isFullscreen = qfalse;
+  }
 
   if (!r_colorbits->value)
     colorbits = 24;

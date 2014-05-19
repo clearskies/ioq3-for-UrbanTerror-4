@@ -57,6 +57,8 @@ cvar_t	*r_skipBackEnd;
 cvar_t	*r_ignorehwgamma;
 cvar_t	*r_measureOverdraw;
 
+cvar_t	*r_noBorder;
+
 cvar_t	*r_inGameVideo;
 cvar_t	*r_fastsky;
 cvar_t	*r_drawSun;
@@ -961,6 +963,7 @@ void R_Register( void )
 	r_smp = ri.Cvar_Get( "r_smp", "0", CVAR_ARCHIVE | CVAR_LATCH);
 	r_ignoreFastPath = ri.Cvar_Get( "r_ignoreFastPath", "1", CVAR_ARCHIVE | CVAR_LATCH );
 
+	r_noBorder = ri.Cvar_Get("r_noBorder", "1", CVAR_ARCHIVE | CVAR_LATCH);
 	//
 	// temporary latched variables that can only change over a restart
 	//
