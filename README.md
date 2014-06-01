@@ -17,6 +17,7 @@ Client
    + `s_chatsound <0|1>` - Disables or enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM.
    + `cl_drawHealth <0|1>` - Disables or enables an on-screen health display (in percent)
    + `r_noBorder <0|1>` - Disables or enables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1
+   + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value

@@ -58,6 +58,7 @@ cvar_t	*r_ignorehwgamma;
 cvar_t	*r_measureOverdraw;
 
 cvar_t	*r_noBorder;
+cvar_t	*r_jpegQuality;
 
 cvar_t	*r_inGameVideo;
 cvar_t	*r_fastsky;
@@ -423,6 +424,7 @@ RB_TakeScreenshotJPEG
 */  
 void RB_TakeScreenshotJPEG( int x, int y, int width, int height, char *fileName ) {
 	byte		*buffer;
+	int quality = r_jpegQuality -> value;
 
 	buffer = ri.Hunk_AllocateTempMemory(glConfig.vidWidth*glConfig.vidHeight*4);
 
@@ -434,7 +436,7 @@ void RB_TakeScreenshotJPEG( int x, int y, int width, int height, char *fileName 
 	}
 
 	ri.FS_WriteFile( fileName, buffer, 1 );		// create path
-	SaveJPG( fileName, 90, glConfig.vidWidth, glConfig.vidHeight, buffer);
+	SaveJPG( fileName, quality, glConfig.vidWidth, glConfig.vidHeight, buffer);
 
 	ri.Hunk_FreeTempMemory( buffer );
 }
@@ -964,6 +966,8 @@ void R_Register( void )
 	r_ignoreFastPath = ri.Cvar_Get( "r_ignoreFastPath", "1", CVAR_ARCHIVE | CVAR_LATCH );
 
 	r_noBorder = ri.Cvar_Get("r_noBorder", "1", CVAR_ARCHIVE | CVAR_LATCH);
+	r_jpegQuality = ri.Cvar_Get("r_jpegQuality", "90", CVAR_ARCHIVE);
+
 	//
 	// temporary latched variables that can only change over a restart
 	//
