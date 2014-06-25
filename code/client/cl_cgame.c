@@ -367,18 +367,11 @@ rescan:
 	}
 
 	if (cl_teamchatIndicator->value) {
-		if (!strcmp(cmd, "tcchat") && strstr(Cmd_Argv(2), "^2(T)") != Cmd_Argv(2)) {
+		if (!strcmp(cmd, "tcchat") && strstr(Cmd_Argv(2), "^2(T)^7") != Cmd_Argv(2)) {
 			int newStrlen = strlen(s) + 12;
 			char *s2 = (char *)malloc(newStrlen);
-			int tColour;
-			if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-				tColour = 1;
-			} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-				tColour = 4;
-			} else {
-				tColour = 7;
-			}
-			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(T)^%i%s\"", Cmd_Argv(1), tColour, Cmd_Argv(2));
+
+			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(T)^7%s\"", Cmd_Argv(1), Cmd_Argv(2));
 			s = s2;
 			goto rescan;
 		}
