@@ -83,6 +83,7 @@ cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
+cvar_t  *cl_hpSub;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -157,6 +158,25 @@ not have future usercmd_t executed before it is executed
 */
 void CL_AddReliableCommand( const char *cmd ) {
   int   index;
+
+  if (cl_hpSub->value) {
+     int hLen, i;
+     char health[4];
+     char *s, *varPos;
+     Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
+     hLen = strlen(health);
+     s = (char *)malloc(strlen(cmd) + 1);
+     Q_strncpyz(s, cmd, strlen(cmd) + 1);
+     
+     while ((varPos = strstr(s, "$hp")) != NULL || (varPos = strstr(s, "#hp")) != NULL) {
+       strncpy(varPos, health, hLen);
+       if (3 - hLen) {
+         i = varPos - s;
+         Q_strncpyz(s + i + hLen, s + i + hLen + 1, strlen(s) - (i + hLen - 1));
+       }
+     }
+     cmd = s;
+  }
 
   // if we would be losing an old command that hasn't been acknowledged,
   // we must drop the connection
@@ -2908,6 +2928,7 @@ void CL_Init( void ) {
   cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
 
   cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
+  cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
 
   // offset for the power function (for style 1, ignored otherwise)
   // this should be set to the max rate value

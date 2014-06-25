@@ -20,6 +20,7 @@ Client
    + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command
    + `cl_drawKills <0|1>` - Disables or enables a kill counter on the HUD
    + `cl_teamchatIndicator <0|1>` - Disables or enables a little "(T)" to indicate whether a chat message is a teamchat or not. Useful on maps like orbital
+   + `cl_hpSub <0|1>` - Disables or enables substitution of any instances of `$hp` for your actual health
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
