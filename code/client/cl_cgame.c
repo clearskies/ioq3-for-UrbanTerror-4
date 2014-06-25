@@ -360,6 +360,12 @@ rescan:
 		return qtrue;
 	}
 
+	if (!strcmp(cmd, "scoresd")) {
+		if (atoi(Cmd_Argv(12)) == clc.clientNum) {
+			cl.currentKills++;
+		}
+	}
+
 	// we may want to put a "connect to other server" command here
 
 	// cgame can now act on the command

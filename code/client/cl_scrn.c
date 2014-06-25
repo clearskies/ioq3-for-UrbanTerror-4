@@ -33,6 +33,7 @@ cvar_t		*cl_graphshift;
 cvar_t		*cl_drawclock;
 
 cvar_t		*cl_drawHealth;
+cvar_t		*cl_drawKills;
 
 /*
 ================
@@ -420,6 +421,32 @@ void SCR_DrawHealth( void ) {
 	}
 }
 
+/*
+=================
+SCR_DrawKills
+=================
+*/
+void SCR_DrawKills( void ) {
+	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
+		cl.snap.ps.pm_type > 4 ||
+		cl_paused->value ||
+		!cl_drawKills->value)
+		return;
+
+	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
+		cl.spawnCount = cl.snap.ps.persistant[PERS_SPAWN_COUNT];
+		cl.currentKills = 0;
+	}
+
+	char killStr[12];
+	int strWidth;
+	int size = 8;
+	Com_sprintf(killStr, 12, "%ik", cl.currentKills);
+	strWidth = strlen(killStr) * size;
+
+	SCR_DrawStringExtNoShadow(320 - strWidth / 2, 460, size, killStr, g_color_table[2], qtrue );
+}
+
 
 /*
 ===============================================================================
@@ -502,6 +529,7 @@ void SCR_Init( void ) {
 	cl_drawclock = Cvar_Get ("cl_drawclock", "0", CVAR_ARCHIVE);
 
 	cl_drawHealth = Cvar_Get("cl_drawHealth", "0", CVAR_ARCHIVE);
+	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }
@@ -573,6 +601,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			SCR_DrawDemoRecording();
 			SCR_DrawClock();
 			SCR_DrawHealth();
+			SCR_DrawKills();
 			break;
 		}
 	}
