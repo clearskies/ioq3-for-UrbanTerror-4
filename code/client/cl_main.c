@@ -82,6 +82,8 @@ cvar_t  *cl_altTab;
 cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
+cvar_t  *cl_teamchatIndicator;
+
 //@Barbatos
 #ifdef USE_AUTH
 cvar_t  *cl_auth_engine;
@@ -2904,6 +2906,8 @@ void CL_Init( void ) {
   // 0: legacy mouse acceleration
   // 1: new implementation
   cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
+
+  cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
 
   // offset for the power function (for style 1, ignored otherwise)
   // this should be set to the max rate value
