@@ -10,17 +10,17 @@ Client
 ------
 
 ### Cvars ###
-   + `s_soundhax <0|1>` - Disables or enables background and looping sounds. ***Warning: this is frowned upon or prohibited in most, if not all, leagues. Use at your own discretion***
-   + `s_debug <0|1>` - Disables or enables output of sounds being played
-   + `com_nosplash <0|1>` - Enables or disables the FrozenSand animation
-   + `con_nochat <0|1>` - Enables or disables console chat output (when disabled, it will output a newline in the place of a chat message - I don't know why)
-   + `s_chatsound <0|1>` - Disables or enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM.
-   + `cl_drawHealth <0|1>` - Disables or enables an on-screen health display (in percent)
-   + `r_noBorder <0|1>` - Disables or enables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1
-   + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command
-   + `cl_drawKills <0|1>` - Disables or enables a kill counter on the HUD
-   + `cl_teamchatIndicator <0|1>` - Disables or enables a little "(T)" to indicate whether a chat message is a teamchat or not. Useful on maps like orbital
-   + `cl_hpSub <0|1>` - Disables or enables substitution of any instances of `$hp` for your actual health
+   + `s_soundhax <0|1>` - Disables background and looping sounds. Default is `0`. ***Warning: this is frowned upon or prohibited in most, if not all, leagues. Use at your own discretion***
+   + `s_debug <0|1>` - Enables output of sounds being played. Default is `0`
+   + `com_nosplash <0|1>` - Disables the FrozenSand animation. Default is `0`
+   + `con_nochat <0|1>` - Disables console chat output (when disabled, it will output a newline in the place of a chat message - I don't know why). Default is `0`
+   + `s_chatsound <0|1>` - Enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM. Default is `1`
+   + `cl_drawHealth <0|1>` - Enables health percentage display on the HUD. Default is `0`
+   + `r_noBorder <0|1>` - Disables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1. Default is `0`
+   + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command. Default is `90`
+   + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
+   + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
+   + `cl_hpSub <0|1>` - Enables an `$hp` chat variable that gets replaced with your actual health. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
@@ -41,18 +41,18 @@ Client
 Server
 ------
 ### Cvars ###
-   + `sv_allowSuicide <0|1>` - Disables or enables suiciding
-   + `sv_allowItemdrop <0|1>` - Disables or enables item dropping
-   + `sv_allowWeapdrop <0|1>` - Disables or enables weapon dropping
-   + `sv_allowTell <0|1>` - Disables or enables private messaging
-   + `sv_antiblock <0|1>` - Enables or disables player collisions. *Players must respawn for this to take effect*
-   + `sv_allowKnife <0|1>` - Disables or enables usage of the knife. <del>This only works on 4.2 and it will kill the player when they switch to the knife. There may be a delay of around 0.5-3 seconds. No more delay!</del> This makes the knife deal 0 damage. Players will still see the slashing animation, but no damage occurs
-   + `sv_forceGear <"">|<gearstring>` - Disables or enables gear forcing. If the value of this cvar is not an empty string, every client's `gear` userinfo setting will be set to this value
-   + `sv_fallDamage <0|1>` - Disables or enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. *Requires reload*
-   + `sv_iceEverywhere <0|1>` - All surfaces become icy. *Requires reload*
-   + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. *Requires reload*
-   + `sv_chatColor <0-9>` - Changes the colour of players' chat messages
-   + `sv_allowVote <0|1>` - Completely disables or enables voting
+   + `sv_allowSuicide <0|1>` - Enables suicide via `/kill`. Default is `1`
+   + `sv_allowItemdrop <0|1>` - Enables item dropping. Default is `1`
+   + `sv_allowWeapdrop <0|1>` - Enables weapon dropping. Default is `1`
+   + `sv_allowTell <0|1>` - Enables private messaging. Default is `1`
+   + `sv_antiblock <0|1>` - Disables player collisions. Default is `0`. *Players must respawn for this to take effect*
+   + `sv_allowKnife <0|1>` - Enables usage of the knife. Default is `1`. <del>This only works on 4.2 and it will kill the player when they switch to the knife. There may be a delay of around 0.5-3 seconds. No more delay!</del> This makes the knife deal 0 damage. Players will still see the slashing animation, but no damage occurs
+   + `sv_forceGear <"">|<gearstring>` - Enables gear forcing. If the value of this cvar is not an empty string, every client's `gear` userinfo setting will be set to this value. Default is `""`
+   + `sv_fallDamage <0|1>` - Enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. Default is `1`. *Requires reload*
+   + `sv_iceEverywhere <0|1>` - Makes all surfaces act like ice. Default is `0`. *Requires reload*
+   + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. Default is `0`. *Requires reload*
+   + `sv_chatColor <0-9>` - Changes the colour of players' chat messages. Default is `3`
+   + `sv_allowVote <0|1>` - Enables voting. Default is `1`
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility
