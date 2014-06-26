@@ -21,6 +21,7 @@ Client
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
    + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
    + `cl_hpSub <0|1>` - Enables an `$hp` chat variable that gets replaced with your actual health. Default is `0`
+   + `cl_randomRGB <0|1|2>` - Generates random armband colours. `1` randomly generates a new armband colour at startup, `2` randomly generates one when connecting to a server. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
@@ -30,6 +31,7 @@ Client
    + `loc` - Displays current location while in game
    + `messagemodec` - Console message mode - enter and execute a command without toggling the console
    + `messagemoder` - Rcon message mode - enter and execute an rcon command without toggling the console
+   + `randomRGB` - Randomly generates a new armband colour
 
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client

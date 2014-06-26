@@ -84,6 +84,9 @@ cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_hpSub;
+cvar_t  *cl_randomRGB;
+
+void CL_RandomRGB_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1334,6 +1337,9 @@ void CL_Connect_f( void ) {
     CL_UpdateGUID( serverString, strlen( serverString ) );
   else
     CL_UpdateGUID( NULL, 0 );
+
+  if (cl_randomRGB->integer == 2)
+    CL_RandomRGB_f();
 
   // if we aren't playing on a lan, we need to authenticate
   // with the cd key
@@ -2928,6 +2934,7 @@ void CL_Init( void ) {
 
   cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
   cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
+  cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 
   // offset for the power function (for style 1, ignored otherwise)
   // this should be set to the max rate value
@@ -3026,6 +3033,7 @@ void CL_Init( void ) {
   Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 
   Cmd_AddCommand("loc", CL_Loc_f);
+  Cmd_AddCommand("randomRGB", CL_RandomRGB_f);
 
   CL_InitRef();
 
@@ -3038,6 +3046,9 @@ void CL_Init( void ) {
   CL_GenerateQKey();  
   Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
   CL_UpdateGUID( NULL, 0 );
+
+  if (cl_randomRGB->integer == 1)
+    CL_RandomRGB_f();
 
   Com_Printf( "----- Client Initialization Complete -----\n" );
 }
@@ -3962,4 +3973,23 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
   }
 
   return qfalse;
+}
+
+
+/*
+====================
+CL_RandomRGB_f
+====================
+*/
+void CL_RandomRGB_f(void) {
+  char s[12];
+  int r, g, b;
+  srand((unsigned)time(NULL));
+
+  r = rand() % 206 + 50;
+  g = rand() % 206 + 50;
+  b = rand() % 206 + 50;
+
+  Com_sprintf(s, 12, "%i %i %i", r, g, b);
+  Cvar_Set("cg_rgb", s);
 }
