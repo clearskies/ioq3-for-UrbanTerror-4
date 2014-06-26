@@ -160,20 +160,19 @@ void CL_AddReliableCommand( const char *cmd ) {
   int   index;
 
   if (cl_hpSub->value) {
-     int hLen, i;
+     int hLen, pos;
      char health[4];
      char *s, *varPos;
      Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
      hLen = strlen(health);
      s = (char *)malloc(strlen(cmd) + 1);
-     Q_strncpyz(s, cmd, strlen(cmd) + 1);
+     strncpy(s, cmd, strlen(cmd) + 1);
      
      while ((varPos = strstr(s, "$hp")) != NULL || (varPos = strstr(s, "#hp")) != NULL) {
-       strncpy(varPos, health, hLen);
-       if (3 - hLen) {
-         i = varPos - s;
-         Q_strncpyz(s + i + hLen, s + i + hLen + 1, strlen(s) - (i + hLen - 1));
-       }
+       pos = varPos - s;
+       strncpy(s + pos, health, hLen);
+       pos += hLen;
+       strncpy(s + pos, s + pos + 3 - hLen, strlen(s) - pos);
      }
      cmd = s;
   }
