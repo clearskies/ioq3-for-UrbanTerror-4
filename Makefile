@@ -27,26 +27,28 @@ ifeq ($(COMPILE_PLATFORM),mingw32)
   endif
 endif
 
-BUILD_CLIENT     =1
-BUILD_CLIENT_SMP =0
-BUILD_SERVER     =1
-BUILD_GAME_SO    =0
-BUILD_GAME_QVM   =0
-OPTIMIZE         =0
-USE_SDL          =1
-USE_OPENAL       =0
-USE_CURL         =1
-USE_CODEC_VORBIS =0
+BUILD_CLIENT       =1
+BUILD_CLIENT_SMP   =0
+BUILD_SERVER       =1
+BUILD_GAME_SO      =0
+BUILD_GAME_QVM     =0
+OPTIMIZE           =0
+USE_SDL            =1
+USE_OPENAL         =0
+USE_CURL           =1
+USE_CODEC_VORBIS   =0
+
+USE_SOUNDHAX	   =0
 
 # Clearskies - X11-based gamma for Linux
-USE_ALTGAMMA	=1
+USE_ALTGAMMA	   =1
 
 # Barbatos - Urban Terror 4.2 auth system
 # You're not forced to use it.
-USE_AUTH		=1
+USE_AUTH		   =1
 
 # Holblin - Urban Terror 4.2 file demo system
-USE_DEMO_FORMAT_42	=1
+USE_DEMO_FORMAT_42 =1
 
 ifeq ($(V),1)
 echo_cmd=@:
@@ -772,6 +774,10 @@ endif
 
 ifeq ($(USE_CCACHE),1)
   CC := ccache $(CC)
+endif
+
+ifeq ($(USE_SOUNDHAX),1)
+  BASE_CFLAGS += -DUSE_SOUNDHAX=1
 endif
 
 #Barbatos

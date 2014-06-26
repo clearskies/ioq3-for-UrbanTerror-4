@@ -33,7 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "snd_codec.h"
 #include "client.h"
 #include "snd_dmahd.h"
+
+#ifdef USE_SOUNDHAX
 #include "snd_ignoredsounds.h"
+#endif
 
 void S_Play_f(void);
 void S_SoundList_f(void);
@@ -89,7 +92,11 @@ cvar_t		*s_dev;
 cvar_t		*s_show;
 cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
+
+#ifdef USE_SOUNDHAX
 cvar_t		*s_soundhax;
+#endif
+
 cvar_t		*s_debug;
 cvar_t		*s_chatsound;
 
@@ -488,6 +495,7 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 
 	sfx = &s_knownSfx[ sfxHandle ];
 
+	#ifdef USE_SOUNDHAX
 	if (s_soundhax->integer == 1) {
 		for (i = 0; ; i++) {
 			if (!s_ignoredSounds[i])
@@ -496,6 +504,7 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 				return;
 		}
 	}
+	#endif
 
 	if (s_chatsound->integer == 0 && !Q_stricmp(sfx->soundName, "sound/player/talk.wav")) {
 		return;
@@ -780,9 +789,11 @@ Include velocity in case I get around to doing doppler...
 void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
 	sfx_t *sfx;
 
+	#ifdef USE_SOUNDHAX
 	if (s_soundhax->integer == 1) {
 		return;
 	}
+	#endif
 
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
@@ -1512,7 +1523,11 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_show = Cvar_Get ("s_show", "0", CVAR_CHEAT);
 	s_testsound = Cvar_Get ("s_testsound", "0", CVAR_CHEAT);
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
+
+	#ifdef USE_SOUNDHAX
 	s_soundhax = Cvar_Get ("s_soundhax", "0", CVAR_ARCHIVE);
+	#endif
+	
 	s_debug = Cvar_Get ("s_debug", "0", CVAR_ARCHIVE);
 
 	s_chatsound = Cvar_Get ("s_chatsound", "0", CVAR_ARCHIVE);
