@@ -1370,9 +1370,6 @@ void CL_Connect_f( void ) {
   else
     CL_UpdateGUID( NULL, 0 );
 
-  if (cl_randomRGB->integer == 2)
-    CL_RandomRGB_f();
-
   // if we aren't playing on a lan, we need to authenticate
   // with the cd key
   if ( NET_IsLocalAddress( clc.serverAddress ) ) {
@@ -2658,6 +2655,9 @@ void CL_StartHunkUsers( void ) {
   if ( !com_cl_running->integer ) {
     return;
   }
+
+  if (cl_randomRGB->integer == 2)
+    CL_RandomRGB_f();
 
   if ( !cls.rendererStarted ) {
     cls.rendererStarted = qtrue;
