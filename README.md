@@ -22,6 +22,7 @@ Client
    + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
    + `cl_hpSub <0|1>` - Enables an `$hp` chat variable that gets replaced with your actual health. Default is `0`
    + `cl_randomRGB <0|1|2>` - Generates random armband colours. `1` randomly generates a new armband colour at startup, `2` randomly generates one when connecting to a server. Default is `0`
+   + `cl_playerSub <0|1>` - Enables an `$p` chat variable that gets replaced with the current player name. If you're playing, it's your name, if you're spectating, it's the name of the player you're spectating. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value

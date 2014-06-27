@@ -84,6 +84,7 @@ cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_hpSub;
+cvar_t  *cl_playerSub;
 cvar_t  *cl_randomRGB;
 
 void CL_RandomRGB_f(void);
@@ -162,22 +163,53 @@ not have future usercmd_t executed before it is executed
 void CL_AddReliableCommand( const char *cmd ) {
   int   index;
 
+  int pos;
+  char *s, *s2, *tokPos;
+
   if (cl_hpSub->value) {
-     int hLen, pos;
-     char health[4];
-     char *s, *varPos;
-     Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-     hLen = strlen(health);
-     s = (char *)malloc(strlen(cmd) + 1);
-     strncpy(s, cmd, strlen(cmd) + 1);
+    int subLen;
+    char health[4];
+    Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
+    subLen = strlen(health);
+    s = (char *)malloc(strlen(cmd) + 1);
+    strncpy(s, cmd, strlen(cmd) + 1);
      
-     while ((varPos = strstr(s, "$hp")) != NULL || (varPos = strstr(s, "#hp")) != NULL) {
-       pos = varPos - s;
-       strncpy(s + pos, health, hLen);
-       pos += hLen;
-       strncpy(s + pos, s + pos + 3 - hLen, strlen(s) - pos);
-     }
-     cmd = s;
+    while ((tokPos = strstr(s, "$hp")) != NULL || (tokPos = strstr(s, "#hp")) != NULL) {
+      pos = tokPos - s;
+      strncpy(s + pos, health, subLen);
+      pos += subLen;
+      strncpy(s + pos, s + pos + 3 - subLen, strlen(s) - pos);
+    }
+    cmd = s;
+  }
+
+  if (cl_playerSub->value) {
+    int numToks = 0;
+    s = cmd;
+    while ((s = strstr(s, "$p"))) {
+      s += 2;
+      numToks++;
+    }
+    s = cmd;
+    while ((s = strstr(s, "#p"))) {
+      s += 2;
+      numToks++;
+    }
+
+    char *pname;
+    pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+    s = (char *)malloc(strlen(cmd) + strlen(pname) * numToks + 1);
+    s2 = (char *)malloc(strlen(cmd) + strlen(pname) * numToks + 1);
+    strncpy(s, cmd, strlen(cmd) + 1);
+
+    while ((tokPos = strstr(s, "$p")) != NULL || (tokPos = strstr(s, "#p")) != NULL) {
+      sprintf(s2, "%s", s);
+      pos = tokPos - s;
+      s[pos] = '\0';
+      sprintf(s, "%s%s%s", s, pname, s2 + pos + 2);
+    }
+
+    cmd = s;
   }
 
   // if we would be losing an old command that hasn't been acknowledged,
@@ -2934,6 +2966,7 @@ void CL_Init( void ) {
 
   cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
   cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
+  cl_playerSub = Cvar_Get( "cl_playerSub", "0", CVAR_ARCHIVE );
   cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 
   // offset for the power function (for style 1, ignored otherwise)
