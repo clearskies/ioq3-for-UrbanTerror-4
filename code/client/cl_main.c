@@ -3986,9 +3986,9 @@ void CL_RandomRGB_f(void) {
   int r, g, b;
   srand((unsigned)time(NULL));
 
-  r = rand() % 206 + 50;
-  g = rand() % 206 + 50;
-  b = rand() % 206 + 50;
+  r = rand() % 256;
+  g = rand() % 256;
+  b = rand() % 256;
 
   Com_sprintf(s, 12, "%i %i %i", r, g, b);
   Cvar_Set("cg_rgb", s);
