@@ -85,6 +85,7 @@ cvar_t 	*com_logfileName;
 cvar_t  *com_nosplash;
 
 cvar_t  *con_nochat;
+qboolean suppressNext = qfalse;
 
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
@@ -156,6 +157,10 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 
 	if (con_nochat && con_nochat->integer) {
 		if (strstr(msg, "^3: ^3")) {
+			suppressNext = qtrue;
+			return;
+		} else if (suppressNext) {
+			suppressNext = qfalse;
 			return;
 		}
 	}
