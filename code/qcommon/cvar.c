@@ -406,6 +406,12 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 	var->value = atof (var->string);
 	var->integer = atoi (var->string);
 
+	if (!Q_stricmp(var_name, "cl_weapAutoSwitch") && var->integer) {
+		Cvar_Set("cl_weapAutoReload", "0");
+	} else if (!Q_stricmp(var_name, "cl_weapAutoReload") && var->integer) {
+		Cvar_Set("cl_weapAutoSwitch", "0");
+	}
+
 	return var;
 }
 
