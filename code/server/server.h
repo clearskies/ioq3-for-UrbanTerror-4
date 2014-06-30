@@ -179,6 +179,7 @@ typedef struct client_s {
 	qboolean			csUpdated[MAX_CONFIGSTRINGS+1];	
 
 	short frozen;
+	int powerups[MAX_WEAPONS];
 } client_t;
 
 //=============================================================================
@@ -318,6 +319,7 @@ extern	cvar_t  *sv_allowVote;
 
 extern	cvar_t  *sv_noStamina;
 extern	cvar_t  *sv_noRecoil;
+extern	cvar_t  *sv_noAmmo;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

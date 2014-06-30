@@ -74,6 +74,7 @@ cvar_t	*sv_allowVote;
 
 cvar_t  *sv_noStamina;
 cvar_t  *sv_noRecoil;
+cvar_t  *sv_noAmmo;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1002,7 +1003,7 @@ happen before SV_Frame is called
 void SV_Frame( int msec ) {
 	int		frameMsec;
 	int		startTime;
-	int i;
+	int i, j;
 	client_t *cl;
 	playerState_t *ps;
 
@@ -1111,6 +1112,18 @@ void SV_Frame( int msec ) {
 			ps->stats[4] = 0;
 			ps->stats[5] = 0;
 			ps->stats[11] = 0;
+		}
+
+		if (sv_noAmmo->integer) {
+			if (cl->lastUsercmd.buttons & BUTTON_ATTACK) {
+				for (j = 0; j < MAX_WEAPONS; j++) {
+					ps->powerups[j] = cl->powerups[j];
+				}
+			} else {
+				for (j = 0; j < MAX_WEAPONS; j++) {
+					cl->powerups[j] = ps->powerups[j];
+				}
+			}
 		}
 	}
 
