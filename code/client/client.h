@@ -394,6 +394,7 @@ extern  cvar_t  *cl_mouseAccelOffset;
 extern  cvar_t  *cl_mouseAccelStyle;
 
 extern  cvar_t  *cl_teamchatIndicator;
+extern	cvar_t	*cl_weapAutoSwitch;
 
 //=================================================
 
