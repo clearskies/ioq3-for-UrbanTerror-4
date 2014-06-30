@@ -944,6 +944,7 @@ void SV_Init (void) {
 	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
 
 	sv_noStamina = Cvar_Get("sv_noStamina", "0", CVAR_ARCHIVE);
+	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);

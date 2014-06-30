@@ -62,6 +62,7 @@ Server
    + `sv_chatColor <0-9>` - Changes the colour of players' chat messages. Default is `3`
    + `sv_allowVote <0|1>` - Enables voting. Default is `1`
    + `sv_noStamina <0|1>` - Enables unlimited stamina in any gamemode. Default is `0`
+   + `sv_noRecoil <0|1>` - Disables recoil and movement inaccuracy. Default is `0`
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility

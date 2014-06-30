@@ -73,6 +73,7 @@ cvar_t	*sv_chatColor;
 cvar_t	*sv_allowVote;
 
 cvar_t  *sv_noStamina;
+cvar_t  *sv_noRecoil;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1103,7 +1104,14 @@ void SV_Frame( int msec ) {
 		ps = SV_GameClientNum(i);
 		if (sv_noStamina->integer) {
 			ps->stats[9] = ps->stats[0] * 300;
-		}		
+		}	
+
+		if (sv_noRecoil->integer) {
+			ps->stats[3] = 0;
+			ps->stats[4] = 0;
+			ps->stats[5] = 0;
+			ps->stats[11] = 0;
+		}
 	}
 
 	// run the game simulation in chunks

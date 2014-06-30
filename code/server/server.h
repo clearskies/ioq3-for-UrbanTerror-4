@@ -317,6 +317,7 @@ extern	cvar_t  *sv_chatColor;
 extern	cvar_t  *sv_allowVote;
 
 extern	cvar_t  *sv_noStamina;
+extern	cvar_t  *sv_noRecoil;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;
