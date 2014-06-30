@@ -86,6 +86,7 @@ cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_hpSub;
 cvar_t  *cl_playerSub;
 cvar_t  *cl_randomRGB;
+cvar_t  *cl_crosshairHealth;
 
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
@@ -2569,6 +2570,20 @@ void CL_Frame ( int msec ) {
   // decide on the serverTime to render
   CL_SetCGameTime();
 
+  if (cl_crosshairHealth->integer) {
+    int health = cl.snap.ps.stats[0];
+    char s[16];
+    if (health < 50) {
+      Com_sprintf(s, 16, "1 %.1f 0 1", health / 50.0);
+    } else if (health == 100) {
+      Com_sprintf(s, 16, "0 1 0 1");
+    } else {
+      Com_sprintf(s, 16, "%.1f 1 0 1", (50.0 - (health % 50)) / 50);
+    }
+
+    Cvar_Set("cg_crosshairrgb", s);
+  }
+
   // update the screen
   SCR_UpdateScreen();
 
@@ -2971,6 +2986,7 @@ void CL_Init( void ) {
   cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
   cl_playerSub = Cvar_Get( "cl_playerSub", "0", CVAR_ARCHIVE );
   cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
+  cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 
   cl_weapAutoSwitch = Cvar_Get( "cl_weapAutoSwitch", "0", CVAR_ARCHIVE );
   cl_weapAutoReload = Cvar_Get( "cl_weapAutoReload", "0", CVAR_ARCHIVE );
