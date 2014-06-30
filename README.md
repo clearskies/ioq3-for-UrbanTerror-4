@@ -61,6 +61,7 @@ Server
    + `sv_specialWater <0|1|2>` - Makes water behave differently. `1` turns water into ice, `2` turns water into lava, and `0` does nothing. Default is `0`. *Requires reload*
    + `sv_chatColor <0-9>` - Changes the colour of players' chat messages. Default is `3`
    + `sv_allowVote <0|1>` - Enables voting. Default is `1`
+   + `sv_noStamina <0|1>` - Enables unlimited stamina in any gamemode. Default is `0`
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility

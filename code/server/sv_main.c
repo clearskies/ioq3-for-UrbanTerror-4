@@ -72,6 +72,8 @@ cvar_t	*sv_forceGear;
 cvar_t	*sv_chatColor;
 cvar_t	*sv_allowVote;
 
+cvar_t  *sv_noStamina;
+
 //@Barbatos
 #ifdef USE_AUTH
 cvar_t	*sv_authServerIP;
@@ -999,6 +1001,9 @@ happen before SV_Frame is called
 void SV_Frame( int msec ) {
 	int		frameMsec;
 	int		startTime;
+	int i;
+	client_t *cl;
+	playerState_t *ps;
 
 	// the menu kills the server with this cvar
 	if ( sv_killserver->integer ) {
@@ -1090,6 +1095,16 @@ void SV_Frame( int msec ) {
 	SV_CalcPings();
 
 	if (com_dedicated->integer) SV_BotFrame (sv.time);
+
+	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
+		if (!cl->state) {
+			continue;
+		}
+		ps = SV_GameClientNum(i);
+		if (sv_noStamina->integer) {
+			ps->stats[9] = ps->stats[0] * 300;
+		}		
+	}
 
 	// run the game simulation in chunks
 	while ( sv.timeResidual >= frameMsec ) {
