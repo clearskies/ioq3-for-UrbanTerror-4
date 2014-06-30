@@ -155,12 +155,28 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
+	if (suppressNext) {
+		suppressNext = qfalse;
+		return;
+	}
+
 	if (con_nochat && con_nochat->integer) {
-		if (strstr(msg, "^3: ^3")) {
+		qboolean pubChat = qfalse;
+		qboolean teamChat = qfalse;
+		if (strstr(msg, "^3: ^3"))
+			pubChat = qtrue;
+		
+		if (strstr(msg, "^7: ^3") || strstr(msg, "): ^3"))
+			teamChat = qtrue;
+
+		if (con_nochat->integer == 1 && pubChat) {
 			suppressNext = qtrue;
 			return;
-		} else if (suppressNext) {
-			suppressNext = qfalse;
+		} else if (con_nochat->integer == 2 && teamChat) {
+			suppressNext = qtrue;
+			return;
+		} else if (con_nochat->integer == 3 && (pubChat || teamChat)) {
+			suppressNext = qtrue;
 			return;
 		}
 	}
