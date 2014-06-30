@@ -26,6 +26,8 @@ Client
    + `cl_weapAutoSwitch <0|1|2>` - Automatically switches weapons when ammo runs out. `1` will make it switch to the previous weapon, and `2` will make it switch to the next weapon. Default is `0`
    + `cl_weapAutoReload <0|1|>` - Automatically reloads when ammo runs out. `cl_weapAutoSwitch` will take precedence over this. Default is `0`
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
+   + `clan` - Sets an optional clan tag that will be added to your name. Default is `""`
+   + `cl_clanPos <0|1>` - Determines the position of the `clan` cvar in your name. `0` will put the clan tag at the beginning, and `1` will put it at the end. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value

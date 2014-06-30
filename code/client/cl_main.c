@@ -88,6 +88,9 @@ cvar_t  *cl_playerSub;
 cvar_t  *cl_randomRGB;
 cvar_t  *cl_crosshairHealth;
 
+cvar_t  *clan;
+cvar_t  *cl_clanPos;
+
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
 
@@ -2432,6 +2435,8 @@ CL_CheckUserinfo
 ==================
 */
 void CL_CheckUserinfo( void ) {
+  char *s;
+
   // don't add reliable commands when not yet connected
   if(cls.state < CA_CHALLENGING)
     return;
@@ -2444,7 +2449,25 @@ void CL_CheckUserinfo( void ) {
   if(cvar_modifiedFlags & CVAR_USERINFO)
   {
     cvar_modifiedFlags &= ~CVAR_USERINFO;
-    CL_AddReliableCommand( va("userinfo \"%s\"", Cvar_InfoString( CVAR_USERINFO ) ) );
+
+    s = Cvar_InfoString(CVAR_USERINFO);
+
+    if (*clan->string) {
+      char n[MAX_NAME_LENGTH + 1];
+      
+      if (cl_clanPos->integer) {
+        Com_sprintf(n, MAX_NAME_LENGTH + 1, "%s%s", Cvar_VariableString("name"), clan->string);
+      } else {
+        Com_sprintf(n, MAX_NAME_LENGTH + 1, "%s%s", clan->string, Cvar_VariableString("name"));
+      }
+
+      Info_SetValueForKey(s, "name", n);
+    }
+
+    Info_RemoveKey(s, "clan");
+    Info_RemoveKey(s, "cl_clanPos");
+
+    CL_AddReliableCommand(va("userinfo \"%s\"", s));
   }
 }
 
@@ -3047,6 +3070,10 @@ void CL_Init( void ) {
   
   // userinfo
   Cvar_Get ("name", "UnnamedPlayer", CVAR_USERINFO | CVAR_ARCHIVE );
+
+  clan = Cvar_Get ("clan", "", CVAR_USERINFO | CVAR_ARCHIVE );
+  cl_clanPos = Cvar_Get ("cl_clanPos", "0", CVAR_USERINFO | CVAR_ARCHIVE );
+
   Cvar_Get ("rate", "16000", CVAR_USERINFO | CVAR_ARCHIVE );
   Cvar_Get ("snaps", "20", CVAR_USERINFO | CVAR_ARCHIVE );
   Cvar_Get ("color1",  "4", CVAR_USERINFO | CVAR_ARCHIVE );
