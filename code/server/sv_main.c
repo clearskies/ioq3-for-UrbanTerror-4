@@ -75,6 +75,7 @@ cvar_t	*sv_allowVote;
 cvar_t  *sv_noStamina;
 cvar_t  *sv_noRecoil;
 cvar_t  *sv_noAmmo;
+cvar_t  *sv_walljumps;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1124,6 +1125,10 @@ void SV_Frame( int msec ) {
 					cl->powerups[j] = ps->powerups[j];
 				}
 			}
+		}
+
+		if (sv_walljumps->integer) {
+			ps->generic1 = 0;
 		}
 	}
 

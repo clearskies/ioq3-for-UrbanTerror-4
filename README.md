@@ -64,6 +64,7 @@ Server
    + `sv_noStamina <0|1>` - Enables unlimited stamina in any gamemode. Default is `0`
    + `sv_noRecoil <0|1>` - Disables recoil and movement inaccuracy. Default is `0`
    + `sv_noAmmo <0|1>` - Enables unlimited ammo. In burst mode, weapons will only consume 2 bullets. Default is `0`
+   + `sv_walljumps <0|1>` - Enables unlimited walljumps. Default is `0`
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility
