@@ -320,7 +320,7 @@ extern	cvar_t  *sv_allowVote;
 extern	cvar_t  *sv_infiniteStamina;
 extern	cvar_t  *sv_noRecoil;
 extern	cvar_t  *sv_infiniteAmmo;
-extern	cvar_t  *sv_walljumps;
+extern	cvar_t  *sv_infiniteWalljumps;
 extern	cvar_t  *sv_weaponCycle;
 
 #ifdef USE_AUTH

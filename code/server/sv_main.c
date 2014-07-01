@@ -75,7 +75,7 @@ cvar_t	*sv_allowVote;
 cvar_t  *sv_infiniteStamina;
 cvar_t  *sv_noRecoil;
 cvar_t  *sv_infiniteAmmo;
-cvar_t  *sv_walljumps;
+cvar_t  *sv_infiniteWalljumps;
 cvar_t  *sv_weaponCycle;
 
 //@Barbatos
@@ -1115,7 +1115,7 @@ void SV_Frame( int msec ) {
 			ps->stats[11] = 0;
 		}
 
-		if (sv_walljumps->integer) {
+		if (sv_infiniteWalljumps->integer) {
 			ps->generic1 = 0;
 		}
 

@@ -946,7 +946,7 @@ void SV_Init (void) {
 	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);
 	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
 	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
-	sv_walljumps = Cvar_Get("sv_walljumps", "0", CVAR_ARCHIVE);
+	sv_infiniteWalljumps = Cvar_Get("sv_infiniteWalljumps", "0", CVAR_ARCHIVE);
 	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
