@@ -1111,7 +1111,6 @@ void SV_Frame( int msec ) {
 		if (sv_noRecoil->integer) {
 			ps->stats[3] = 0;
 			ps->stats[4] = 0;
-			ps->stats[5] = 0;
 			ps->stats[11] = 0;
 		}
 
