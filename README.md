@@ -28,6 +28,7 @@ Client
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
    + `clan` - Sets an optional clan tag that will be added to your name. Default is `""`
    + `cl_clanPos <0|1>` - Determines the position of the `clan` cvar in your name. `0` will put the clan tag at the beginning, and `1` will put it at the end. Default is `0`
+   + `r_drawLegs <0|1>` - Draws your legs. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value

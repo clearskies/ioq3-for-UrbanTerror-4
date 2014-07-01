@@ -217,6 +217,15 @@ void RE_AddRefEntityToScene( const refEntity_t *ent ) {
 	}
 
 	backEndData[tr.smpFrame]->entities[r_numentities].e = *ent;
+	if (r_drawLegs->integer) {
+		if (ent->reType == 0) {
+			model_t *m;
+			m = R_GetModelByHandle(ent->hModel);
+			if (strstr(m->name, "lower.md3")) {
+				backEndData[tr.smpFrame]->entities[r_numentities].e.renderfx &= ~RF_THIRD_PERSON;
+			}
+		}
+	}
 	backEndData[tr.smpFrame]->entities[r_numentities].lightingCalculated = qfalse;
 
 	r_numentities++;

@@ -160,6 +160,8 @@ int		max_polys;
 cvar_t	*r_maxpolyverts;
 int		max_polyverts;
 
+cvar_t	*r_drawLegs;
+
 static void AssertCvarRange( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral )
 {
 	if ( shouldBeIntegral )
@@ -1060,6 +1062,8 @@ void R_Register( void )
 
 	r_maxpolys = ri.Cvar_Get( "r_maxpolys", va("%d", MAX_POLYS), 0);
 	r_maxpolyverts = ri.Cvar_Get( "r_maxpolyverts", va("%d", MAX_POLYVERTS), 0);
+
+	r_drawLegs = ri.Cvar_Get("r_drawLegs", "0", CVAR_ARCHIVE);
 
 	r_GLlibCoolDownMsec = ri.Cvar_Get( "r_GLlibCoolDownMsec", "0", CVAR_ARCHIVE );
   
