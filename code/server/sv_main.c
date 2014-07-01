@@ -1004,7 +1004,7 @@ happen before SV_Frame is called
 void SV_Frame( int msec ) {
 	int		frameMsec;
 	int		startTime;
-	int i, j;
+	int i;
 	client_t *cl;
 	playerState_t *ps;
 
@@ -1112,18 +1112,6 @@ void SV_Frame( int msec ) {
 			ps->stats[3] = 0;
 			ps->stats[4] = 0;
 			ps->stats[11] = 0;
-		}
-
-		if (sv_noAmmo->integer) {
-			if (cl->lastUsercmd.buttons & BUTTON_ATTACK) {
-				for (j = 0; j < MAX_WEAPONS; j++) {
-					ps->powerups[j] = cl->powerups[j];
-				}
-			} else {
-				for (j = 0; j < MAX_WEAPONS; j++) {
-					cl->powerups[j] = ps->powerups[j];
-				}
-			}
 		}
 
 		if (sv_walljumps->integer) {
