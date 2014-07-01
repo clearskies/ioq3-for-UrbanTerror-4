@@ -72,9 +72,9 @@ cvar_t	*sv_forceGear;
 cvar_t	*sv_chatColor;
 cvar_t	*sv_allowVote;
 
-cvar_t  *sv_noStamina;
+cvar_t  *sv_infiniteStamina;
 cvar_t  *sv_noRecoil;
-cvar_t  *sv_noAmmo;
+cvar_t  *sv_infiniteAmmo;
 cvar_t  *sv_walljumps;
 cvar_t  *sv_weaponCycle;
 
@@ -1105,7 +1105,7 @@ void SV_Frame( int msec ) {
 			continue;
 		}
 		ps = SV_GameClientNum(i);
-		if (sv_noStamina->integer) {
+		if (sv_infiniteStamina->integer) {
 			ps->stats[9] = ps->stats[0] * 300;
 		}	
 

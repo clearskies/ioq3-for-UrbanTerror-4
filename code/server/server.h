@@ -317,9 +317,9 @@ extern	cvar_t  *sv_forceGear;
 extern	cvar_t  *sv_chatColor;
 extern	cvar_t  *sv_allowVote;
 
-extern	cvar_t  *sv_noStamina;
+extern	cvar_t  *sv_infiniteStamina;
 extern	cvar_t  *sv_noRecoil;
-extern	cvar_t  *sv_noAmmo;
+extern	cvar_t  *sv_infiniteAmmo;
 extern	cvar_t  *sv_walljumps;
 extern	cvar_t  *sv_weaponCycle;
 

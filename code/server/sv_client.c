@@ -1581,7 +1581,7 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 		return;		// may have been kicked during the last usercmd
 	}
 
-	if (sv_noAmmo->integer) {
+	if (sv_infiniteAmmo->integer) {
 		ps = SV_GameClientNum(cl - svs.clients);
 		for (i = 0; i < MAX_POWERUPS; i++) {
 			cl->powerups[i] = ps->powerups[i];
@@ -1590,7 +1590,7 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 
 	VM_Call( gvm, GAME_CLIENT_THINK, cl - svs.clients );
 
-	if (sv_noAmmo->integer) {
+	if (sv_infiniteAmmo->integer) {
 		if (ps->weaponstate == WEAPON_FIRING) {
 			for (i = 0; i < MAX_POWERUPS; i++) {
 				ps->powerups[i] = cl->powerups[i];

@@ -943,9 +943,9 @@ void SV_Init (void) {
 	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
 	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
 
-	sv_noStamina = Cvar_Get("sv_noStamina", "0", CVAR_ARCHIVE);
+	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);
 	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
-	sv_noAmmo = Cvar_Get("sv_noAmmo", "0", CVAR_ARCHIVE);
+	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
 	sv_walljumps = Cvar_Get("sv_walljumps", "0", CVAR_ARCHIVE);
 	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
   
