@@ -321,6 +321,7 @@ extern	cvar_t  *sv_noStamina;
 extern	cvar_t  *sv_noRecoil;
 extern	cvar_t  *sv_noAmmo;
 extern	cvar_t  *sv_walljumps;
+extern	cvar_t  *sv_weaponCycle;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

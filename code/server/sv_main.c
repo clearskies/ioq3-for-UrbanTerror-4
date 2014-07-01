@@ -76,6 +76,7 @@ cvar_t  *sv_noStamina;
 cvar_t  *sv_noRecoil;
 cvar_t  *sv_noAmmo;
 cvar_t  *sv_walljumps;
+cvar_t  *sv_weaponCycle;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1116,6 +1117,10 @@ void SV_Frame( int msec ) {
 
 		if (sv_walljumps->integer) {
 			ps->generic1 = 0;
+		}
+
+		if (sv_weaponCycle->integer) {
+			ps->weaponTime = 0;
 		}
 	}
 

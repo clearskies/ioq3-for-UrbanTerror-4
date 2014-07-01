@@ -947,6 +947,7 @@ void SV_Init (void) {
 	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
 	sv_noAmmo = Cvar_Get("sv_noAmmo", "0", CVAR_ARCHIVE);
 	sv_walljumps = Cvar_Get("sv_walljumps", "0", CVAR_ARCHIVE);
+	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);
