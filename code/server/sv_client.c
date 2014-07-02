@@ -1572,7 +1572,7 @@ Also called by bot code
 ==================
 */
 void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
-	int i;
+	int i, j;
 	playerState_t *ps;
 
 	cl->lastUsercmd = *cmd;
@@ -1591,11 +1591,19 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 	VM_Call( gvm, GAME_CLIENT_THINK, cl - svs.clients );
 
 	if (sv_infiniteAmmo->integer) {
-		if (ps->weaponstate == WEAPON_FIRING) {
-			for (i = 0; i < MAX_POWERUPS; i++) {
-				ps->powerups[i] = cl->powerups[i];
+		if (cl->lastEventSequence < ps->eventSequence - MAX_PS_EVENTS) {
+			cl->lastEventSequence = ps->eventSequence - MAX_PS_EVENTS;
+		}
+
+		for (j = cl->lastEventSequence; j < ps->eventSequence; j++) {
+			if (ps->events[j & (MAX_PS_EVENTS - 1)] == 31) {
+				for (i = 0; i < MAX_POWERUPS; i++) {
+					ps->powerups[i] = cl->powerups[i];
+				}
 			}
 		}
+
+		cl->lastEventSequence = ps->eventSequence;
 	}
 }
 

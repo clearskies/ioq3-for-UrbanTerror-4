@@ -180,6 +180,7 @@ typedef struct client_s {
 
 	short frozen;
 	int powerups[MAX_WEAPONS];
+	int lastEventSequence;
 } client_t;
 
 //=============================================================================
