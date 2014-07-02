@@ -36,7 +36,7 @@ char *killLog1[] = {
 	"%s was given a new breathing hole by %s's Colt 1911.",
 	"%s was turned into peppered steak by %s's SPAS blast.",
 	"%s danced the UMP tango to %s's sweet sweet music.",
-	"%s was MP5K spammed without mercy by.",
+	"%s was MP5K spammed without mercy by %s.",
 	"%s was minced to death by %s's Mac 11.",
 	"%s played 'catch the shiny bullet' with %s's LR-300 rounds.",
 	"%s was on the wrong end of %s's G36.",
