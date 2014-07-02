@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // console.c
 
 #include "client.h"
+#include "killLog.h"
 
 
 int g_console_field_width = 78;
@@ -59,6 +60,7 @@ console_t	con;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
+cvar_t		*con_coloredKills;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -418,6 +420,8 @@ void Con_Init (void) {
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
 	con_conspeed = Cvar_Get ("scr_conspeed", "30", 0);
 
+	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
+
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
 	for ( i = 0 ; i < COMMAND_HISTORY ; i++ ) {
@@ -502,6 +506,80 @@ void CL_ConsolePrint( char *txt ) {
 		con.linewidth = -1;
 		Con_CheckResize ();
 		con.initialized = qtrue;
+	}
+
+	if (con_coloredKills && con_coloredKills->integer) {
+		char **search;
+		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
+		if (killLogNum == 1) {
+			search = killLog1;
+		} else if (killLogNum == 2) {
+			search = killLog2;
+		} else if (killLogNum == 3) {
+			search = killLog3;
+		}
+
+		if (killLogNum > 0 && killLogNum < 4) {
+			int i, j;
+			char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
+			char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
+			char *cs;
+			char newtxt[MAX_STRING_CHARS + 1];
+			int temp, team;
+			for (i = 0; ; i++) {
+				if (!search[i])
+					break;
+
+				if (sscanf(txt, search[i], player1, player2) == 2) {
+					if (killLogNum == 1) {
+						temp = strlen(player2);
+						if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
+							player2[temp - 2] = 0;
+						}
+					} else if (killLogNum > 1) {
+						temp = strlen(player2);
+						player2[temp - 1] = 0;
+					}
+
+					team = 2;
+					for (j = 0; j < 64; j++) {
+						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
+						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
+							team = atoi(Info_ValueForKey(cs, "t"));
+							if (team == TEAM_RED) {
+								team = 1;
+							} else if (team == TEAM_BLUE) {
+								team = 4;
+							} else {
+								team = 2;
+							}
+							break;
+						}
+					}
+					sprintf(nplayer1, "^%i%s^7", team, player1);
+
+					team = 2;
+					for (j = 0; j < 64; j++) {
+						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
+						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player2)) {
+							team = atoi(Info_ValueForKey(cs, "t"));
+							if (team == TEAM_RED) {
+								team = 1;
+							} else if (team == TEAM_BLUE) {
+								team = 4;
+							} else {
+								team = 2;
+							}
+							break;
+						}
+					}
+					sprintf(nplayer2, "^%i%s^7", team, player2);
+					sprintf(newtxt, search[i], nplayer1, nplayer2);
+					txt = newtxt;
+					break;
+				}
+			}
+		}
 	}
 
 	color = ColorIndex(COLOR_WHITE);

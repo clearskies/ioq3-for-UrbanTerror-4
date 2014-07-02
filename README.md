@@ -29,6 +29,7 @@ Client
    + `clan` - Sets an optional clan tag that will be added to your name. Default is `""`
    + `cl_clanPos <0|1>` - Determines the position of the `clan` cvar in your name. `0` will put the clan tag at the beginning, and `1` will put it at the end. Default is `0`
    + `r_drawLegs <0|1>` - Draws your legs. Default is `0`
+   + `con_coloredKills <0|1>` - Colours players' names in console kill messages. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
