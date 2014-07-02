@@ -510,6 +510,7 @@ void CL_ConsolePrint( char *txt ) {
 
 	if (con_coloredKills && con_coloredKills->integer) {
 		char **search;
+		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
 		if (killLogNum == 1) {
 			search = killLog1;
@@ -531,6 +532,7 @@ void CL_ConsolePrint( char *txt ) {
 					break;
 
 				if (sscanf(txt, search[i], player1, player2) == 2) {
+					found = 1;
 					if (killLogNum == 1) {
 						temp = strlen(player2);
 						if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
@@ -579,6 +581,37 @@ void CL_ConsolePrint( char *txt ) {
 					break;
 				}
 			}
+
+			if (!found) {
+				for (i = 0; ; i++) {
+					if (!killLogSingle[i]) {
+						break;
+					}
+
+					if (sscanf(txt, killLogSingle[i], player1, player2) == 2) {
+						team = 2;
+						for (j = 0; j < 64; j++) {
+							cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
+							if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
+								team = atoi(Info_ValueForKey(cs, "t"));
+								if (team == TEAM_RED) {
+									team = 1;
+								} else if (team == TEAM_BLUE) {
+									team = 4;
+								} else {
+									team = 2;
+								}
+								break;
+							}
+						}
+						sprintf(nplayer1, "^%i%s^7", team, player1);
+						sprintf(newtxt, killLogSingle[i], nplayer1, player2);
+						txt = newtxt;
+						break;
+					}
+				}
+			}
+
 		}
 	}
 

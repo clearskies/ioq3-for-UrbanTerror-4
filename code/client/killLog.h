@@ -1,3 +1,30 @@
+char *killLogSingle[] = {
+	"%s was bombed%s",
+	"%s lit her own fart%s",
+	"%s stepped on her own grenade%s",
+	"%s lit his own fart%s",
+	"%s stepped on his own grenade%s",
+	"%s 'sploded%s",
+	"%s sacrificed himself%s",
+	"%s was SLAPPED to Death by the Server Admin%s",
+	"%s was struck down by the Server Admin%s",
+	"%s was nuked by the Server Admin%s",
+	"%s was killed by a flag%s",
+	"%s wtf..%s",
+	"%s did the lemming thing%s",
+	"%s killed herself%s",
+	"%s killed himself%s",
+	"%s killed itself%s",
+	"%s decided it was all too much%s",
+	"%s was crushed to death%s",
+	"%s decided to swim with the fishes, permanently%s",
+	"%s melted%s",
+	"%s does a back flip into the lava%s",
+	"%s saw the light%s",
+	"%s was killed by some well placed HURT%s",
+	NULL
+};
+
 char *killLog1[] = {
 	"%s was curb-stomped by %s",
 	"%s tried to invade%s's personal space.",
