@@ -56,7 +56,7 @@ Server
    + `sv_allowWeapdrop <0|1>` - Enables weapon dropping. Default is `1`
    + `sv_allowTell <0|1>` - Enables private messaging. Default is `1`
    + `sv_antiblock <0|1>` - Disables player collisions. Default is `0`. *Players must respawn for this to take effect*
-   + `sv_allowKnife <0|1>` - Enables usage of the knife. Default is `1`. <del>This only works on 4.2 and it will kill the player when they switch to the knife. There may be a delay of around 0.5-3 seconds. No more delay!</del> This makes the knife deal 0 damage. Players will still see the slashing animation, but no damage occurs
+   + `sv_removeKnife <0|1>` - Removes the knife. Default is `0`
    + `sv_forceGear <"">|<gearstring>` - Enables gear forcing. If the value of this cvar is not an empty string, every client's `gear` userinfo setting will be set to this value. Default is `""`
    + `sv_fallDamage <0|1>` - Enables fall damage. This is the same as g_nodamage except for the fact that it works when you're not in Jump Mode. Default is `1`. *Requires reload*
    + `sv_iceEverywhere <0|1>` - Makes all surfaces act like ice. Default is `0`. *Requires reload*

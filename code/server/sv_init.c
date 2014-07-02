@@ -937,7 +937,7 @@ void SV_Init (void) {
 	sv_allowItemdrop = Cvar_Get ("sv_allowItemdrop", "1", CVAR_ARCHIVE );
 	sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
 	sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
-	sv_allowKnife = Cvar_Get ("sv_allowKnife", "1", CVAR_ARCHIVE);
+	sv_removeKnife = Cvar_Get ("sv_removeKnife", "0", CVAR_ARCHIVE);
 	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
 	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
 	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);

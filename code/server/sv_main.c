@@ -66,7 +66,7 @@ cvar_t	*sv_allowSuicide;
 cvar_t	*sv_allowItemdrop;
 cvar_t	*sv_allowWeapdrop;
 cvar_t	*sv_allowTell;
-cvar_t	*sv_allowKnife;
+cvar_t	*sv_removeKnife;
 cvar_t	*sv_antiblock;
 cvar_t	*sv_forceGear;
 cvar_t	*sv_chatColor;
@@ -1121,6 +1121,10 @@ void SV_Frame( int msec ) {
 
 		if (sv_weaponCycle->integer) {
 			ps->weaponTime = 0;
+		}
+
+		if (sv_removeKnife->integer) {
+			ps->powerups[0] = 966545581;
 		}
 	}
 
