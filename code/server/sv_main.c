@@ -1124,7 +1124,7 @@ void SV_Frame( int msec ) {
 		}
 
 		if (sv_removeKnife->integer) {
-			ps->powerups[0] = 966545581;
+			ps->powerups[0] = ps->powerups[MAX_POWERUPS - 1]; // Hopefully the player hasn't filled up their weapon slots
 		}
 	}
 
