@@ -1596,7 +1596,7 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 		}
 
 		for (j = cl->lastEventSequence; j < ps->eventSequence; j++) {
-			if (ps->events[j & (MAX_PS_EVENTS - 1)] == 31) {
+			if (ps->events[j & (MAX_PS_EVENTS - 1)] == 31 || ps->weaponstate == WEAPON_FIRING) {
 				for (i = 0; i < MAX_POWERUPS; i++) {
 					ps->powerups[i] = cl->powerups[i];
 				}
