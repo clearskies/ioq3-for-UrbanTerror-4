@@ -46,7 +46,6 @@ char *killLog1[] = {
 	"%s HEARD %s's HK69 gren... didn't AVOID it. Sucka.",
 	"%s suffered %s's HK69 Grenade Enema.",
 	"%s got himself some lovin' from %s's boot o' passion.",
-	"%s got %s's foot broken off in their ass.",
 	"%s was flashed by %s and dropped dead.",
 	"%s was smoked by %s and dropped dead.",
 	"%s has become a nasty stain thanks to %s's HE gren.",
@@ -60,6 +59,7 @@ char *killLog1[] = {
 	"%s thought it was %s's pet flying squirrel and tried to catch it. BAD SQUIRREL, BAD.",
 	"%s was nuked by accident, intented target was %s",
 	"%s was retired from the field of combat by %s",
+	"%s got %s's foot broken off in their ass.",
 	NULL
 };
 
