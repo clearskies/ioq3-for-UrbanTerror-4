@@ -395,30 +395,34 @@ SCR_DrawHealth
 =================
 */
 void SCR_DrawHealth( void ) {
+	int health = cl.snap.ps.stats[0];
+
+	if (!health ||
+		cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
+		cl.snap.ps.pm_type > 4 ||
+		cl_paused->value ||
+		!cl_drawHealth->integer ||
+		!Cvar_VariableIntegerValue("cg_draw2d"))
+		return;
+
 	char healthStr[6];
-	int health;
 	int healthCol;
 	vec4_t boxCol;
 
-	health = cl.snap.ps.stats[0];
-
-	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
-		return;
-
 	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
 	boxCol[3] = 0.85;
-	if (cl_drawHealth->value) {
-		Com_sprintf(healthStr, 6, "%3d%%", health);
-		SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
-		if (health > 35) {
-			healthCol = 2;
-		} else if (health <= 35 && health > 20) {
-			healthCol = 3;
-		} else {
-			healthCol = 1;
-		}
-		SCR_DrawStringExtNoShadow(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
+
+	Com_sprintf(healthStr, 6, "%3d%%", health);
+	SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
+	if (health > 35) {
+		healthCol = 2;
+	} else if (health <= 35 && health > 20) {
+		healthCol = 3;
+	} else {
+		healthCol = 1;
 	}
+	SCR_DrawStringExtNoShadow(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
+
 }
 
 /*
@@ -430,7 +434,9 @@ void SCR_DrawKills( void ) {
 	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
 		cl.snap.ps.pm_type > 4 ||
 		cl_paused->value ||
-		!cl_drawKills->value)
+		!cl_drawKills->integer ||
+		cl.snap.ps.clientNum != clc.clientNum ||
+		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
 	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
