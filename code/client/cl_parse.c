@@ -705,6 +705,8 @@ void CL_ParseGamestate( msg_t *msg ) {
 	// stop recording now so the demo won't have an unnecessary level load at the end.
 	if(cl_autoRecordDemo->integer && clc.demorecording)
 		CL_StopRecord_f();
+
+	cls.state = CA_CONNECTED;
 	
 	// reinitialize the filesystem if the game directory has changed
 	FS_ConditionalRestart( clc.checksumFeed );
