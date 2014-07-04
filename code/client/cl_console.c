@@ -61,6 +61,7 @@ console_t	con;
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
 cvar_t		*con_coloredKills;
+cvar_t		*con_bgAlpha;
 
 cvar_t  *con_nochat;
 qboolean suppressNext = qfalse;
@@ -424,8 +425,8 @@ void Con_Init (void) {
 	con_conspeed = Cvar_Get ("scr_conspeed", "30", 0);
 
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
-
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
+	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -572,10 +573,9 @@ void CL_ConsolePrint( char *txt ) {
 		}
 
 		if (killLogNum > 0 && killLogNum < 4) {
-			int i, j;
+			int i;
 			char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
 			char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
-			char *cs;
 			char newtxt[MAX_STRING_CHARS + 1];
 			int temp, team;
 			for (i = 0; ; i++) {
@@ -842,19 +842,16 @@ void Con_DrawSolidConsole( float frac ) {
 		y = 0;
 	}
 	else {
-		//SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
-	  colorBlack[0] = 0.0/255.0;
-	  colorBlack[1] = 0.0/255.0;
-	  colorBlack[2] = 0.0/255.0;
-	  colorBlack[3] = 0.9;
+		colorBlack[0] = 0.0/255.0;
+		colorBlack[1] = 0.0/255.0;
+		colorBlack[2] = 0.0/255.0;
+		if (con_bgAlpha->integer >= 0 && con_bgAlpha->integer <= 100) {
+			colorBlack[3] = con_bgAlpha->integer/100.0;
+		} else {
+			colorBlack[3] = 0.9;
+		}
 		SCR_FillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
 	}
-
-	// color[0] = 1;
-	// color[1] = 0;
-	// color[2] = 0;
-	// color[3] = 1;
-	// SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
 
 	colorBG[0] = 0.0/255.0;
 	colorBG[1] = 100.0/255.0;
