@@ -40,6 +40,7 @@ Client
    + `messagemodec` - Console message mode - enter and execute a command without toggling the console
    + `messagemoder` - Rcon message mode - enter and execute an rcon command without toggling the console
    + `randomRGB` - Randomly generates a new armband colour
+   + `maplist` - Outputs the maps that the current server has available
 
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client

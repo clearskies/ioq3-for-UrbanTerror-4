@@ -95,6 +95,7 @@ cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
 
 void CL_RandomRGB_f(void);
+void CL_Maplist_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -3116,6 +3117,7 @@ void CL_Init( void ) {
 
   Cmd_AddCommand("loc", CL_Loc_f);
   Cmd_AddCommand("randomRGB", CL_RandomRGB_f);
+  Cmd_AddCommand("maplist", CL_Maplist_f);
 
   CL_InitRef();
 
@@ -4074,4 +4076,35 @@ void CL_RandomRGB_f(void) {
 
   Com_sprintf(s, 12, "%i %i %i", r, g, b);
   Cvar_Set("cg_rgb", s);
+}
+
+/*
+====================
+CL_Maplist_f
+====================
+*/
+void CL_Maplist_f(void) {
+  if (cls.state != CA_ACTIVE) {
+    Com_Printf("You can't do that unless you're connected to a server.\n");
+    return;
+  }
+
+  char *sysInfo;
+  char *paks;
+  char *map;
+
+  sysInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
+  paks = Info_ValueForKey(sysInfo, "sv_pakNames");
+
+  Com_Printf("Current server maplist:\n-----------------------\n");
+
+  map = strtok(paks, " ");
+  while (map != NULL) {
+    if (strstr(map, "zUrT42_") != map && Q_stricmp(map, "pak0")) {
+      Com_Printf("%s\n", map);
+    }
+    map = strtok(NULL, " ");
+  }
+
+  Com_Printf("-----------------------\nEnd of current maplist\n");
 }
