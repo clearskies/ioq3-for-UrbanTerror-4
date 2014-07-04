@@ -475,6 +475,26 @@ void Con_Linefeed (qboolean skipnotify)
 		con.text[(con.current%con.totallines)*con.linewidth+i] = (ColorIndex(COLOR_WHITE)<<8) | ' ';
 }
 
+int nameToTeamColour(char *name) {
+	int i, team = 2;
+	char *cs;
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + i];
+		if (!Q_stricmp(Info_ValueForKey(cs, "n"), name)) {
+			team = atoi(Info_ValueForKey(cs, "t"));
+			if (team == TEAM_RED) {
+				team = 1;
+			} else if (team == TEAM_BLUE) {
+				team = 4;
+			} else {
+				team = 2;
+			}
+			break;
+		}
+	}
+	return team;
+}
+
 /*
 ================
 CL_ConsolePrint
@@ -574,39 +594,12 @@ void CL_ConsolePrint( char *txt ) {
 						player2[temp - 1] = 0;
 					}
 
-					team = 2;
-					for (j = 0; j < 64; j++) {
-						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
-							team = atoi(Info_ValueForKey(cs, "t"));
-							if (team == TEAM_RED) {
-								team = 1;
-							} else if (team == TEAM_BLUE) {
-								team = 4;
-							} else {
-								team = 2;
-							}
-							break;
-						}
-					}
+					team = nameToTeamColour(player1);
 					sprintf(nplayer1, "^%i%s^7", team, player1);
 
-					team = 2;
-					for (j = 0; j < 64; j++) {
-						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player2)) {
-							team = atoi(Info_ValueForKey(cs, "t"));
-							if (team == TEAM_RED) {
-								team = 1;
-							} else if (team == TEAM_BLUE) {
-								team = 4;
-							} else {
-								team = 2;
-							}
-							break;
-						}
-					}
+					team = nameToTeamColour(player2);
 					sprintf(nplayer2, "^%i%s^7", team, player2);
+
 					sprintf(newtxt, search[i], nplayer1, nplayer2);
 					txt = newtxt;
 					break;
@@ -620,22 +613,9 @@ void CL_ConsolePrint( char *txt ) {
 					}
 
 					if (sscanf(txt, killLogSingle[i], player1, player2) == 2) {
-						team = 2;
-						for (j = 0; j < 64; j++) {
-							cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-							if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
-								team = atoi(Info_ValueForKey(cs, "t"));
-								if (team == TEAM_RED) {
-									team = 1;
-								} else if (team == TEAM_BLUE) {
-									team = 4;
-								} else {
-									team = 2;
-								}
-								break;
-							}
-						}
+						team = nameToTeamColour(player1);
 						sprintf(nplayer1, "^%i%s^7", team, player1);
+
 						sprintf(newtxt, killLogSingle[i], nplayer1, player2);
 						txt = newtxt;
 						break;
