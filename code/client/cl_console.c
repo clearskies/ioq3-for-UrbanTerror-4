@@ -507,9 +507,9 @@ int damageToColour(int damage) {
 	} else if (damage >= 25) {
 		colour = 8;
 	} else if (damage >= 17) {
-		colour = 2;
-	} else {
 		colour = 3;
+	} else {
+		colour = 2;
 	}
 
 	return colour;
