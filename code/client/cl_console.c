@@ -66,6 +66,7 @@ cvar_t		*con_bgAlpha;
 cvar_t		*con_coloredHits;
 
 cvar_t		*con_consolePrompt;
+cvar_t		*con_consoleHeight;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -433,6 +434,7 @@ void Con_Init (void) {
 	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
 	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
 	con_consolePrompt = Cvar_Get("con_consolePrompt", "]", CVAR_ARCHIVE);
+	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1100,7 +1102,10 @@ Scroll it up or down
 void Con_RunConsole (void) {
 	// decide on the destination height of the console
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE )
-		con.finalFrac = 0.5;		// half screen
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
+			con.finalFrac = con_consoleHeight->integer / 100.0;
+		else 
+			con.finalFrac = 0.5;		// half screen
 	else
 		con.finalFrac = 0;				// none visible
 	

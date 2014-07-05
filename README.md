@@ -26,13 +26,14 @@ Client
    + `cl_weapAutoSwitch <0|1|2>` - Automatically switches weapons when ammo runs out. `1` will make it switch to the previous weapon, and `2` will make it switch to the next weapon. Default is `0`
    + `cl_weapAutoReload <0|1|>` - Automatically reloads when ammo runs out. `cl_weapAutoSwitch` will take precedence over this. Default is `0`
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
-   + `clan` - Sets an optional clan tag that will be added to your name. Default is `""`
+   + `clan ""` - Sets an optional clan tag that will be added to your name. Default is `""`
    + `cl_clanPos <0|1>` - Determines the position of the `clan` cvar in your name. `0` will put the clan tag at the beginning, and `1` will put it at the end. Default is `0`
    + `r_drawLegs <0|1>` - Draws your legs. Default is `0`
    + `con_coloredKills <0|1>` - Colours players' names in console kill messages. Default is `0`
    + `con_bgAlpha <0-100>` - Sets the console background opacity. `0` is fully transparent and `100` is fully opaque. Default is `90`
    + `con_coloredHits <0|1|2>` - Colours hit percentages in the console hit log. `1` will colour the damage values and `2` will colour player names as well. Default is `0`
-   + `con_consolePrompt ""` - Changes the prompt for the console. Default is `]`
+   + `con_consolePrompt ""` - Sets the prompt for the console. Default is `]`
+   + `con_consoleHeight <0-100>` - Sets the console height in percent of the game window's height. Default is `50`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
