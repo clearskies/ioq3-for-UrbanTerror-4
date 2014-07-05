@@ -70,6 +70,7 @@ cvar_t		*con_consolePrompt;
 cvar_t		*con_consoleHeight;
 cvar_t		*con_promptColour;
 cvar_t		*con_timePrompt;
+cvar_t		*con_scrollLock;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -442,6 +443,7 @@ void Con_Init (void) {
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
+	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -802,6 +804,10 @@ void CL_ConsolePrint( char *txt ) {
 			}
 			break;
 		}
+	}
+
+	if (con_scrollLock && !con_scrollLock->integer) {
+		Con_Bottom();
 	}
 
 
