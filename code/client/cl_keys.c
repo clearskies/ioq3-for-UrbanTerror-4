@@ -609,9 +609,9 @@ void Console_Key (int key) {
 		if (con_timePrompt->integer) {
 			qtime_t curTime;
 			Com_RealTime(&curTime);
-			Com_Printf ( "^%i[%02i:%02i:%02i] %s^7%s\n",  colour, curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string, g_consoleField.buffer );
+			Com_Printf ( "^%i[%02i:%02i:%02i] %s^7%s\n",  colour, curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_prompt->string, g_consoleField.buffer );
 		} else {
-			Com_Printf ( "^%i%s%s\n", colour, con_consolePrompt->string, g_consoleField.buffer );
+			Com_Printf ( "^%i%s%s\n", colour, con_prompt->string, g_consoleField.buffer );
 		}
 
 		// leading slash is an explicit command

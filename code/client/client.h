@@ -488,7 +488,7 @@ qboolean CL_UpdateVisiblePings_f( int source );
 // console
 //
 
-extern	cvar_t	*con_consolePrompt;
+extern	cvar_t	*con_prompt;
 extern	cvar_t	*con_promptColour;
 extern	cvar_t	*con_timePrompt;
 void Con_DrawCharacter (int cx, int line, int num);
