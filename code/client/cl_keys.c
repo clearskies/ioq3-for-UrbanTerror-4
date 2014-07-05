@@ -623,7 +623,9 @@ void Console_Key (int key) {
 			if ( !g_consoleField.buffer[0] ) {
 				return;	// empty lines just scroll the console without adding to history
 			} else {
-				Cbuf_AddText ("cmd say ");
+				char *s = Z_Malloc(strlen(cl_consoleCommand->string) + 8);
+				Com_sprintf(s, strlen(cl_consoleCommand->string) + 8, "cmd %s ", cl_consoleCommand->string);
+				Cbuf_AddText (s);
 				Cbuf_AddText( g_consoleField.buffer );
 				Cbuf_AddText ("\n");
 			}

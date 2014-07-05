@@ -94,6 +94,8 @@ cvar_t  *cl_clanPos;
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
 
+cvar_t  *cl_consoleCommand;
+
 void CL_RandomRGB_f(void);
 void CL_Maplist_f(void);
 
@@ -3014,6 +3016,8 @@ void CL_Init( void ) {
 
   cl_weapAutoSwitch = Cvar_Get( "cl_weapAutoSwitch", "0", CVAR_ARCHIVE );
   cl_weapAutoReload = Cvar_Get( "cl_weapAutoReload", "0", CVAR_ARCHIVE );
+
+  cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );
 
   // offset for the power function (for style 1, ignored otherwise)
   // this should be set to the max rate value
