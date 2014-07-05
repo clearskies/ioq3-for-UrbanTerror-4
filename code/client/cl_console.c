@@ -62,9 +62,10 @@ console_t	con;
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
 cvar_t		*con_coloredKills;
-cvar_t		*con_bgAlpha;
 cvar_t		*con_coloredHits;
 
+cvar_t		*con_bgAlpha;
+cvar_t		*con_bgColour;
 cvar_t		*con_consolePrompt;
 cvar_t		*con_consoleHeight;
 
@@ -431,8 +432,10 @@ void Con_Init (void) {
 
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
-	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
 	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
+
+	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
+	con_bgColour = Cvar_Get("con_bgColor", "0", CVAR_ARCHIVE);
 	con_consolePrompt = Cvar_Get("con_consolePrompt", "]", CVAR_ARCHIVE);
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 
@@ -953,7 +956,7 @@ void Con_DrawSolidConsole( float frac ) {
 	int				lines;
 //	qhandle_t		conShader;
 	int				currentColor;
-	vec4_t			colorBG, colorBlack;
+	vec4_t			lineColour, bgColour;
 
 	lines = cls.glconfig.vidHeight * frac;
 	if (lines <= 0)
@@ -972,27 +975,33 @@ void Con_DrawSolidConsole( float frac ) {
 		y = 0;
 	}
 	else {
-		colorBlack[0] = 0.0/255.0;
-		colorBlack[1] = 0.0/255.0;
-		colorBlack[2] = 0.0/255.0;
-		if (con_bgAlpha->integer >= 0 && con_bgAlpha->integer <= 100) {
-			colorBlack[3] = con_bgAlpha->integer/100.0;
+		if (con_bgColour->integer >= 0 && con_bgColour->integer < 10) {
+			bgColour[0] = g_color_table[con_bgColour->integer][0];
+			bgColour[1] = g_color_table[con_bgColour->integer][1];
+			bgColour[2] = g_color_table[con_bgColour->integer][2];
 		} else {
-			colorBlack[3] = 0.9;
+			bgColour[0] = 0.0;
+			bgColour[1] = 0.0;
+			bgColour[2] = 0.0;
 		}
-		SCR_FillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
+		if (con_bgAlpha->integer >= 0 && con_bgAlpha->integer <= 100) {
+			bgColour[3] = con_bgAlpha->integer/100.0;
+		} else {
+			bgColour[3] = 0.9;
+		}
+		SCR_FillRect(0, 0, SCREEN_WIDTH, y, bgColour);
 	}
 
-	colorBG[0] = 0.0/255.0;
-	colorBG[1] = 100.0/255.0;
-	colorBG[2] = 100.0/255.0;
-	colorBG[3] = 1;
-	SCR_FillRect(0, y, SCREEN_WIDTH, 2, colorBG);
+	lineColour[0] = 0.0/255.0;
+	lineColour[1] = 100.0/255.0;
+	lineColour[2] = 100.0/255.0;
+	lineColour[3] = 1;
+	SCR_FillRect(0, y, SCREEN_WIDTH, 2, lineColour);
 
 	// draw the version number
 
 	// re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
-	re.SetColor(colorBG);
+	re.SetColor(lineColour);
 
 	i = strlen( SVN_VERSION );
 
@@ -1015,7 +1024,7 @@ void Con_DrawSolidConsole( float frac ) {
 	if (con.display != con.current)
 	{
 	// draw arrows to show the buffer is backscrolled
-		re.SetColor(colorBG);
+		re.SetColor(lineColour);
 		for (x=0 ; x<con.linewidth ; x+=4)
 			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
 		y -= SMALLCHAR_HEIGHT;
