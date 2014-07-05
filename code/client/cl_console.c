@@ -69,6 +69,7 @@ cvar_t		*con_bgColour;
 cvar_t		*con_consolePrompt;
 cvar_t		*con_consoleHeight;
 cvar_t		*con_promptColour;
+cvar_t		*con_timePrompt;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -440,6 +441,7 @@ void Con_Init (void) {
 	con_consolePrompt = Cvar_Get("con_consolePrompt", "]", CVAR_ARCHIVE);
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
+	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -850,10 +852,24 @@ void Con_DrawInput (void) {
 		re.SetColor(g_color_table[con_promptColour->integer]);
 	}
 
-	int promptLen = strlen(con_consolePrompt->string);
+	int promptLen = strlen(con_consolePrompt->string) + 1;
 	int i;
+	char *prompt;
+
+	if (con_timePrompt->integer) {
+		qtime_t curTime;
+		Com_RealTime(&curTime);
+		prompt = Z_Malloc(promptLen + 11);
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+	} else {
+		prompt = Z_Malloc(promptLen);
+		Com_sprintf(prompt, promptLen, "%s", con_consolePrompt->string);
+	}
+
+	promptLen = strlen(prompt);
+
 	for (i = 0; i < promptLen; i++) {
-		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, con_consolePrompt->string[i]);
+		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, prompt[i]);
 	}
 
 	re.SetColor(con.color);

@@ -36,6 +36,7 @@ Client
    + `con_consoleHeight <0-100>` - Sets the console height in percent of the game window's height. Default is `50`
    + `con_bgColor <0-9>` - Sets the console background colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
    + `con_promptColor <0-9>` - Sets the console prompt colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
+   + `con_timePrompt <0|1>` - Adds a little time indicator to the console prompt. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
