@@ -994,6 +994,7 @@ void Cvar_Decrease_f(void) {
 	Cvar_SetValue(Cmd_Argv(1), oldval - decrval);
 }
 
+
 /*
 =====================
 Cvar_Find_f
@@ -1005,10 +1006,23 @@ void Cvar_Find_f(void) {
 		return;
 	}
 	cvar_t *cvar;
+	char *sub;
+	int subInd, i, subLen = strlen(Cmd_Argv(1));
+	char *subS = (char *)Z_Malloc(subLen + 1);
 
 	for (cvar = cvar_vars; cvar; cvar = cvar->next) {
-		if (Q_stristr(cvar->name, Cmd_Argv(1))) {
-			Com_Printf("%s: %s\n", cvar->name, cvar->string);
+		sub = Q_stristr(cvar->name, Cmd_Argv(1));
+		if (sub) {
+			subInd = sub - cvar->name;
+			for (i = 0; i < strlen(cvar->name); i++) {
+				if (i == subInd) {
+					Q_strncpyz(subS, &cvar->name[subInd], subLen + 1);
+					Com_Printf("^2%s^7", subS);
+					i += subLen;
+				}
+				Com_Printf("%c", cvar->name[i]);
+			}
+			Com_Printf(": %s\n", cvar->string);
 		}
 	}
 }
