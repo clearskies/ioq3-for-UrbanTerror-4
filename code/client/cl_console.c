@@ -68,6 +68,7 @@ cvar_t		*con_bgAlpha;
 cvar_t		*con_bgColour;
 cvar_t		*con_consolePrompt;
 cvar_t		*con_consoleHeight;
+cvar_t		*con_promptColour;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -438,6 +439,7 @@ void Con_Init (void) {
 	con_bgColour = Cvar_Get("con_bgColor", "0", CVAR_ARCHIVE);
 	con_consolePrompt = Cvar_Get("con_consolePrompt", "]", CVAR_ARCHIVE);
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
+	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -844,11 +846,17 @@ void Con_DrawInput (void) {
 
 	re.SetColor( con.color );
 
+	if (con_promptColour->integer >= 0 && con_promptColour->integer < 10) {
+		re.SetColor(g_color_table[con_promptColour->integer]);
+	}
+
 	int promptLen = strlen(con_consolePrompt->string);
 	int i;
 	for (i = 0; i < promptLen; i++) {
 		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, con_consolePrompt->string[i]);
 	}
+
+	re.SetColor(con.color);
 
 	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH, y,
 		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue);
