@@ -43,6 +43,7 @@ Client
    + `messagemoder` - Rcon message mode - enter and execute an rcon command without toggling the console
    + `randomRGB` - Randomly generates a new armband colour
    + `maplist` - Outputs the maps that the current server has available
+   + `findcvar <string>` - Finds all cvars with with the specified string in their names
 
 ### Other ###
    + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client

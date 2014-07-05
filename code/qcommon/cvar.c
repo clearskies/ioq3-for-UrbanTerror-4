@@ -994,6 +994,25 @@ void Cvar_Decrease_f(void) {
 	Cvar_SetValue(Cmd_Argv(1), oldval - decrval);
 }
 
+/*
+=====================
+Cvar_Find_f
+=====================
+*/
+void Cvar_Find_f(void) {
+	if (Cmd_Argc() < 2) {
+		Com_Printf("findcvar <string>: finds all cvars with the specified string in their names.\n");
+		return;
+	}
+	cvar_t *cvar;
+
+	for (cvar = cvar_vars; cvar; cvar = cvar->next) {
+		if (Q_stristr(cvar->name, Cmd_Argv(1))) {
+			Com_Printf("%s: %s\n", cvar->name, cvar->string);
+		}
+	}
+}
+
 
 /*
 ============
@@ -1016,4 +1035,6 @@ void Cvar_Init (void) {
 
 	Cmd_AddCommand ("cvar_incr", Cvar_Increase_f);
 	Cmd_AddCommand ("cvar_decr", Cvar_Decrease_f);
+
+	Cmd_AddCommand ("findcvar", Cvar_Find_f);
 }
