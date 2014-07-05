@@ -27,8 +27,8 @@ char *hitLog2[] = { //when you hit someone
 	"You hit %s in the Left Upper Leg for %s damage.",
 	"You hit %s in the Right Foot for %s damage.",
 	"You hit %s in the Left Foot for %s damage.",
-	"You hit %s in the Right Lower Leg %s damage.",
-	"You hit %s in the Left Lower Leg %s damage.",
+	"You hit %s in the Right Lower Leg for %s damage.",
+	"You hit %s in the Left Lower Leg for %s damage.",
 	"You hit %s in the Butt for %s damage.",
 	"You hit %s in the Groin for %s damage.",
 	NULL

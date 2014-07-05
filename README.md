@@ -31,7 +31,7 @@ Client
    + `r_drawLegs <0|1>` - Draws your legs. Default is `0`
    + `con_coloredKills <0|1>` - Colours players' names in console kill messages. Default is `0`
    + `con_bgAlpha <0-100>` - Sets the console background opacity. `0` is fully transparent and `100` is fully opaque. Default is `90`
-   + `con_coloredHits <0|1>` - Colours hit percentages in the console hit log. Default is `0`
+   + `con_coloredHits <0|1|2>` - Colours hit percentages in the console hit log. `1` will colour the damage values and `2` will colour player names as well. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
