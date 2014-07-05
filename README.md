@@ -38,6 +38,7 @@ Client
    + `con_promptColor <0-9>` - Sets the console prompt colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
    + `con_timePrompt <0|1>` - Adds a little time indicator to the console prompt. Default is `0`
    + `con_scrollLock <0|1>` - Keeps the console in place when a new line comes in. Default is `1`
+   + `con_drawScrollbar <0|1>` - Draws a scrollbar in the console to indicate your position in the scrollback. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value

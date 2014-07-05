@@ -71,6 +71,7 @@ cvar_t		*con_consoleHeight;
 cvar_t		*con_promptColour;
 cvar_t		*con_timePrompt;
 cvar_t		*con_scrollLock;
+cvar_t		*con_drawScrollbar;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -444,6 +445,7 @@ void Con_Init (void) {
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
+	con_drawScrollbar = Cvar_Get("con_drawScrollbar", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1066,6 +1068,37 @@ void Con_DrawSolidConsole( float frac ) {
 	if ( con.x == 0 ) {
 		row--;
 	}
+
+
+	//-------------------------------------------------------------------------
+	if (con_drawScrollbar->integer) {
+		vec4_t scrollbarBG;
+		scrollbarBG[0] = scrollbarBG[1] = scrollbarBG[2] = 1;
+		scrollbarBG[3] = 0.2;
+
+		int scrollbarBGHeight;
+		int visibleHeight;
+		int scrollbarPos;
+		int totalLines = con.current;
+		int visible = rows;
+
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
+			scrollbarBGHeight = ((con_consoleHeight->integer/100.0) * SCREEN_HEIGHT) - 60;
+		} else {
+			scrollbarBGHeight = 180;
+		}
+
+		if (scrollbarBGHeight >= 10) {
+			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
+			scrollbarPos = (con.display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
+			
+			SCR_FillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
+			scrollbarBG[3] = 0.8;
+			SCR_FillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
+		}
+	}
+	//-------------------------------------------------------------------------
+
 
 	currentColor = 7;
 	re.SetColor( g_color_table[currentColor] );
