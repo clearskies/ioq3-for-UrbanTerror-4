@@ -44,6 +44,7 @@ typedef struct {
 	int		totallines;		// total lines in console scrollback
 
 	float	xadjust;		// for wide aspect screens
+	float   yadjust;
 
 	float	displayFrac;	// aproaches finalFrac at scr_conspeed
 	float	finalFrac;		// 0.0 to 1.0 lines of console to display
@@ -73,6 +74,7 @@ cvar_t		*con_timePrompt;
 cvar_t		*con_scrollLock;
 cvar_t		*con_drawScrollbar;
 cvar_t		*con_fadeIn;
+cvar_t		*con_margin;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -112,6 +114,11 @@ void SCR_AdjustedFillRect(float x, float y, float width, float height, const flo
 
 	SCR_FillRect(x, y, width, height, c);
 }
+
+#define BOX_MARGIN 30
+
+int adjustedScreenWidth = SCREEN_WIDTH;
+int margin = 0;
 	
 
 /*
@@ -402,7 +409,7 @@ void Con_CheckResize (void)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	short	tbuf[CON_TEXTSIZE];
 
-	width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
+	width = (adjustedScreenWidth / SMALLCHAR_WIDTH) - 2;
 
 	if (width == con.linewidth)
 		return;
@@ -413,7 +420,6 @@ void Con_CheckResize (void)
 		con.linewidth = width;
 		con.totallines = CON_TEXTSIZE / con.linewidth;
 		for(i=0; i<CON_TEXTSIZE; i++)
-
 			con.text[i] = (ColorIndex(COLOR_WHITE)<<8) | ' ';
 	}
 	else
@@ -480,6 +486,7 @@ void Con_Init (void) {
 	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
 	con_drawScrollbar = Cvar_Get("con_drawScrollbar", "0", CVAR_ARCHIVE);
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
+	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -911,14 +918,14 @@ void Con_DrawInput (void) {
 	promptLen = strlen(prompt);
 
 	for (i = 0; i < promptLen; i++) {
-		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, prompt[i]);
+		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin *2, prompt[i]);
 	}
 
 	Con_RE_SetColor(con.color);
 
 	if (opacityMult)
-	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH, y,
-		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue);
+	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2,
+		adjustedScreenWidth - 3 * SMALLCHAR_WIDTH, qtrue);
 }
 
 
@@ -1001,7 +1008,7 @@ void Con_DrawNotify (void)
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-			SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue );
+			adjustedScreenWidth - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue );
 
 		v += BIGCHAR_HEIGHT;
 	}
@@ -1032,6 +1039,9 @@ void Con_DrawSolidConsole( float frac ) {
 	if (lines > cls.glconfig.vidHeight )
 		lines = cls.glconfig.vidHeight;
 
+	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50)
+		lines -= margin - SMALLCHAR_HEIGHT;
+
 	// on wide screens, we will center the text
 	con.xadjust = 0;
 	SCR_AdjustFrom640( &con.xadjust, NULL, NULL, NULL );
@@ -1056,14 +1066,26 @@ void Con_DrawSolidConsole( float frac ) {
 		} else {
 			bgColour[3] = 0.9;
 		}
-		SCR_AdjustedFillRect(0, 0, SCREEN_WIDTH, y, bgColour);
+		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, y, bgColour);
 	}
 
 	lineColour[0] = 0.0/255.0;
 	lineColour[1] = 100.0/255.0;
 	lineColour[2] = 100.0/255.0;
 	lineColour[3] = 1;
-	SCR_AdjustedFillRect(0, y, SCREEN_WIDTH, 2, lineColour);
+	
+	if (margin) {
+		int conPixHeight = 480;
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
+			conPixHeight = con_consoleHeight->integer/100.0 * SCREEN_HEIGHT;
+		}
+		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
+		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight, lineColour);
+		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight, lineColour);
+		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 1, lineColour);
+	} else {
+		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, lineColour);
+	}
 
 	// draw the version number
 
@@ -1074,9 +1096,9 @@ void Con_DrawSolidConsole( float frac ) {
 
 	for (x=0 ; x<i ; x++) {
 
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH, 
+		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH - margin * 2, 
 
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)), SVN_VERSION[x] );
+			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin, SVN_VERSION[x] );
 
 	}
 
@@ -1093,7 +1115,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw arrows to show the buffer is backscrolled
 		Con_RE_SetColor(lineColour);
 		for (x=0 ; x<con.linewidth ; x+=4)
-			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
+			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH + margin, y + margin * 2, '^' );
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
@@ -1127,9 +1149,9 @@ void Con_DrawSolidConsole( float frac ) {
 			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
 			scrollbarPos = (con.display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
 			
-			SCR_AdjustedFillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618 - margin, margin + 30, 2, scrollbarBGHeight, scrollbarBG);
 			scrollbarBG[3] = 0.8;
-			SCR_AdjustedFillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618 - margin, margin + 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -1140,6 +1162,10 @@ void Con_DrawSolidConsole( float frac ) {
 
 	for (i=0 ; i<rows ; i++, y -= SMALLCHAR_HEIGHT, row--)
 	{
+		if (margin && y < (margin / 8)) {
+			break;
+		}
+
 		if (row < 0)
 			break;
 		if (con.current - row >= con.totallines) {
@@ -1158,7 +1184,7 @@ void Con_DrawSolidConsole( float frac ) {
 				currentColor = (text[x] >> 8) % 10;
 				Con_RE_SetColor( g_color_table[currentColor] );
 			}
-			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, text[x] & 0xff );
+			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2, text[x] & 0xff );
 		}
 	}
 
@@ -1207,6 +1233,15 @@ Scroll it up or down
 ==================
 */
 void Con_RunConsole (void) {
+	adjustedScreenWidth = SCREEN_WIDTH;
+	margin = 0;
+	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50) {
+		Cvar_Set("con_fadeIn", "1");
+		adjustedScreenWidth = SCREEN_WIDTH - con_margin->integer * 2;
+		margin = con_margin->integer;
+		con.yadjust = margin;
+	}
+
 	// decide on the destination height of the console
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
 		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)

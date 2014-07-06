@@ -41,6 +41,7 @@ Client
    + `con_drawScrollbar <0|1>` - Draws a scrollbar in the console to indicate your position in the scrollback. Default is `0`
    + `cl_consoleCommand ""` - Sets the command that will be automatically run when no command prefix (`/` or `\`) is entered. Default is `say`
    + `con_fadeIn <0|1>` - Fades the console in/out instead of sliding it down/up. Default is `0`
+   + `con_margin <0-50>` - Adds a margin to the top, left, and right sides of the console. If this is greater than `0`, then the console will become a box. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
