@@ -471,7 +471,7 @@ void Con_Init (void) {
 	int		i;
 
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
-	con_conspeed = Cvar_Get ("scr_conspeed", "30", 0);
+	con_conspeed = Cvar_Get ("scr_conspeed", "30", CVAR_ARCHIVE);
 
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
