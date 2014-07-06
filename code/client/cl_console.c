@@ -68,7 +68,7 @@ cvar_t		*con_coloredHits;
 cvar_t		*con_bgAlpha;
 cvar_t		*con_bgColour;
 cvar_t		*con_prompt;
-cvar_t		*con_consoleHeight;
+cvar_t		*con_height;
 cvar_t		*con_promptColour;
 cvar_t		*con_timePrompt;
 cvar_t		*con_scrollLock;
@@ -480,7 +480,7 @@ void Con_Init (void) {
 	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
 	con_bgColour = Cvar_Get("con_bgColor", "0", CVAR_ARCHIVE);
 	con_prompt = Cvar_Get("con_prompt", "]", CVAR_ARCHIVE);
-	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
+	con_height = Cvar_Get("con_height", "50", CVAR_ARCHIVE);
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
@@ -1076,8 +1076,8 @@ void Con_DrawSolidConsole( float frac ) {
 	
 	if (margin) {
 		int conPixHeight = 480;
-		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
-			conPixHeight = con_consoleHeight->integer/100.0 * SCREEN_HEIGHT;
+		if (con_height->integer >= 0 && con_height->integer <= 100) {
+			conPixHeight = con_height->integer/100.0 * SCREEN_HEIGHT;
 		}
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
 		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, lineColour);
@@ -1139,8 +1139,8 @@ void Con_DrawSolidConsole( float frac ) {
 		int totalLines = con.current;
 		int visible = rows;
 
-		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
-			scrollbarBGHeight = ((con_consoleHeight->integer/100.0) * SCREEN_HEIGHT) - 60;
+		if (con_height->integer >= 0 && con_height->integer <= 100) {
+			scrollbarBGHeight = ((con_height->integer/100.0) * SCREEN_HEIGHT) - 60;
 		} else {
 			scrollbarBGHeight = 180;
 		}
@@ -1244,8 +1244,8 @@ void Con_RunConsole (void) {
 
 	// decide on the destination height of the console
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
-		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
-			con.finalFrac = con_consoleHeight->integer / 100.0;
+		if (con_height->integer >= 0 && con_height->integer <= 100)
+			con.finalFrac = con_height->integer / 100.0;
 		else 
 			con.finalFrac = 0.5;		// half screen
 
@@ -1268,8 +1268,8 @@ void Con_RunConsole (void) {
 				opacityMult = targetOpacityMult;
 		}
 
-		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
-			con.finalFrac = con_consoleHeight->integer / 100.0;
+		if (con_height->integer >= 0 && con_height->integer <= 100)
+			con.finalFrac = con_height->integer / 100.0;
 		else 
 			con.finalFrac = 0.5;		// half screen
 		con.displayFrac = con.finalFrac;

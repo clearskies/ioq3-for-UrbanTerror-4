@@ -33,7 +33,7 @@ Client
    + `con_bgAlpha <0-100>` - Sets the console background opacity. `0` is fully transparent and `100` is fully opaque. Default is `90`
    + `con_coloredHits <0|1|2>` - Colours hit percentages in the console hit log. `1` will colour the damage values and `2` will colour player names as well. Default is `0`
    + `con_prompt ""` - Sets the prompt for the console. Default is `]`
-   + `con_consoleHeight <0-100>` - Sets the console height in percent of the game window's height. Default is `50`
+   + `con_height <0-100>` - Sets the console height in percent of the game window's height. Default is `50`
    + `con_bgColor <0-9>` - Sets the console background colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
    + `con_promptColor <0-9>` - Sets the console prompt colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
    + `con_timePrompt <0|1>` - Adds a little time indicator to the console prompt. Default is `0`
