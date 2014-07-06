@@ -1071,7 +1071,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 
 	//-------------------------------------------------------------------------
-	if (con_drawScrollbar->integer) {
+	if (con_drawScrollbar->integer && con.displayFrac == con.finalFrac) {
 		vec4_t scrollbarBG;
 		scrollbarBG[0] = scrollbarBG[1] = scrollbarBG[2] = 1;
 		scrollbarBG[3] = 0.2;
