@@ -40,6 +40,7 @@ Client
    + `con_scrollLock <0|1>` - Keeps the console in place when a new line comes in. Default is `1`
    + `con_drawScrollbar <0|1>` - Draws a scrollbar in the console to indicate your position in the scrollback. Default is `0`
    + `cl_consoleCommand ""` - Sets the command that will be automatically run when no command prefix (`/` or `\`) is entered. Default is `say`
+   + `con_fadeIn <0|1>` - Fades the console in/out instead of sliding it down/up. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
