@@ -1080,8 +1080,8 @@ void Con_DrawSolidConsole( float frac ) {
 			conPixHeight = con_consoleHeight->integer/100.0 * SCREEN_HEIGHT;
 		}
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
-		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight, lineColour);
-		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight, lineColour);
+		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, lineColour);
+		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight - 1, lineColour);
 		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 1, lineColour);
 	} else {
 		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, lineColour);
