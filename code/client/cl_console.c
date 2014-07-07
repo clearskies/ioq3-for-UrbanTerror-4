@@ -75,6 +75,7 @@ cvar_t		*con_scrollLock;
 cvar_t		*con_drawScrollbar;
 cvar_t		*con_fadeIn;
 cvar_t		*con_margin;
+cvar_t		*con_showVersion;
 
 cvar_t		*con_nochat;
 qboolean suppressNext = qfalse;
@@ -487,6 +488,7 @@ void Con_Init (void) {
 	con_drawScrollbar = Cvar_Get("con_drawScrollbar", "0", CVAR_ARCHIVE);
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
+	con_showVersion = Cvar_Get("con_showVersion", "1", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1089,16 +1091,13 @@ void Con_DrawSolidConsole( float frac ) {
 	// Con_RE_SetColor( g_color_table[ColorIndex(COLOR_RED)] );
 	Con_RE_SetColor(lineColour);
 
-	i = strlen( SVN_VERSION );
-
-	for (x=0 ; x<i ; x++) {
-
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH - margin * 2, 
-
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin, SVN_VERSION[x] );
-
+	if (con_showVersion && con_showVersion->integer) {
+		i = strlen( SVN_VERSION );
+		for (x=0 ; x<i ; x++) {
+			SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH - margin * 2, 
+				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin, SVN_VERSION[x] );
+		}
 	}
-
 
 	// draw the text
 	con.vislines = lines;
