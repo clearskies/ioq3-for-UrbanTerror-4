@@ -13,7 +13,6 @@ Client
    + `s_soundhax <0|1>` - Disables background and looping sounds. Default is `0`. ***Warning: this is frowned upon or prohibited in most, if not all, leagues. Use at your own discretion***
    + `s_debug <0|1>` - Enables output of sounds being played. Default is `0`
    + `com_nosplash <0|1>` - Disables the FrozenSand animation. Default is `0`
-   + `con_nochat <0|1|2|3>` - Disables console chat output. `1` will disable public chat, `2` will disable teamchat, and `3` will disable both public and teamchat. Default is `0`
    + `s_chatsound <0|1>` - Enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM. Default is `1`
    + `cl_drawHealth <0|1>` - Enables health percentage display on the HUD. Default is `0`
    + `r_noBorder <0|1>` - Disables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1. Default is `0`
@@ -62,6 +61,7 @@ Client
 
 ### Other ###
    + Supports combo binds (binds involving two keys). Use the commands `cbind`, `cunbind`, `cbindlist`, and `cunbindall`. This currently does not work with `+` commands.
+   + Console tabs. Tabs separate the console into three areas: `Main`, `Misc`, and `Chat`. `Main` has all the console output, `Chat` has all the chat messages, and `Misc` has everything not in `Chat`. Use `Shift + LEFTARROW` and `Shift + RIGHTARROW` to navigate between tabs.
 
 **********
 
