@@ -55,11 +55,13 @@ Client
    + `randomRGB` - Randomly generates a new armband colour
    + `maplist` - Outputs the maps that the current server has available
    + `findcvar <string>` - Finds all cvars with with the specified string in their names
+   + `cbind <key1> <key2> [action]` - Binds an action to a key combo or outputs the bound action of a key combo
+   + `cunbind <key1> <key2>` - Unbinds an action from a key combo
+   + `cbindlist` - Lists all combo binds
+   + `cunbindall` - Unbinds all combo binds
 
 ### Other ###
-   + <del>Paste support on Linux (Ctrl-V)</del> - This has been integrated into the official client
-   + <del>Paste support on Mac (Ctrl-V; Command-V doesn't work)</del> - This has been integrated into the official client
-   + <del>Can sort of auto switch between 4.2 and 4.1 assets. This feature is experimental and may cause some interesting game behaviour. To use it, rename your 4.1 q3ut4 folder to q3ut41 and copy the folder into your game directory. When connecting to a 4.1 server, you'll still get an "Invalid game folder" error. Just reconnect, and it should work. Reconnects automatically now!</del> Very messy, so I removed it.
+   + Supports combo binds (binds involving two keys). Use the commands `cbind`, `cunbind`, `cbindlist`, and `cunbindall`. This currently does not work with `+` commands.
 
 **********
 

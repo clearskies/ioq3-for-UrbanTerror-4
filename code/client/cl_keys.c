@@ -297,6 +297,14 @@ keyname_t keynames[] =
 	{NULL,0}
 };
 
+typedef struct {
+	int key1, key2;
+	char *binding;
+} comboBind;
+
+comboBind cbinds[MAX_KEYS * MAX_KEYS];
+int numCbinds = 0;
+
 /*
 =============================================================================
 
@@ -1112,9 +1120,17 @@ void Key_WriteBindings( fileHandle_t f ) {
 	for (i=0 ; i<MAX_KEYS ; i++) {
 		if (keys[i].binding && keys[i].binding[0] ) {
 			FS_Printf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keys[i].binding);
-
 		}
+	}
 
+	FS_Printf(f, "cunbindall\n");
+	char k1[16], k2[16];
+	for (i = 0; i < numCbinds; i++) {
+		if (cbinds[i].binding[0]) {
+			Com_sprintf(k1, 16, "%s", Key_KeynumToString(cbinds[i].key1));
+			Com_sprintf(k2, 16, "%s", Key_KeynumToString(cbinds[i].key2));
+			FS_Printf(f, "cbind %s %s \"%s\"\n", k1, k2, cbinds[i].binding);
+		}
 	}
 }
 
@@ -1148,6 +1164,121 @@ void Key_KeynameCompletion( void(*callback)(const char *s) ) {
 }
 
 /*
+============
+Key_ComboBind
+============
+*/
+void Key_ComboBind_f() {
+	if (Cmd_Argc() < 3) {
+		Com_Printf("Usage: cbind <key1> <key2> [action]\n");
+		return;
+	}
+
+	int i, bindingLength;
+	int k1, k2;
+	k1 = Key_StringToKeynum(Cmd_Argv(1));
+	k2 = Key_StringToKeynum(Cmd_Argv(2));
+
+	if (k1 < 0) {
+		Com_Printf("\"%s\" is not a valid key.\n", Cmd_Argv(1));
+		return;
+	} else if (k2 < 0) {
+		Com_Printf("\"%s\" is not a valid key.\n", Cmd_Argv(2));
+		return;
+	}
+
+	if (Cmd_Argc() < 4) { // Print the binding (if any)
+		for (i = 0; i < numCbinds; i++) {
+			if (cbinds[i].key1 == k1 && cbinds[i].key2 == k2) {
+				Com_Printf("%s + %s = %s\n", Cmd_Argv(1), Cmd_Argv(2), cbinds[i].binding);
+				return;
+			}
+		}
+		Com_Printf("%s + %s is not bound.\n", Cmd_Argv(1), Cmd_Argv(2));
+		return;
+	}
+
+	bindingLength = strlen(Cmd_ArgsFrom(3)) + 1;
+	for (i = 0; i < numCbinds; i++) {
+		if (cbinds[i].key1 == k1 && cbinds[i].key2 == k2) {
+			Z_Free(cbinds[i].binding);
+			cbinds[i].binding = Z_Malloc(bindingLength);
+			Com_sprintf(cbinds[i].binding, bindingLength, "%s", Cmd_ArgsFrom(3));
+			cvar_modifiedFlags |= CVAR_ARCHIVE;
+			return;
+		}
+	}
+
+	cbinds[numCbinds].key1 = k1;
+	cbinds[numCbinds].key2 = k2;
+	cbinds[numCbinds].binding = Z_Malloc(bindingLength);
+	Com_sprintf(cbinds[numCbinds].binding, bindingLength, "%s", Cmd_ArgsFrom(3));
+	numCbinds++;
+
+	cvar_modifiedFlags |= CVAR_ARCHIVE;
+}
+
+/*
+============
+Key_ComboUnbind
+============
+*/
+void Key_ComboUnbind_f() {
+	if (Cmd_Argc() < 3) {
+		Com_Printf("Usage: cunbind <key1> <key2>\n");
+		return;
+	}
+
+	int i, bindingLength;
+	int k1, k2;
+	k1 = Key_StringToKeynum(Cmd_Argv(1));
+	k2 = Key_StringToKeynum(Cmd_Argv(2));
+
+	if (k1 < 0) {
+		Com_Printf("\"%s\" is not a valid key.\n", Cmd_Argv(1));
+		return;
+	} else if (k2 < 0) {
+		Com_Printf("\"%s\" is not a valid key.\n", Cmd_Argv(2));
+		return;
+	}
+
+	for (i = 0; i < numCbinds; i++) {
+		if (cbinds[i].key1 == k1 && cbinds[i].key2 == k2) {
+			cbinds[i].binding[0] = 0;
+			cvar_modifiedFlags |= CVAR_ARCHIVE;
+			return;
+		}
+	}
+}
+
+/*
+============
+Key_ComboBindList
+============
+*/
+void Key_ComboBindList_f() {
+	int i;
+	char k1[16], k2[16];
+	for (i = 0; i < numCbinds; i++) {
+		if (!cbinds[i].binding[0])
+			continue;
+
+		Com_sprintf(k1, 16, "%s", Key_KeynumToString(cbinds[i].key1));
+		Com_sprintf(k2, 16, "%s", Key_KeynumToString(cbinds[i].key2));
+		Com_Printf("%s + %s = %s\n", k1, k2, cbinds[i].binding);
+	}
+}
+
+/*
+============
+Key_ComboUnbindAll
+============
+*/
+void Key_ComboUnbindAll_f() {
+	numCbinds = 0;
+}
+
+/*
 ===================
 CL_InitKeyCommands
 ===================
@@ -1160,6 +1291,11 @@ void CL_InitKeyCommands( void ) {
 	Cmd_AddCommand ("bindlist",Key_Bindlist_f);
 
 	Cmd_AddCommand ("rebind", Key_Rebind_f);
+
+	Cmd_AddCommand("cbind", Key_ComboBind_f);
+	Cmd_AddCommand("cunbind", Key_ComboUnbind_f);
+	Cmd_AddCommand("cunbindall", Key_ComboUnbindAll_f);
+	Cmd_AddCommand("cbindlist", Key_ComboBindList_f);
 }
 
 /*
@@ -1202,6 +1338,15 @@ void CL_AddKeyUpCommands( int key, char *kb, unsigned time) {
 		*buttonPtr++ = kb[i];
 		if ( !kb[i] ) {
 			break;
+		}
+	}
+
+	for (i = 0; i < numCbinds; i++) {
+		if (key == cbinds[i].key2 && keys[cbinds[i].key1].down) {
+			if (cbinds[i].binding[0] == '+') {
+				Com_sprintf(cmd, sizeof(cmd), "-%s %i %i\n", cbinds[i].binding + 1, key, time);
+				Cbuf_AddText(cmd);
+			}
 		}
 	}
 }
@@ -1356,6 +1501,14 @@ void CL_KeyEvent (int key, qboolean down, unsigned time) {
 	} else if ( cls.state == CA_DISCONNECTED ) {
 		Console_Key( key );
 	} else {
+		int i;
+		for (i = 0; i < numCbinds; i++) {
+			if (key == cbinds[i].key2 && keys[cbinds[i].key1].down) {
+				Cbuf_AddText(cbinds[i].binding);
+				Cbuf_AddText("\n");
+			}
+		}
+
 		// send the bound action
 		kb = keys[key].binding;
 		if ( !kb ) {
