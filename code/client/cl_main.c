@@ -4101,6 +4101,7 @@ void CL_Maplist_f(void) {
   paks = Info_ValueForKey(sysInfo, "sv_pakNames");
 
   Com_Printf("Current server maplist:\n-----------------------\n");
+  Com_Printf("ut4_abbey\nut4_abbeyctf\nut4_algiers\nut4_ambush\nut4_austria\nut4_bohemia\nut4_casa\nut4_cascade\nut4_commune\nut4_company\nut4_crossing\nut4_docks\nut4_dressingroom\nut4_eagle\nut4_elgin\nut4_ghosttown_rc4\nut4_harbortown\nut4_jumpents\nut4_kingdom\nut4_mandolin\nut4_maya\nut4_oildepot\nut4_prague\nut4_prague_v2\nut4_raiders\nut4_ramelle\nut4_ricochet\nut4_riyadh\nut4_sanc\nut4_snoppis\nut4_suburbs\nut4_subway\nut4_swim\nut4_thingley\nut4_toxic\nut4_tunis\nut4_turnpike\nut4_uptown\n");
 
   map = strtok(paks, " ");
   while (map != NULL) {
