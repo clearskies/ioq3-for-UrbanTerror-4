@@ -209,18 +209,33 @@ not have future usercmd_t executed before it is executed
 */
 void CL_AddReliableCommand( const char *cmd ) {
   int   index;
-  char *s;
+  char *s, *pName, *teamName, *serverInfo;
   char health[4];
-  char *pname;
 
   s = Z_Malloc(strlen(cmd) + 1);
   Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
 
   Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+  pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+
+  serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
+  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+    teamName = Info_ValueForKey(serverInfo, "g_teamnamered");
+    if (!teamName)
+      teamName = "Red Dragons";
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+    teamName = Info_ValueForKey(serverInfo, "g_teamnameblue");
+    if (!teamName)
+      teamName = "SWAT";
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
+    teamName = "Free!";
+  } else {
+    teamName = "Spectator";
+  }
 
   s = replaceToken(s, "hp", health);
-  s = replaceToken(s, "p", pname);
+  s = replaceToken(s, "p", pName);
+  s = replaceToken(s, "team", teamName);
 
   cmd = s;
 

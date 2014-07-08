@@ -59,7 +59,10 @@ Client
 ### Other ###
    + Supports combo binds (binds involving two keys). Use the commands `cbind`, `cunbind`, `cbindlist`, and `cunbindall`. This currently does not work with `+` commands.
    + Console tabs. Tabs separate the console into three areas: `Main`, `Misc`, and `Chat`. `Main` has all the console output, `Chat` has all the chat messages, and `Misc` has everything not in `Chat`. Use `Shift + LEFTARROW` and `Shift + RIGHTARROW` to navigate between tabs.
-   + Substitutes `$hp` for your actual health and substitutes `$p` for the current playername
+   + Chat variables:
+      + `$hp` - Current health (in percent)
+      + `$p` - Current player name
+      + `$team` - Current team
 
 **********
 
