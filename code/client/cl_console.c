@@ -28,14 +28,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 int g_console_field_width = 78;
 
-	
-console_t	mainConsole;
-console_t	generalConsole;
-console_t	chatConsole;
+console_t consoles[4];
+int currentConsoleNum = 0;
+console_t	*currentCon = &consoles[0];
+char *consoleNames[] = {
+	"All",
+	"General",
+	"Kills/Hits",
+	"Chat",
+};
+int numConsoles = 4;
 
 qboolean chatNext = qfalse; // Used to send the \n that follows a chat message to the chat console
-
-console_t	*currentCon = &mainConsole;
+qboolean hitNext = qfalse;
+qboolean killNext = qfalse;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
@@ -61,6 +67,7 @@ vec4_t	console_color = {1.0, 1.0, 1.0, 1.0};
 
 float opacityMult = 1;
 float targetOpacityMult = 1;
+
 void Con_RE_SetColor(vec4_t colour) {
 	vec4_t c;
 	if (colour) {
@@ -438,23 +445,17 @@ void Con_CheckResize (console_t *console)
 }
 
 void Con_PrevTab() {
-	if (currentCon == &mainConsole) {
-		currentCon = &chatConsole;
-	} else if (currentCon == &generalConsole) {
-		currentCon = &mainConsole;
-	} else {
-		currentCon = &generalConsole;
-	}
+	currentConsoleNum--;
+	if (currentConsoleNum < 0)
+		currentConsoleNum = numConsoles - 1;
+	currentCon = &consoles[currentConsoleNum];
 }
 
 void Con_NextTab() {
-	if (currentCon == &mainConsole) {
-		currentCon = &generalConsole;
-	} else if (currentCon == &generalConsole) {
-		currentCon = &chatConsole;
-	} else {
-		currentCon = &mainConsole;
-	}
+	currentConsoleNum++;
+	if (currentConsoleNum == numConsoles)
+		currentConsoleNum = 0;
+	currentCon = &consoles[currentConsoleNum];
 }
 
 /*
@@ -646,14 +647,16 @@ If no console is visible, the text will appear at the top of the game window
 void CL_ConsolePrint( char *txt ) {
 
 	qboolean skipnotify = qfalse;		// NERVE - SMF
-
+	int i;
 
 	// For tabs
 	qboolean isChat = chatNext;
+	qboolean isHit = hitNext;
+	qboolean isKill = killNext;
 
-	if (chatNext) {
-		chatNext = qfalse;
-	}
+	chatNext = qfalse;
+	hitNext = qfalse;
+	killNext = qfalse;
 
 	// TTimo - prefix for text that shows up in console but not in notify
 	// backported from RTCW
@@ -667,37 +670,19 @@ void CL_ConsolePrint( char *txt ) {
 		return;
 	}
 
-	if (!mainConsole.initialized) {
-		mainConsole.color[0] = 
-		mainConsole.color[1] = 
-		mainConsole.color[2] =
-		mainConsole.color[3] = 1.0f;
-		mainConsole.linewidth = -1;
-		Con_CheckResize (&mainConsole);
-		mainConsole.initialized = qtrue;
+	for (i = 0; i < numConsoles; i++) {
+		if (!consoles[i].initialized) {
+			consoles[i].color[0] = 
+			consoles[i].color[1] = 
+			consoles[i].color[2] =
+			consoles[i].color[3] = 1.0f;
+			consoles[i].linewidth = -1;
+			Con_CheckResize (&consoles[i]);
+			consoles[i].initialized = qtrue;
+		}
 	}
 
-	if (!generalConsole.initialized) {
-		generalConsole.color[0] = 
-		generalConsole.color[1] = 
-		generalConsole.color[2] =
-		generalConsole.color[3] = 1.0f;
-		generalConsole.linewidth = -1;
-		Con_CheckResize (&generalConsole);
-		generalConsole.initialized = qtrue;
-	}
-	
-	if (!chatConsole.initialized) {
-		chatConsole.color[0] = 
-		chatConsole.color[1] = 
-		chatConsole.color[2] =
-		chatConsole.color[3] = 1.0f;
-		chatConsole.linewidth = -1;
-		Con_CheckResize (&chatConsole);
-		chatConsole.initialized = qtrue;
-	}
-
-	int i, team;
+	int team;
 	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
 	char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
 	char newtxt[MAX_STRING_CHARS + 1];
@@ -707,7 +692,7 @@ void CL_ConsolePrint( char *txt ) {
 		chatNext = qtrue;
 	}
 
-	if (cls.state == CA_ACTIVE && con_coloredKills && con_coloredKills->integer) {
+	if (cls.state == CA_ACTIVE ) {
 		char **search;
 		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
@@ -727,24 +712,29 @@ void CL_ConsolePrint( char *txt ) {
 
 				if (sscanf(txt, search[i], player1, player2) == 2) {
 					found = 1;
-					if (killLogNum == 1) {
-						temp = strlen(player2);
-						if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
-							player2[temp - 2] = 0;
+					isKill = qtrue;
+					killNext = qtrue;
+					if (con_coloredKills && con_coloredKills->integer) {
+						if (killLogNum == 1) {
+							temp = strlen(player2);
+							if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
+								player2[temp - 2] = 0;
+							}
+						} else if (killLogNum > 1) {
+							temp = strlen(player2);
+							player2[temp - 1] = 0;
 						}
-					} else if (killLogNum > 1) {
-						temp = strlen(player2);
-						player2[temp - 1] = 0;
+
+						team = nameToTeamColour(player1);
+						sprintf(nplayer1, "^%i%s^7", team, player1);
+
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+
+						sprintf(newtxt, search[i], nplayer1, nplayer2);
+						txt = newtxt;
+						
 					}
-
-					team = nameToTeamColour(player1);
-					sprintf(nplayer1, "^%i%s^7", team, player1);
-
-					team = nameToTeamColour(player2);
-					sprintf(nplayer2, "^%i%s^7", team, player2);
-
-					sprintf(newtxt, search[i], nplayer1, nplayer2);
-					txt = newtxt;
 					break;
 				}
 			}
@@ -756,11 +746,15 @@ void CL_ConsolePrint( char *txt ) {
 					}
 
 					if (sscanf(txt, killLogSingle[i], player1, player2) == 2) {
-						team = nameToTeamColour(player1);
-						sprintf(nplayer1, "^%i%s^7", team, player1);
+						isKill = qtrue;
+						killNext = qtrue;
+						if (con_coloredKills && con_coloredKills->integer) {
+							team = nameToTeamColour(player1);
+							sprintf(nplayer1, "^%i%s^7", team, player1);
 
-						sprintf(newtxt, killLogSingle[i], nplayer1, player2);
-						txt = newtxt;
+							sprintf(newtxt, killLogSingle[i], nplayer1, player2);
+							txt = newtxt;
+						}
 						break;
 					}
 				}
@@ -769,7 +763,7 @@ void CL_ConsolePrint( char *txt ) {
 		}
 	}
 
-	if (cls.state == CA_ACTIVE && con_coloredHits && con_coloredHits->integer && Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
+	if (cls.state == CA_ACTIVE && Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
 		char damageString[12];
 		int damage, damageCol;
  
@@ -778,23 +772,27 @@ void CL_ConsolePrint( char *txt ) {
 					break;
  
 			if (sscanf(txt, hitLog1[i], player1, player2, damageString) == 3) {
-				damage = atoi(damageString);
-				damageCol = damageToColour(damage);
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
 
-				if (con_coloredHits->integer == 2) {
-					team = nameToTeamColour(player1);
-					sprintf(nplayer1, "^%i%s^7", team, player1);
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player1);
+						sprintf(nplayer1, "^%i%s^7", team, player1);
 
-					team = nameToTeamColour(player2);
-					sprintf(nplayer2, "^%i%s^7", team, player2);
-				} else {
-					sprintf(nplayer1, "%s", player1);
-					sprintf(nplayer2, "%s", player2);
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer1, "%s", player1);
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, hitLog1[i], nplayer1, nplayer2, damageString);
+					txt = newtxt;
 				}
-
-				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog1[i], nplayer1, nplayer2, damageString);
-				txt = newtxt;
 				break;
 			}
 		}
@@ -804,23 +802,27 @@ void CL_ConsolePrint( char *txt ) {
 					break;
  
 			if (sscanf(txt, hitLog2[i], player1, player2, damageString) == 3) {
-				damage = atoi(damageString);
-				damageCol = damageToColour(damage);
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
 
-				if (con_coloredHits->integer == 2) {
-					team = nameToTeamColour(player1);
-					sprintf(nplayer1, "^%i%s^7", team, player1);
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player1);
+						sprintf(nplayer1, "^%i%s^7", team, player1);
 
-					team = nameToTeamColour(player2);
-					sprintf(nplayer2, "^%i%s^7", team, player2);
-				} else {
-					sprintf(nplayer1, "%s", player1);
-					sprintf(nplayer2, "%s", player2);
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer1, "%s", player1);
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, hitLog2[i], nplayer1, nplayer2, damageString);
+					txt = newtxt;
 				}
-
-				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog2[i], nplayer1, nplayer2, damageString);
-				txt = newtxt;
 				break;
 			}
 		}
@@ -830,19 +832,23 @@ void CL_ConsolePrint( char *txt ) {
 					break;
  
 			if (sscanf(txt, hitLog3[i], player2, damageString) == 2) {
-				damage = atoi(damageString);
-				damageCol = damageToColour(damage);
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
 
-				if (con_coloredHits->integer == 2) {
-					team = nameToTeamColour(player2);
-					sprintf(nplayer2, "^%i%s^7", team, player2);
-				} else {
-					sprintf(nplayer2, "%s", player2);
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, hitLog3[i], nplayer2, damageString);
+					txt = newtxt;
 				}
-
-				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog3[i], nplayer2, damageString);
-				txt = newtxt;
 				break;
 			}
 		}
@@ -852,32 +858,37 @@ void CL_ConsolePrint( char *txt ) {
 					break;
  
 			if (sscanf(txt, hitLog4[i], player2, damageString) == 2) {
-				damage = atoi(damageString);
-				damageCol = damageToColour(damage);
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
 
-				if (con_coloredHits->integer == 2) {
-					team = nameToTeamColour(player2);
-					sprintf(nplayer2, "^%i%s^7", team, player2);
-				} else {
-					sprintf(nplayer2, "%s", player2);
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, hitLog4[i], nplayer2, damageString);
+					txt = newtxt;
 				}
-
-				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog4[i], nplayer2, damageString);
-				txt = newtxt;
 				break;
 			}
 		}
 	}
 
+	writeTextToConsole(&consoles[0], txt, skipnotify);
+
 	if (isChat) {
-		writeTextToConsole(&chatConsole, txt, skipnotify);
+		writeTextToConsole(&consoles[3], txt, skipnotify);
+	} else if (isHit || isKill) {
+		writeTextToConsole(&consoles[2], txt, skipnotify);
 	} else {
-		writeTextToConsole(&generalConsole, txt, skipnotify);
+		writeTextToConsole(&consoles[1], txt, skipnotify);
 	}
-
-	writeTextToConsole(&mainConsole, txt, skipnotify);
-
 }
 
 
@@ -1054,26 +1065,26 @@ void Con_DrawSolidConsole( float frac ) {
 	currentCon->xadjust = 0;
 	SCR_AdjustFrom640( &currentCon->xadjust, NULL, NULL, NULL );
 
+	if (con_bgColour->integer >= 0 && con_bgColour->integer < 10) {
+		bgColour[0] = g_color_table[con_bgColour->integer][0];
+		bgColour[1] = g_color_table[con_bgColour->integer][1];
+		bgColour[2] = g_color_table[con_bgColour->integer][2];
+	} else {
+		bgColour[0] = 0.0;
+		bgColour[1] = 0.0;
+		bgColour[2] = 0.0;
+	}
+	if (con_bgAlpha->integer >= 0 && con_bgAlpha->integer <= 100) {
+		bgColour[3] = con_bgAlpha->integer/100.0;
+	} else {
+		bgColour[3] = 0.9;
+	}
+
 	// draw the background
 	y = frac * SCREEN_HEIGHT - 2;
 	if ( y < 1 ) {
 		y = 0;
-	}
-	else {
-		if (con_bgColour->integer >= 0 && con_bgColour->integer < 10) {
-			bgColour[0] = g_color_table[con_bgColour->integer][0];
-			bgColour[1] = g_color_table[con_bgColour->integer][1];
-			bgColour[2] = g_color_table[con_bgColour->integer][2];
-		} else {
-			bgColour[0] = 0.0;
-			bgColour[1] = 0.0;
-			bgColour[2] = 0.0;
-		}
-		if (con_bgAlpha->integer >= 0 && con_bgAlpha->integer <= 100) {
-			bgColour[3] = con_bgAlpha->integer/100.0;
-		} else {
-			bgColour[3] = 0.9;
-		}
+	} else {
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, y, bgColour);
 	}
 
@@ -1099,46 +1110,39 @@ void Con_DrawSolidConsole( float frac ) {
 	int horizOffset = 20;
 	if (margin) {
 		horizOffset = margin;
-		vertOffset = margin;
+		vertOffset = margin * 2;
 	}
+	int tabMargin = horizOffset;
+	vertOffset += conPixHeight;
+	int tabWidth;
 
-	SCR_AdjustedFillRect(horizOffset, conPixHeight + vertOffset, 50, 25, bgColour);
-	SCR_AdjustedFillRect(horizOffset * 2 + 50, conPixHeight + vertOffset, 50, 25, bgColour);
-	SCR_AdjustedFillRect(horizOffset * 3 + 100, conPixHeight + vertOffset, 50, 25, bgColour);
+	for (i = 0; i < numConsoles; i++) {
+		tabWidth = strlen(consoleNames[i]) * 8 + 20;
 
-	SCR_AdjustedFillRect(horizOffset, conPixHeight + vertOffset, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset, conPixHeight + vertOffset + 24, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset, conPixHeight + vertOffset, 1, 25, lineColour);
-	SCR_AdjustedFillRect(horizOffset + 50, conPixHeight + vertOffset, 1, 25, lineColour);
+		// tab background
+		SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 25, bgColour);
 
-	SCR_AdjustedFillRect(horizOffset * 2 + 50, conPixHeight + vertOffset, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 2 + 50, conPixHeight + vertOffset + 24, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 2 + 50, conPixHeight + vertOffset, 1, 25, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 2 + 100, conPixHeight + vertOffset, 1, 25, lineColour);
+		// top border
+		SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 1, lineColour);
 
-	SCR_AdjustedFillRect(horizOffset * 3 + 100, conPixHeight + vertOffset, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 3 + 100, conPixHeight + vertOffset + 24, 50, 1, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 3 + 100, conPixHeight + vertOffset, 1, 25, lineColour);
-	SCR_AdjustedFillRect(horizOffset * 3 + 150, conPixHeight + vertOffset, 1, 25, lineColour);
+		// bottom border
+		SCR_AdjustedFillRect(horizOffset, vertOffset + 24, tabWidth, 1, lineColour);
 
-	if (currentCon == &mainConsole) {
-		SCR_DrawStringExtNoShadow(horizOffset + 9, conPixHeight + vertOffset + 8, 8, "Main", lineColour, qtrue);
-	} else {
-		SCR_DrawStringExtNoShadow(horizOffset + 9, conPixHeight + vertOffset + 8, 8, "Main", g_color_table[7], qtrue);
+		// left border
+		SCR_AdjustedFillRect(horizOffset, vertOffset, 1, 25, lineColour);
+
+		// right border
+		SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, 25, lineColour);
+
+
+		if (currentCon == &consoles[i]) {
+			SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
+		} else {
+			SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+		}
+
+		horizOffset += tabMargin + tabWidth;
 	}
-
-	if (currentCon == &generalConsole) {
-		SCR_DrawStringExtNoShadow(horizOffset * 2 + 59, conPixHeight + vertOffset + 8, 8, "Misc", lineColour, qtrue);
-	} else {
-		SCR_DrawStringExtNoShadow(horizOffset * 2 + 59, conPixHeight + vertOffset + 8, 8, "Misc", g_color_table[7], qtrue);
-	}
-	
-	if (currentCon == &chatConsole) {
-		SCR_DrawStringExtNoShadow(horizOffset * 3 + 109, conPixHeight + vertOffset + 8, 8, "Chat", lineColour, qtrue);
-	} else {
-		SCR_DrawStringExtNoShadow(horizOffset * 3 + 109, conPixHeight + vertOffset + 8, 8, "Chat", g_color_table[7], qtrue);
-	}
-
 
 	// draw the version number
 
