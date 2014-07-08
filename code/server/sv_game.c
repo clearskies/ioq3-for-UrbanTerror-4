@@ -308,6 +308,7 @@ void SV_GetUsercmd( int clientNum, usercmd_t *cmd ) {
 	if (cl->backwards) {
 		cmd->forwardmove *= -1;
 		cmd->rightmove *= -1;
+		cmd->upmove *= -1;
 	}
 }
 
