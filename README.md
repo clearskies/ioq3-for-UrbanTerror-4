@@ -19,9 +19,7 @@ Client
    + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command. Default is `90`
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
    + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
-   + `cl_hpSub <0|1>` - Enables an `$hp` chat variable that gets replaced with your actual health. Default is `0`
    + `cl_randomRGB <0|1|2|3>` - Generates random armband colours. `1` generates a new armband colour at startup, `2` generates one every map, and `3` generates one every frame. Default is `0`
-   + `cl_playerSub <0|1>` - Enables an `$p` chat variable that gets replaced with the current player name. If you're playing, it's your name, if you're spectating, it's the name of the player you're spectating. Default is `0`
    + `cl_weapAutoSwitch <0|1|2>` - Automatically switches weapons when ammo runs out. `1` will make it switch to the previous weapon, and `2` will make it switch to the next weapon. Default is `0`
    + `cl_weapAutoReload <0|1|>` - Automatically reloads when ammo runs out. `cl_weapAutoSwitch` will take precedence over this. Default is `0`
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
@@ -62,6 +60,7 @@ Client
 ### Other ###
    + Supports combo binds (binds involving two keys). Use the commands `cbind`, `cunbind`, `cbindlist`, and `cunbindall`. This currently does not work with `+` commands.
    + Console tabs. Tabs separate the console into three areas: `Main`, `Misc`, and `Chat`. `Main` has all the console output, `Chat` has all the chat messages, and `Misc` has everything not in `Chat`. Use `Shift + LEFTARROW` and `Shift + RIGHTARROW` to navigate between tabs.
+   + Substitutes `$hp` for your actual health and substitutes `$p` for the current playername
 
 **********
 
