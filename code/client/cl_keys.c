@@ -729,16 +729,18 @@ void Console_Key (int key) {
 		return;
 	}
 
-	// Console tabs: next tab
-	if (key == K_RIGHTARROW && keys[K_SHIFT].down) {
-		Con_NextTab();
-		return;
-	}
+	if (con_tabs && con_tabs->integer) {
+		// Console tabs: next tab
+		if (key == K_RIGHTARROW && keys[K_SHIFT].down) {
+			Con_NextTab();
+			return;
+		}
 
-	// Console tabs: previous tab
-	if (key == K_LEFTARROW && keys[K_SHIFT].down) {
-		Con_PrevTab();
-		return;
+		// Console tabs: previous tab
+		if (key == K_LEFTARROW && keys[K_SHIFT].down) {
+			Con_PrevTab();
+			return;
+		}
 	}
 
 	// pass to the normal editline routine

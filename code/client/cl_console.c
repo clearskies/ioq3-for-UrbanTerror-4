@@ -59,6 +59,7 @@ cvar_t		*con_drawScrollbar;
 cvar_t		*con_fadeIn;
 cvar_t		*con_margin;
 cvar_t		*con_showVersion;
+cvar_t		*con_tabs;
 
 
 #define	DEFAULT_CONSOLE_WIDTH	78
@@ -420,6 +421,7 @@ void Con_Init (void) {
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_showVersion = Cvar_Get("con_showVersion", "1", CVAR_ARCHIVE);
+	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1053,42 +1055,44 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, lineColour);
 	}
 
-	int vertOffset = 20;
-	int horizOffset = 20;
-	if (margin) {
-		horizOffset = margin;
-		vertOffset = margin * 2;
-	}
-	int tabMargin = horizOffset;
-	vertOffset += conPixHeight;
-	int tabWidth;
-
-	for (i = 0; i < numConsoles; i++) {
-		tabWidth = strlen(consoleNames[i]) * 8 + 20;
-
-		// tab background
-		SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 25, bgColour);
-
-		// top border
-		SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 1, lineColour);
-
-		// bottom border
-		SCR_AdjustedFillRect(horizOffset, vertOffset + 24, tabWidth, 1, lineColour);
-
-		// left border
-		SCR_AdjustedFillRect(horizOffset, vertOffset, 1, 25, lineColour);
-
-		// right border
-		SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, 25, lineColour);
-
-
-		if (currentCon == &consoles[i]) {
-			SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
-		} else {
-			SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+	if (con_tabs && con_tabs->integer) {
+		int vertOffset = 20;
+		int horizOffset = 20;
+		if (margin) {
+			horizOffset = margin;
+			vertOffset = margin * 2;
 		}
+		int tabMargin = horizOffset;
+		vertOffset += conPixHeight;
+		int tabWidth;
 
-		horizOffset += tabMargin + tabWidth;
+		for (i = 0; i < numConsoles; i++) {
+			tabWidth = strlen(consoleNames[i]) * 8 + 20;
+
+			// tab background
+			SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 25, bgColour);
+
+			// top border
+			SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 1, lineColour);
+
+			// bottom border
+			SCR_AdjustedFillRect(horizOffset, vertOffset + 24, tabWidth, 1, lineColour);
+
+			// left border
+			SCR_AdjustedFillRect(horizOffset, vertOffset, 1, 25, lineColour);
+
+			// right border
+			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, 25, lineColour);
+
+
+			if (currentCon == &consoles[i]) {
+				SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
+			} else {
+				SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+			}
+
+			horizOffset += tabMargin + tabWidth;
+		}
 	}
 
 	// draw the version number
