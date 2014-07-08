@@ -43,7 +43,6 @@ Client
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
-   + `chatdump <file>` - Dumps chat from the console to a file (chat is basically anything with a colon in it, sorry)
    + `cvar_incr <cvar> <amount>` - Increases a cvar by a specified amount
    + `cvar_decr <cvar> <amount>` - Decreases a cvar by a specified amount
    + `loc` - Displays current location while in game
@@ -93,6 +92,7 @@ Server
    + `freeze <player>` - Prevents a player from moving
    + `teleport <player> <toPlayer>` - Teleports `player` to `toPlayer`
    + `callvoteas <player> <vote type> [vote value]` - Calls a vote as a certain player. Useful in conjunction with `sv_allowVote 0` so that votes can be called through rcon but not by the players themselves
+   + `backwards <player>` - Reverses a player's movement
 
 ### Player Commands (commands a player can call while connected to the server) ###
    + `ff?` - Informs the player of the status of g_friendlyfire

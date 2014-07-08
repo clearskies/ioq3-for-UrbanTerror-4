@@ -301,69 +301,6 @@ void Con_Dump_f (void)
 	FS_FCloseFile( f );
 }
 
-/*
-================
-Con_ChatDump_f
-
-Save the console chat out to a file
-================
-*/
-void Con_ChatDump_f (void)
-{
-	int		l, x, i;
-	short	*line;
-	fileHandle_t	f;
-	char	buffer[1024];
-
-	if (Cmd_Argc() < 2)
-	{
-		Com_Printf ("usage: chatdump <filename>\n");
-		return;
-	}
-	
-	Com_Printf ("Dumped chat to %s.\n", Cmd_Argv(1) );
-
-	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
-	if (!f)
-	{
-		Com_Printf ("ERROR: couldn't open.\n");
-		return;
-	}
-
-	// skip empty lines
-	for (l = currentCon->current - currentCon->totallines + 1 ; l <= currentCon->current ; l++)
-	{
-		line = currentCon->text + (l%currentCon->totallines)*currentCon->linewidth;
-		for (x=0 ; x<currentCon->linewidth ; x++)
-			if ((line[x] & 0xff) != ' ')
-				break;
-		if (x != currentCon->linewidth)
-			break;
-	}
-
-	// write the remaining lines
-	buffer[currentCon->linewidth] = 0;
-	for ( ; l <= currentCon->current ; l++)
-	{
-		line = currentCon->text + (l%currentCon->totallines)*currentCon->linewidth;
-		for(i=0; i<currentCon->linewidth; i++)
-			buffer[i] = line[i] & 0xff;
-		for (x=currentCon->linewidth-1 ; x>=0 ; x--)
-		{
-			if (buffer[x] == ' ')
-				buffer[x] = 0;
-			else
-				break;
-		}
-		if (!strstr(buffer, ":"))
-			continue;
-		strcat( buffer, "\n" );
-		FS_Write(buffer, strlen(buffer), f);
-	}
-
-	FS_FCloseFile( f );
-}
-
 						
 /*
 ================
@@ -501,9 +438,6 @@ void Con_Init (void) {
 	Cmd_AddCommand ("messagemode4", Con_MessageMode4_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
 	Cmd_AddCommand ("condump", Con_Dump_f);
-
-	Cmd_AddCommand ("chatdump", Con_ChatDump_f);
-
 }
 
 

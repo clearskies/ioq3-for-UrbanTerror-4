@@ -179,6 +179,7 @@ typedef struct client_s {
 	qboolean			csUpdated[MAX_CONFIGSTRINGS+1];	
 
 	short frozen;
+	char backwards;
 	int powerups[MAX_WEAPONS];
 	int lastEventSequence;
 } client_t;

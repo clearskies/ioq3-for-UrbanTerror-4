@@ -1724,6 +1724,38 @@ static void SV_Freeze_f(void) {
 
 /*
 ==================
+SV_Backwards
+==================
+*/
+static void SV_Backwards_f(void) {
+    client_t *cl;
+
+    if (!com_sv_running->integer) {
+        Com_Printf("Server is not running\n");
+        return;
+    }
+
+    if (Cmd_Argc() < 2) {
+        Com_Printf("Usage: backwards <player>\n");
+        return;
+    }
+
+    cl = SV_GetPlayerByHandle();
+    if (!cl) {
+        return;
+    }
+
+    cl->backwards ^= 1;
+
+    if (cl->backwards) {
+        Com_Printf("%s's movement is reversed.\n", Cmd_Argv(1));
+    } else {
+        Com_Printf("%s's movement is normal.\n", Cmd_Argv(1));
+    }
+}
+
+/*
+==================
 SV_Teleport
 ==================
 */
@@ -1949,6 +1981,7 @@ void SV_AddOperatorCommands( void ) {
     Cmd_AddCommand ("freeze", SV_Freeze_f);
     Cmd_AddCommand ("teleport", SV_Teleport_f);
     Cmd_AddCommand ("callvoteas", SV_CallVoteAs_f);
+    Cmd_AddCommand ("backwards", SV_Backwards_f);
 
 #ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand ("devmap", SV_Map_f);
