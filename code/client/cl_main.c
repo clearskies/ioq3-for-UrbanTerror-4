@@ -160,6 +160,45 @@ CLIENT RELIABLE COMMAND COMMUNICATION
 =======================================================================
 */
 
+char *replaceToken(char *string, char *key, char *replace) {
+  int numToks = 0;
+  char *s, *pos, *s2;
+  int tokLen = strlen(key) + 1;
+
+  char *tokenDollar = Z_Malloc(tokLen + 1);
+  sprintf(tokenDollar, "$%s", key);
+  char *tokenPound = Z_Malloc(tokLen + 1);
+  sprintf(tokenPound, "#%s", key);
+
+  int tokIndex;
+
+  s = string;
+  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
+    s += strlen(key);
+    numToks++;
+  }
+
+  if (!numToks) {
+    return string;
+  }
+
+  s = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
+  s2 = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
+
+  sprintf(s, "%s", string);
+
+  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
+    sprintf(s2, "%s", s);
+    tokIndex = pos - s;
+    s[tokIndex] = 0;
+    sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
+  }
+
+  Z_Free(s2);
+
+  return s;
+}
+
 /*
 ======================
 CL_AddReliableCommand
@@ -170,50 +209,18 @@ not have future usercmd_t executed before it is executed
 */
 void CL_AddReliableCommand( const char *cmd ) {
   int   index;
-
-  int pos;
-  char *s, *s2, *tokPos;
-
-  int subLen;
+  char *s;
   char health[4];
-  Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-  subLen = strlen(health);
-  s = (char *)malloc(strlen(cmd) + 1);
-  strncpy(s, cmd, strlen(cmd) + 1);
-   
-  while ((tokPos = strstr(s, "$hp")) != NULL || (tokPos = strstr(s, "#hp")) != NULL) {
-    pos = tokPos - s;
-    strncpy(s + pos, health, subLen);
-    pos += subLen;
-    strncpy(s + pos, s + pos + 3 - subLen, strlen(s) - pos);
-  }
-  cmd = s;
-
-
-  int numToks = 0;
-  s = cmd;
-  while ((s = strstr(s, "$p"))) {
-    s += 2;
-    numToks++;
-  }
-  s = cmd;
-  while ((s = strstr(s, "#p"))) {
-    s += 2;
-    numToks++;
-  }
-
   char *pname;
-  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
-  s = (char *)malloc(strlen(cmd) + strlen(pname) * numToks + 1);
-  s2 = (char *)malloc(strlen(cmd) + strlen(pname) * numToks + 1);
-  strncpy(s, cmd, strlen(cmd) + 1);
 
-  while ((tokPos = strstr(s, "$p")) != NULL || (tokPos = strstr(s, "#p")) != NULL) {
-    sprintf(s2, "%s", s);
-    pos = tokPos - s;
-    s[pos] = '\0';
-    sprintf(s, "%s%s%s", s, pname, s2 + pos + 2);
-  }
+  s = Z_Malloc(strlen(cmd) + 1);
+  Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
+
+  Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
+  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+
+  s = replaceToken(s, "hp", health);
+  s = replaceToken(s, "p", pname);
 
   cmd = s;
 
