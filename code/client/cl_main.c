@@ -2610,6 +2610,9 @@ void CL_Frame ( int msec ) {
     Cvar_Set("cg_crosshairrgb", s);
   }
 
+  if (cl_randomRGB->integer == 3)
+    CL_RandomRGB_f();
+
   // update the screen
   SCR_UpdateScreen();
 
