@@ -506,19 +506,27 @@ int nameToTeamColour(char *name) {
 }
 
 int damageToColour(int damage) {
-	int colour;
-
 	if (damage >= 50) {
-		colour = 1;
+		return 1;
 	} else if (damage >= 25) {
-		colour = 8;
+		return 8;
 	} else if (damage >= 17) {
-		colour = 3;
+		return 3;
 	} else {
-		colour = 2;
+		return 2;
 	}
+}
 
-	return colour;
+int healthToColour(int health) {
+	if (health >= 60) {
+		return 2;
+	} else if (health >= 35) {
+		return 3;
+	} else if (health >= 15) {
+		return 8;
+	} else {
+		return 1;
+	}
 }
 
 void writeTextToConsole(console_t *console, char *txt, qboolean skipnotify) {
@@ -668,7 +676,7 @@ void CL_ConsolePrint( char *txt ) {
 			isKill = qtrue;
 			killNext = qtrue;
 			damage = atoi(damageString);
-			damageCol = damageToColour(damage);
+			damageCol = healthToColour(damage);
 			team = nameToTeamColour(player2);
 			sprintf(nplayer2, "^%i%s^7", team, player2);
 			sprintf(damageString, "^%i%i%%^7", damageCol, damage);
