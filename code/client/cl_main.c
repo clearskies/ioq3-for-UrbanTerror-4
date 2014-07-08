@@ -194,8 +194,6 @@ char *replaceToken(char *string, char *key, char *replace) {
     sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
   }
 
-  Z_Free(s2);
-
   return s;
 }
 
@@ -221,11 +219,11 @@ void CL_AddReliableCommand( const char *cmd ) {
   serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
   if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
     teamName = Info_ValueForKey(serverInfo, "g_teamnamered");
-    if (!teamName)
+    if (!*teamName)
       teamName = "Red Dragons";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
     teamName = Info_ValueForKey(serverInfo, "g_teamnameblue");
-    if (!teamName)
+    if (!*teamName)
       teamName = "SWAT";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
     teamName = "Free!";
