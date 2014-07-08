@@ -908,7 +908,11 @@ void Con_DrawInput (void) {
 		qtime_t curTime;
 		Com_RealTime(&curTime);
 		prompt = Z_Malloc(promptLen + 11);
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);
+		int hour = curTime.tm_hour;
+		if (con_timePrompt->integer == 2) {
+			hour = hourTo12(curTime.tm_hour);
+		}
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);
 	} else {
 		prompt = Z_Malloc(promptLen);
 		Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
@@ -1369,4 +1373,9 @@ void Con_Close( void ) {
 	cls.keyCatchers &= ~KEYCATCH_CONSOLE;
 	currentCon->finalFrac = 0;				// none visible
 	currentCon->displayFrac = 0;
+}
+
+
+int hourTo12(int hour) {
+	return (hour % 12) ? (hour % 12) : 12;
 }
