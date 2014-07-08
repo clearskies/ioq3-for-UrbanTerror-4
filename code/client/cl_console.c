@@ -1266,6 +1266,9 @@ Con_DrawConsole
 ==================
 */
 void Con_DrawConsole( void ) {
+	if (con_tabs && !con_tabs->integer) {
+		currentCon = &consoles[0];
+	}
 	// check for console width changes from a vid mode change
 	Con_CheckResize (currentCon);
 
