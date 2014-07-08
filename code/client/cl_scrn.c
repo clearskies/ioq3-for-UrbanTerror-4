@@ -414,13 +414,16 @@ void SCR_DrawHealth( void ) {
 
 	Com_sprintf(healthStr, 6, "%3d%%", health);
 	SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
-	if (health > 35) {
+	if (health >= 60) {
 		healthCol = 2;
-	} else if (health <= 35 && health > 20) {
+	} else if (health >= 35) {
 		healthCol = 3;
+	} else if (health >= 15) {
+		healthCol = 8;
 	} else {
 		healthCol = 1;
 	}
+
 	SCR_DrawStringExtNoShadow(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
 
 }
