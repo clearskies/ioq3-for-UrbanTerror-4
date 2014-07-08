@@ -99,6 +99,22 @@ void SCR_AdjustedFillRect(float x, float y, float width, float height, const flo
 	SCR_FillRect(x, y, width, height, c);
 }
 
+void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float *setColor, qboolean forceColor) {
+	vec4_t c;
+	if (setColor) {
+		c[0] = setColor[0];
+		c[1] = setColor[1];
+		c[2] = setColor[2];
+		c[3] = setColor[3] * opacityMult;
+	} else {
+		c[0] = 1;
+		c[1] = 1;
+		c[2] = 1;
+		c[3] = opacityMult;
+	}
+	SCR_DrawStringExtNoShadow(x, y, size, string, c, forceColor);
+}
+
 #define BOX_MARGIN 30
 
 int adjustedScreenWidth = SCREEN_WIDTH;
@@ -1086,9 +1102,9 @@ void Con_DrawSolidConsole( float frac ) {
 
 
 			if (currentCon == &consoles[i]) {
-				SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
+				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
 			} else {
-				SCR_DrawStringExtNoShadow(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
 			}
 
 			horizOffset += tabMargin + tabWidth;
