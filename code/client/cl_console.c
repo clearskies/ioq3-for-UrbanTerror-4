@@ -620,6 +620,8 @@ void CL_ConsolePrint( char *txt ) {
 	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
 	char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
 	char newtxt[MAX_STRING_CHARS + 1];
+	char damageString[12];
+	int damage, damageCol;
 
 	if (strstr(txt, "^3: ^3") || strstr(txt, "^7: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7]: ^3")) {
 		isChat = qtrue;
@@ -628,6 +630,7 @@ void CL_ConsolePrint( char *txt ) {
 
 	if (cls.state == CA_ACTIVE ) {
 		char **search;
+		char *playerhad;
 		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
 		if (killLogNum == 1) {
@@ -636,6 +639,19 @@ void CL_ConsolePrint( char *txt ) {
 			search = killLog2;
 		} else if (killLogNum == 3) {
 			search = killLog3;
+		}
+
+		playerhad = "%s had %s health.";
+		if (sscanf(txt, playerhad, player2, damageString) == 2) {
+			isKill = qtrue;
+			killNext = qtrue;
+			damage = atoi(damageString);
+			damageCol = damageToColour(damage);
+			team = nameToTeamColour(player2);
+			sprintf(nplayer2, "^%i%s^7", team, player2);
+			sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+			sprintf(newtxt, playerhad, nplayer2, damageString);
+			txt = newtxt;
 		}
 
 		if (killLogNum > 0 && killLogNum < 4) {
@@ -698,9 +714,6 @@ void CL_ConsolePrint( char *txt ) {
 	}
 
 	if (cls.state == CA_ACTIVE && Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
-		char damageString[12];
-		int damage, damageCol;
- 
 		for (i = 0; ; i++) {
 			if (!hitLog1[i])
 					break;
