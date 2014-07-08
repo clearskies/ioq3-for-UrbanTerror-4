@@ -585,6 +585,10 @@ void writeTextToConsole(console_t *console, char *txt, qboolean skipnotify) {
 		// -NERVE - SMF
 			console->times[console->current % NUM_CON_TIMES] = cls.realtime;
 	}
+
+	if (con_scrollLock && !con_scrollLock->integer) {
+		Con_SpecificBottom(console);
+	}
 }
 
 /*
@@ -1341,6 +1345,10 @@ void Con_Top( void ) {
 
 void Con_Bottom( void ) {
 	currentCon->display = currentCon->current;
+}
+
+void Con_SpecificBottom(console_t *console) {
+	console->display = console->current;
 }
 
 
