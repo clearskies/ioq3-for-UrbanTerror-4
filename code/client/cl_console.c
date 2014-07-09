@@ -686,12 +686,11 @@ void CL_ConsolePrint( char *txt ) {
 		}
 	}
 
-	if (strstr(txt, "^3: ^3") || strstr(txt, "^7: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7]: ^3")) {
-		isChat = qtrue;
-		chatNext = qtrue;
-	}
-
 	if (cls.state == CA_ACTIVE ) {
+		if (strstr(txt, "^3: ^3") || strstr(txt, "^7: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7]: ^3")) {
+			isChat = qtrue;
+			chatNext = qtrue;
+		}
 		
 		if (killLogNum == 1) {
 			search = killLog1;
