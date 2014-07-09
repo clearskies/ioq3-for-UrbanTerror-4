@@ -160,39 +160,44 @@ CLIENT RELIABLE COMMAND COMMUNICATION
 =======================================================================
 */
 
-char *replaceToken(char *string, char *key, char *replace) {
-  int numToks = 0;
-  char *s, *pos, *s2;
-  int tokLen = strlen(key) + 1;
-
-  char *tokenDollar = Z_Malloc(tokLen + 1);
-  sprintf(tokenDollar, "$%s", key);
-  char *tokenPound = Z_Malloc(tokLen + 1);
-  sprintf(tokenPound, "#%s", key);
-
-  int tokIndex;
-
-  s = string;
-  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
-    s += strlen(key);
-    numToks++;
+char *replaceStr(char *string, char *find, char *replace) {
+  int numFound = 0, front;
+  int findLen = strlen(find);
+  int repLen = strlen(replace);
+  char *pos;
+  char *s;
+  
+  pos = string;
+  while ((pos = strstr(pos, find)) != NULL) {
+    pos++;
+    numFound++;
   }
 
-  if (!numToks) {
-    return string;
+  s = (char *)malloc(strlen(string) + (repLen - findLen) * numFound + 1);
+  s[0] = 0;
+
+  while (numFound--) {
+    pos = strstr(string, find);
+    front = pos - string;
+    strncat(s, string, front);
+    strcat(s, replace);
+    string += front + findLen;
   }
 
-  s = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
-  s2 = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
+  strcat(s, string);
+  return s;
+}
 
-  sprintf(s, "%s", string);
+char *replaceToken(char *string, char *token, char *replace) {
+  char *dollarToken = malloc(strlen(token) + 2);
+  char *poundToken = malloc(strlen(token) + 2);
+  char *s;
 
-  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
-    sprintf(s2, "%s", s);
-    tokIndex = pos - s;
-    s[tokIndex] = 0;
-    sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
-  }
+  sprintf(dollarToken, "$%s", token);
+  sprintf(poundToken, "#%s", token);
+
+  s = replaceStr(string, dollarToken, replace);
+  s = replaceStr(s, poundToken, replace);
 
   return s;
 }
