@@ -10,7 +10,6 @@ Client
 ------
 
 ### Cvars ###
-   + `s_soundhax <0|1>` - Disables background and looping sounds. Default is `0`. ***Warning: this is frowned upon or prohibited in most, if not all, leagues. Use at your own discretion***
    + `s_debug <0|1>` - Enables output of sounds being played. Default is `0`
    + `com_nosplash <0|1>` - Disables the FrozenSand animation. Default is `0`
    + `s_chatsound <0|1>` - Enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM. Default is `1`
@@ -20,8 +19,6 @@ Client
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
    + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
    + `cl_randomRGB <0|1|2|3>` - Generates random armband colours. `1` generates a new armband colour at startup, `2` generates one every map, and `3` generates one every frame. Default is `0`
-   + `cl_weapAutoSwitch <0|1|2>` - Automatically switches weapons when ammo runs out. `1` will make it switch to the previous weapon, and `2` will make it switch to the next weapon. Default is `0`
-   + `cl_weapAutoReload <0|1|>` - Automatically reloads when ammo runs out. `cl_weapAutoSwitch` will take precedence over this. Default is `0`
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
    + `clan ""` - Sets an optional clan tag that will be added to your name. Default is `""`
    + `cl_clanPos <0|1>` - Determines the position of the `clan` cvar in your name. `0` will put the clan tag at the beginning, and `1` will put it at the end. Default is `0`
