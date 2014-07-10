@@ -61,7 +61,7 @@ console_t	*currentCon = &consoles[0];
 char *consoleNames[] = {
 	"All",
 	"General",
-	"Kills/Hits",
+	"Kills",
 	"Chat",
 };
 int numConsoles = 4;
