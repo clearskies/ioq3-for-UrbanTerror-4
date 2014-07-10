@@ -1157,7 +1157,7 @@ void Con_DrawSolidConsole( float frac ) {
 			// bottom border
 			SCR_AdjustedFillRect(horizOffset, vertOffset + tabHeight - 1, tabWidth, 1, lineColour);
 
-			if (!i || currentCon == &consoles[i]) {
+			if ((!i && margin) || (i && currentCon == &consoles[i])) {
 				// left border
 				SCR_AdjustedFillRect(horizOffset, vertOffset, 1, tabHeight, lineColour);
 			}
@@ -1180,11 +1180,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 	lineColour[3] = 1;
 
-	if (margin) {
-		SCR_AdjustedFillRect(totalOffset, y + margin, adjustedScreenWidth, 1, lineColour);
-	} else {
-		SCR_AdjustedFillRect(margin, y, adjustedScreenWidth, 2, lineColour);
-	}
+	SCR_AdjustedFillRect(totalOffset, y + margin, adjustedScreenWidth - totalOffset + margin, 1, lineColour);
 
 	// draw the version number
 
