@@ -90,6 +90,7 @@ cvar_t		*con_fadeIn;
 cvar_t		*con_margin;
 cvar_t		*con_showVersion;
 cvar_t		*con_tabs;
+cvar_t		*con_chatTime;
 
 
 #define	DEFAULT_CONSOLE_WIDTH	78
@@ -468,6 +469,7 @@ void Con_Init (void) {
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_showVersion = Cvar_Get("con_showVersion", "1", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
+	con_chatTime = Cvar_Get("con_chatTime", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -690,6 +692,17 @@ void CL_ConsolePrint( char *txt ) {
 		if (strstr(txt, "^3: ^3") || strstr(txt, "^7: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7]: ^3")) {
 			isChat = qtrue;
 			chatNext = qtrue;
+			if (con_chatTime->integer) {
+				qtime_t curTime;
+				Com_RealTime(&curTime);
+				int hour = curTime.tm_hour;
+
+				if (con_chatTime->integer == 2)
+					hour = hourTo12(hour);
+
+				sprintf(newtxt, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, txt);
+				txt = newtxt;
+			}
 		}
 		
 		if (killLogNum == 1) {

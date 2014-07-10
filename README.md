@@ -38,6 +38,7 @@ Client
    + `con_margin <0-50>` - Adds a margin to the top, left, and right sides of the console. If this is greater than `0`, then the console will become a box. Default is `0`
    + `con_showVersion <0|1>` - Shows the client's version number in the console. Default is `1`
    + `con_tabs <0|1>` - Enables console tabs (see below for description). Default is `0`
+   + `con_chatTime <0|1|2>` - Enables a timestamp next to every chat message. `1` adds a 24-hour timestamp and `2` adds a 12-hour timestamp. Default is `0`
 
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
