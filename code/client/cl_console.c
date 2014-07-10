@@ -1177,6 +1177,9 @@ void Con_DrawSolidConsole( float frac ) {
 		totalOffset = horizOffset;
 	}
 
+	if (!totalOffset)
+		totalOffset = margin;
+
 	lineColour[3] = 1;
 
 	SCR_AdjustedFillRect(totalOffset, y + margin, adjustedScreenWidth - totalOffset + margin, 1, lineColour);
