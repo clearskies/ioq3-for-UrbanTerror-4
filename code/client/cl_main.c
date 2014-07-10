@@ -95,6 +95,7 @@ cvar_t  *cl_weapAutoReload;
 #endif
 
 cvar_t  *cl_consoleCommand;
+cvar_t  *cl_lastServerAddress;
 
 void CL_RandomRGB_f(void);
 void CL_Maplist_f(void);
@@ -1331,12 +1332,12 @@ CL_Reconnect_f
 ================
 */
 void CL_Reconnect_f( void ) {
-  if ( !strlen( cls.servername ) || !strcmp( cls.servername, "localhost" ) ) {
+  if (!strlen(cl_lastServerAddress->string) || !strcmp(cl_lastServerAddress->string, "localhost")) {
     Com_Printf( "Can't reconnect to localhost.\n" );
     return;
   }
   Cvar_Set("ui_singlePlayerActive", "0");
-  Cbuf_AddText( va("connect %s\n", cls.servername ) );
+  Cbuf_AddText(va("connect %s\n", cl_lastServerAddress->string));
 }
 
 /*
@@ -1409,6 +1410,8 @@ void CL_Connect_f( void ) {
   } else {
     cls.state = CA_CONNECTING;
   }
+
+  Cvar_Set("cl_lastServerAddress", serverString);
 
   cls.keyCatchers = 0;
   clc.connectTime = -99999; // CL_CheckForResend() will fire immediately
@@ -3043,6 +3046,7 @@ void CL_Init( void ) {
   #endif
 
   cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );
+  cl_lastServerAddress = Cvar_Get("cl_lastServerAddress", "", CVAR_ROM | CVAR_ARCHIVE);
 
   // offset for the power function (for style 1, ignored otherwise)
   // this should be set to the max rate value
