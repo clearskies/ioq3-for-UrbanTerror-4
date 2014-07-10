@@ -1062,6 +1062,7 @@ void Con_DrawSolidConsole( float frac ) {
 //	qhandle_t		conShader;
 	int				currentColor;
 	vec4_t			lineColour, bgColour;
+	vec4_t			darkTextColour;
 
 	lines = cls.glconfig.vidHeight * frac;
 	if (lines <= 0)
@@ -1097,10 +1098,13 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, y, bgColour);
 	}
 
-	lineColour[0] = 0.0/255.0;
+	lineColour[0] = 0;
 	lineColour[1] = 100.0/255.0;
 	lineColour[2] = 100.0/255.0;
 	lineColour[3] = 1;
+
+	darkTextColour[0] = darkTextColour[1] = darkTextColour[2] = 0.4;
+	darkTextColour[3] = 1;
 
 	int conPixHeight = 240;
 	if (margin) {
@@ -1110,49 +1114,76 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
 		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, lineColour);
 		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight - 1, lineColour);
-		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 1, lineColour);
-	} else {
-		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, lineColour);
 	}
 
+	int totalOffset = 0;
+
 	if (con_tabs && con_tabs->integer) {
-		int vertOffset = 20;
-		int horizOffset = 20;
-		if (margin) {
-			horizOffset = margin;
-			vertOffset = margin * 2;
-		}
-		int tabMargin = horizOffset;
-		vertOffset += conPixHeight;
+		int vertOffset;
+		int horizOffset;
+		horizOffset = margin;
+		vertOffset = conPixHeight + margin - 2;
 		int tabWidth;
+		int tabHeight;
+		float old;
 
 		for (i = 0; i < numConsoles; i++) {
-			tabWidth = strlen(consoleNames[i]) * 8 + 20;
+			tabWidth = strlen(consoleNames[i]) * 8 + 10;
+			tabHeight = 20;
+			if (currentCon == &consoles[i]) {
+				tabWidth += 10;
+				tabHeight = 25;
+				lineColour[3] = 1;
+			} else {
+				lineColour[3] = 0.3;
+			}
 
 			// tab background
-			SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 25, bgColour);
+			if (i) {
+				SCR_AdjustedFillRect(horizOffset + 1, vertOffset, tabWidth - 1, tabHeight, bgColour);
+			} else {
+				SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, tabHeight, bgColour);
+			}
 
-			// top border
-			SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 1, lineColour);
+			if (currentCon != &consoles[i]) {
+				old = lineColour[3];
+				lineColour[3] = 1;
+
+				// top border
+				SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, 1, lineColour);
+				lineColour[3] = old;
+			}
 
 			// bottom border
-			SCR_AdjustedFillRect(horizOffset, vertOffset + 24, tabWidth, 1, lineColour);
+			SCR_AdjustedFillRect(horizOffset, vertOffset + tabHeight - 1, tabWidth, 1, lineColour);
 
-			// left border
-			SCR_AdjustedFillRect(horizOffset, vertOffset, 1, 25, lineColour);
+			if (!i || currentCon == &consoles[i]) {
+				// left border
+				SCR_AdjustedFillRect(horizOffset, vertOffset, 1, tabHeight, lineColour);
+			}
 
 			// right border
-			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, 25, lineColour);
+			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, tabHeight, lineColour);
 
 
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], lineColour, qtrue);
-			} else {
 				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+			} else {
+				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 6, 8, consoleNames[i], darkTextColour, qtrue);
 			}
 
-			horizOffset += tabMargin + tabWidth;
+			horizOffset += tabWidth;
 		}
+
+		totalOffset = horizOffset;
+	}
+
+	lineColour[3] = 1;
+
+	if (margin) {
+		SCR_AdjustedFillRect(totalOffset, y + margin, adjustedScreenWidth, 1, lineColour);
+	} else {
+		SCR_AdjustedFillRect(margin, y, adjustedScreenWidth, 2, lineColour);
 	}
 
 	// draw the version number
