@@ -452,7 +452,7 @@ void Con_Init (void) {
 	int		i;
 
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
-	con_conspeed = Cvar_Get ("scr_conspeed", "30", CVAR_ARCHIVE);
+	con_conspeed = Cvar_Get ("scr_conspeed", "3", CVAR_ARCHIVE);
 
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
