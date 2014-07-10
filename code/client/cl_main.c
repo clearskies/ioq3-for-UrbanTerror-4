@@ -89,8 +89,10 @@ cvar_t  *cl_crosshairHealth;
 cvar_t  *clan;
 cvar_t  *cl_clanPos;
 
+#ifdef CLIPACTIONS
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
+#endif
 
 cvar_t  *cl_consoleCommand;
 
@@ -3035,8 +3037,10 @@ void CL_Init( void ) {
   cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
   cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 
+  #ifdef USE_CLIPACTIONS
   cl_weapAutoSwitch = Cvar_Get( "cl_weapAutoSwitch", "0", CVAR_ARCHIVE );
   cl_weapAutoReload = Cvar_Get( "cl_weapAutoReload", "0", CVAR_ARCHIVE );
+  #endif
 
   cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );
 

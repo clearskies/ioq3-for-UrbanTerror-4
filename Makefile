@@ -39,6 +39,7 @@ USE_CURL           =1
 USE_CODEC_VORBIS   =0
 
 USE_SOUNDHAX	   =0
+USE_CLIPACTIONS	   =0
 
 # Clearskies - X11-based gamma for Linux
 USE_ALTGAMMA	   =1
@@ -778,6 +779,10 @@ endif
 
 ifeq ($(USE_SOUNDHAX),1)
   BASE_CFLAGS += -DUSE_SOUNDHAX=1
+endif
+
+ifeq ($(USE_CLIPACTIONS),1)
+  BASE_CFLAGS += -DUSE_CLIPACTIONS=1
 endif
 
 #Barbatos
