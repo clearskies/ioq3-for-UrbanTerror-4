@@ -1103,7 +1103,7 @@ void Con_DrawSolidConsole( float frac ) {
 	lineColour[2] = 100.0/255.0;
 	lineColour[3] = 1;
 
-	darkTextColour[0] = darkTextColour[1] = darkTextColour[2] = 0.4;
+	darkTextColour[0] = darkTextColour[1] = darkTextColour[2] = 0.25;
 	darkTextColour[3] = 1;
 
 	int conPixHeight = 240;
@@ -1128,13 +1128,13 @@ void Con_DrawSolidConsole( float frac ) {
 		float old;
 
 		for (i = 0; i < numConsoles; i++) {
-			tabWidth = strlen(consoleNames[i]) * 8 + 10;
-			tabHeight = 20;
 			if (currentCon == &consoles[i]) {
-				tabWidth += 10;
-				tabHeight = 25;
+				tabWidth = strlen(consoleNames[i]) * 8 + 14;
+				tabHeight = 22;
 				lineColour[3] = 1;
 			} else {
+				tabWidth = strlen(consoleNames[i]) * 7 + 8;
+				tabHeight = 18;
 				lineColour[3] = 0.3;
 			}
 
@@ -1157,19 +1157,18 @@ void Con_DrawSolidConsole( float frac ) {
 			// bottom border
 			SCR_AdjustedFillRect(horizOffset, vertOffset + tabHeight - 1, tabWidth, 1, lineColour);
 
+			// left border
 			if ((!i && margin) || (i && currentCon == &consoles[i])) {
-				// left border
 				SCR_AdjustedFillRect(horizOffset, vertOffset, 1, tabHeight, lineColour);
 			}
 
 			// right border
 			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, tabHeight, lineColour);
 
-
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+				SCR_AdjustedDrawString(horizOffset + 7, vertOffset + 7, 8, consoleNames[i], g_color_table[7], qtrue);
 			} else {
-				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 6, 8, consoleNames[i], darkTextColour, qtrue);
+				SCR_AdjustedDrawString(horizOffset + 4, vertOffset + 5, 7, consoleNames[i], darkTextColour, qtrue);
 			}
 
 			horizOffset += tabWidth;
