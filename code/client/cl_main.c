@@ -89,7 +89,7 @@ cvar_t  *cl_crosshairHealth;
 cvar_t  *clan;
 cvar_t  *cl_clanPos;
 
-#ifdef CLIPACTIONS
+#ifdef USE_CLIPACTIONS
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
 #endif
