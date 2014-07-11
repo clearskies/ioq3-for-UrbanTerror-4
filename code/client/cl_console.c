@@ -936,10 +936,10 @@ void CL_ConsolePrint( char *txt ) {
 
 	writeTextToConsole(&consoles[0], txt, skipnotify);
 
-	if (isChat) {
-		writeTextToConsole(&consoles[3], txt, skipnotify);
-	} else if (isHit || isKill) {
+	if (isHit || isKill) {
 		writeTextToConsole(&consoles[2], txt, skipnotify);
+	} else if (isChat) {
+		writeTextToConsole(&consoles[3], txt, skipnotify);
 	} else {
 		writeTextToConsole(&consoles[1], txt, skipnotify);
 	}
