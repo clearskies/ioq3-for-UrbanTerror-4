@@ -34,25 +34,7 @@ char *hitLog2[] = { //when following a player
 	NULL
 };
 
-char *hitLog3[] = { //when you hit someone
-	"You hit %s in the Head for %s damage.",
-	"You hit %s in the Helmet for %s damage.",
-	"You hit %s in the Left Arm for %s damage.",
-	"You hit %s in the Right Arm for %s damage.",
-	"You hit %s in the Vest for %s damage.",
-	"You hit %s in the Torso for %s damage.",
-	"You hit %s in the Right Upper Leg for %s damage.",
-	"You hit %s in the Left Upper Leg for %s damage.",
-	"You hit %s in the Right Foot for %s damage.",
-	"You hit %s in the Left Foot for %s damage.",
-	"You hit %s in the Right Lower Leg for %s damage.",
-	"You hit %s in the Left Lower Leg for %s damage.",
-	"You hit %s in the Butt for %s damage.",
-	"You hit %s in the Groin for %s damage.",
-	NULL
-};
-
-char *hitLog4[] = { //when someone hits you
+char *hitLog3[] = { //when someone hits you
 	"You were hit in the Head by %s for %s damage.",
 	"You were hit in the Helmet by %s for %s damage.",
 	"You were hit in the Left Arm by %s for %s damage.",
