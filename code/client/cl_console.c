@@ -70,6 +70,9 @@ qboolean chatNext = qfalse; // Used to send the \n that follows a chat message t
 qboolean hitNext = qfalse;
 qboolean killNext = qfalse;
 
+int lastServerCmdNum = -1;
+qboolean ignoreNewline = qtrue;
+
 void Con_SpecificBottom(console_t *console);
 int hourTo12(int hour);
 
@@ -662,9 +665,18 @@ void CL_ConsolePrint( char *txt ) {
 	qboolean isHit = hitNext;
 	qboolean isKill = killNext;
 
+	qboolean normalChat = qfalse;
+
 	chatNext = qfalse;
 	hitNext = qfalse;
 	killNext = qfalse;
+
+	if (ignoreNewline && !strcmp(txt, "\n")) {
+		ignoreNewline = qfalse;
+		return;
+	}
+
+	ignoreNewline = qfalse;
 
 	// TTimo - prefix for text that shows up in console but not in notify
 	// backported from RTCW
@@ -691,20 +703,42 @@ void CL_ConsolePrint( char *txt ) {
 	}
 
 	if (cls.state == CA_ACTIVE ) {
-		if (strstr(txt, "^3: ^3") || strstr(txt, "^7: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7]: ^3")) {
-			isChat = qtrue;
-			chatNext = qtrue;
-			if (con_chatTime->integer) {
-				qtime_t curTime;
-				Com_RealTime(&curTime);
-				int hour = curTime.tm_hour;
-
-				if (con_chatTime->integer == 2)
-					hour = hourTo12(hour);
-
-				sprintf(newtxt, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, txt);
-				txt = newtxt;
+		char *cmd;
+		cmd = clc.serverCommands[clc.lastExecutedServerCommand & (MAX_RELIABLE_COMMANDS-1)];
+		if (clc.lastExecutedServerCommand != lastServerCmdNum) {
+			if (strstr(cmd, "rsay") == cmd ||
+				strstr(cmd, "tcchat") == cmd) {
+				isChat = qtrue;
+				chatNext = qtrue;
 			}
+			if (!Cvar_VariableIntegerValue("cg_teamchatsonly")) {
+				if (strstr(cmd, "cchat") == cmd ||
+					strstr(cmd, "chat") == cmd) {
+					isChat = qtrue;
+					chatNext = qtrue;
+				}
+			}
+
+			if (isChat && (strstr(cmd, "cchat") == cmd || strstr(cmd, "tcchat") == cmd)) {
+				normalChat = qtrue;
+			}
+		}
+		lastServerCmdNum = clc.lastExecutedServerCommand;
+
+		if (txt[strlen(txt) - 1] == '\n') {
+			ignoreNewline = qtrue;
+		}
+
+		if (isChat && normalChat && con_chatTime->integer) {
+			qtime_t curTime;
+			Com_RealTime(&curTime);
+			int hour = curTime.tm_hour;
+
+			if (con_chatTime->integer == 2)
+				hour = hourTo12(hour);
+
+			sprintf(newtxt, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, txt);
+			txt = newtxt;
 		}
 		
 		if (killLogNum == 1) {
