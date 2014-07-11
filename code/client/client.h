@@ -140,6 +140,8 @@ typedef struct {
 
 	int currentKills; // Used for kill counter
 	int spawnCount; // Used for kill counter
+
+	int lastHealth;
 } clientActive_t;
 
 extern	clientActive_t		cl;
@@ -396,7 +398,7 @@ extern  cvar_t  *cl_mouseAccelStyle;
 extern  cvar_t  *cl_teamchatIndicator;
 extern	cvar_t	*cl_consoleCommand;
 
-#ifdef USE_CLIPACTIONS
+#ifdef USE_AUTOMATION
 extern	cvar_t	*cl_weapAutoSwitch;
 extern	cvar_t	*cl_weapAutoReload;
 #endif

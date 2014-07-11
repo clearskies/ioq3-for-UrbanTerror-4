@@ -89,9 +89,10 @@ cvar_t  *cl_crosshairHealth;
 cvar_t  *clan;
 cvar_t  *cl_clanPos;
 
-#ifdef USE_CLIPACTIONS
+#ifdef USE_AUTOMATION
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
+cvar_t  *cl_autoKevlarDrop;
 #endif
 
 cvar_t  *cl_consoleCommand;
@@ -2621,22 +2622,32 @@ void CL_Frame ( int msec ) {
   // decide on the serverTime to render
   CL_SetCGameTime();
 
-  if (cl_crosshairHealth->integer) {
-    int health = cl.snap.ps.stats[0];
-    char s[16];
-    if (health < 50) {
-      Com_sprintf(s, 16, "1 %.1f 0 1", health / 50.0);
-    } else if (health == 100) {
-      Com_sprintf(s, 16, "0 1 0 1");
-    } else {
-      Com_sprintf(s, 16, "%.1f 1 0 1", (50.0 - (health % 50)) / 50);
+  if (cls.state == CA_ACTIVE) {
+    if (cl_crosshairHealth->integer) {
+      int health = cl.snap.ps.stats[0];
+      char s[16];
+      if (health < 50) {
+        Com_sprintf(s, 16, "1 %.1f 0 1", health / 50.0);
+      } else if (health == 100) {
+        Com_sprintf(s, 16, "0 1 0 1");
+      } else {
+        Com_sprintf(s, 16, "%.1f 1 0 1", (50.0 - (health % 50)) / 50);
+      }
+
+      Cvar_Set("cg_crosshairrgb", s);
     }
 
-    Cvar_Set("cg_crosshairrgb", s);
-  }
+    if (cl_randomRGB->integer == 3)
+      CL_RandomRGB_f();
 
-  if (cl_randomRGB->integer == 3)
-    CL_RandomRGB_f();
+    if (cl_autoKevlarDrop->integer > 0 && cl_autoKevlarDrop->integer < 100) {
+      int threshold = cl_autoKevlarDrop->integer;
+      if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
+        Cbuf_AddText("ut_itemdrop kevlar\n");
+      }
+    }
+    cl.lastHealth = cl.snap.ps.stats[0];
+  }
 
   // update the screen
   SCR_UpdateScreen();
@@ -3040,9 +3051,10 @@ void CL_Init( void ) {
   cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
   cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 
-  #ifdef USE_CLIPACTIONS
+  #ifdef USE_AUTOMATION
   cl_weapAutoSwitch = Cvar_Get( "cl_weapAutoSwitch", "0", CVAR_ARCHIVE );
   cl_weapAutoReload = Cvar_Get( "cl_weapAutoReload", "0", CVAR_ARCHIVE );
+  cl_autoKevlarDrop = Cvar_Get( "cl_autoKevlarDrop", "0", CVAR_ARCHIVE );
   #endif
 
   cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );
