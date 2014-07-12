@@ -41,6 +41,7 @@ Client
    + `con_chatTime <0|1|2>` - Enables a timestamp next to every chat message. `1` adds a 24-hour timestamp and `2` adds a 12-hour timestamp. Default is `0`
    + `con_borderRGB <0-255> <0-255> <0-255> ` - Changes the console border colour. Default is `0 100 100`
 
+
 ### Commands ###
    + `rebind <key> <cvar>` - Binds a key to a cvar and its current value
    + `cvar_incr <cvar> <amount>` - Increases a cvar by a specified amount
@@ -63,6 +64,7 @@ Client
       + `$hp` - Current health (in percent)
       + `$p` - Current player name
       + `$team` - Current team
+      + `$oteam` - Other team
 
 **********
 

@@ -216,7 +216,9 @@ not have future usercmd_t executed before it is executed
 */
 void CL_AddReliableCommand( const char *cmd ) {
   int   index;
-  char *s, *pName, *teamName, *serverInfo;
+  char *s, *serverInfo;
+  char *redTeam, *blueTeam;
+  char *pName, *teamName, *oTeamName;
   char health[4];
 
   s = Z_Malloc(strlen(cmd) + 1);
@@ -224,25 +226,37 @@ void CL_AddReliableCommand( const char *cmd ) {
 
   Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
   pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+  s = replaceToken(s, "p", pName);
 
+  oTeamName = "Everyone";
   serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
-  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-    teamName = Info_ValueForKey(serverInfo, "g_teamnamered");
-    if (!teamName || !*teamName)
-      teamName = "Red Dragons";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-    teamName = Info_ValueForKey(serverInfo, "g_teamnameblue");
-    if (!teamName || !*teamName)
-      teamName = "SWAT";
+  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED || cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+    redTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnamered"));
+    if (!redTeam || !*redTeam)
+      redTeam = "Red Dragons";
+
+    blueTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnameblue"));
+    if (!blueTeam || !*blueTeam)
+     blueTeam = "SWAT";
+
+    if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+      teamName = redTeam;
+      oTeamName = blueTeam;
+    } else {
+      teamName = blueTeam;
+      oTeamName = redTeam;
+    }
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
     teamName = "Free!";
+    
   } else {
     teamName = "Spectator";
   }
 
   s = replaceToken(s, "hp", health);
-  s = replaceToken(s, "p", pName);
+  
   s = replaceToken(s, "team", teamName);
+  s = replaceToken(s, "oteam", oTeamName);
 
   cmd = s;
 
