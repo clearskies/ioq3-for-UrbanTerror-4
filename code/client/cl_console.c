@@ -55,14 +55,22 @@ typedef struct {
 	vec4_t color;
 } console_t;
 
-console_t consoles[4];
-int currentConsoleNum = 0;
-console_t	*currentCon = &consoles[0];
+
+#define CONSOLE_ALL 0
+#define CONSOLE_GENERAL 1
+#define CONSOLE_KILLS 2
+#define CONSOLE_CHAT 3
+#define CONSOLE_DEV 4
+
+console_t consoles[5];
+int currentConsoleNum = CONSOLE_ALL;
+console_t	*currentCon = &consoles[CONSOLE_ALL];
 char *consoleNames[] = {
 	"All",
 	"General",
 	"Kills",
 	"Chat",
+	"Dev"
 };
 int numConsoles = 4;
 
@@ -443,7 +451,7 @@ void Con_PrevTab() {
 void Con_NextTab() {
 	currentConsoleNum++;
 	if (currentConsoleNum == numConsoles)
-		currentConsoleNum = 0;
+		currentConsoleNum = CONSOLE_ALL;
 	currentCon = &consoles[currentConsoleNum];
 }
 
@@ -634,6 +642,39 @@ void writeTextToConsole(console_t *console, char *txt, qboolean skipnotify) {
 	if (con_scrollLock && !con_scrollLock->integer) {
 		Con_SpecificBottom(console);
 	}
+}
+
+void CL_DevConsolePrint(char *txt) {
+	int i;
+	qboolean skipnotify = qfalse;
+	// TTimo - prefix for text that shows up in console but not in notify
+	// backported from RTCW
+	if ( !Q_strncmp( txt, "[skipnotify]", 12 ) ) {
+		skipnotify = qtrue;
+		txt += 12;
+	}
+	
+	// for some demos we don't want to ever show anything on the console
+	if ( cl_noprint && cl_noprint->integer ) {
+		return;
+	}
+
+	for (i = 0; i < 5; i++) {
+		if (!consoles[i].initialized) {
+			consoles[i].color[0] = 
+			consoles[i].color[1] = 
+			consoles[i].color[2] =
+			consoles[i].color[3] = 1.0f;
+			consoles[i].linewidth = -1;
+			Con_CheckResize (&consoles[i]);
+			consoles[i].initialized = qtrue;
+		}
+	}
+
+	if (con_tabs && con_tabs->integer)
+		writeTextToConsole(&consoles[CONSOLE_DEV], txt, skipnotify);
+	else
+		writeTextToConsole(&consoles[CONSOLE_ALL], txt, skipnotify);
 }
 
 /*
@@ -912,14 +953,14 @@ void CL_ConsolePrint( char *txt ) {
 		}
 	}
 
-	writeTextToConsole(&consoles[0], txt, skipnotify);
+	writeTextToConsole(&consoles[CONSOLE_ALL], txt, skipnotify);
 
 	if (isHit || isKill) {
-		writeTextToConsole(&consoles[2], txt, skipnotify);
+		writeTextToConsole(&consoles[CONSOLE_KILLS], txt, skipnotify);
 	} else if (isChat) {
-		writeTextToConsole(&consoles[3], txt, skipnotify);
+		writeTextToConsole(&consoles[CONSOLE_CHAT], txt, skipnotify);
 	} else {
-		writeTextToConsole(&consoles[1], txt, skipnotify);
+		writeTextToConsole(&consoles[CONSOLE_GENERAL], txt, skipnotify);
 	}
 }
 
@@ -1334,8 +1375,15 @@ Con_DrawConsole
 */
 void Con_DrawConsole( void ) {
 	if (con_tabs && !con_tabs->integer) {
-		currentCon = &consoles[0];
+		currentCon = &consoles[CONSOLE_ALL];
 	}
+
+	if (com_developer && com_developer->integer) {
+		numConsoles = 5;
+	} else {
+		numConsoles = 4;
+	}
+
 	// check for console width changes from a vid mode change
 	Con_CheckResize (currentCon);
 

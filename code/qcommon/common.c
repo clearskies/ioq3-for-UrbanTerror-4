@@ -84,6 +84,8 @@ cvar_t 	*com_logfileName;
 
 cvar_t  *com_nosplash;
 
+qboolean dev = qfalse;
+
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
 #endif
@@ -166,7 +168,11 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 
 	// echo to console if we're not a dedicated server
 	if ( com_dedicated && !com_dedicated->integer ) {
-		CL_ConsolePrint( msg );
+		if (!dev) {
+			CL_ConsolePrint( msg );
+		} else {
+			CL_DevConsolePrint(msg);
+		}
 	}
 
 	// echo to dedicated console and early console
@@ -232,7 +238,9 @@ void QDECL Com_DPrintf( const char *fmt, ...) {
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 	
+	dev = qtrue;
 	Com_Printf ("%s", msg);
+	dev = qfalse;
 }
 
 /*
