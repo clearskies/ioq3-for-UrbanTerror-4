@@ -63,7 +63,7 @@ typedef struct {
 #define CONSOLE_CHAT 4
 #define CONSOLE_DEV 5
 
-console_t consoles[5];
+console_t consoles[6];
 int currentConsoleNum = CONSOLE_ALL;
 console_t	*currentCon = &consoles[CONSOLE_ALL];
 char *consoleNames[] = {
