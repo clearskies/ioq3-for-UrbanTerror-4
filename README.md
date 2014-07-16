@@ -17,7 +17,7 @@ Client
    + `r_noBorder <0|1>` - Disables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1. Default is `0`
    + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command. Default is `90`
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
-   + `cl_teamchatIndicator <0|1>` - Enables a little `(T)` to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `0`
+   + `cl_teamchatIndicator ""` - Enables a customizable indicatpr to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `""`
    + `cl_randomRGB <0|1|2|3>` - Generates random armband colours. `1` generates a new armband colour at startup, `2` generates one every map, and `3` generates one every frame. Default is `0`
    + `cl_crosshairHealth <0|1>` - Fades the crosshair colour from red to yellow to green based on the player's health. Default is `0`
    + `clan ""` - Sets an optional clan tag that will be added to your name. Default is `""`

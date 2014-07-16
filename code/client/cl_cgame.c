@@ -401,14 +401,14 @@ rescan:
 		}
 	}
 
-	if (cl_teamchatIndicator->value) {
+	if (*cl_teamchatIndicator->string) {
 		if (!strcmp(cmd, "tcchat")) {
-			int newStrlen = strlen(s) + 12;
+			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator->string) + 3;
 			char *s2 = (char *)malloc(newStrlen);
 			int team = atoi(Cmd_Argv(1));
 			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 
-			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(T)^%i%s\"", Cmd_Argv(1), colour, Cmd_Argv(2));
+			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"%s^%i%s\"", Cmd_Argv(1), cl_teamchatIndicator->string, colour, Cmd_Argv(2));
 			Cmd_TokenizeString(s2);
 		}
 	}
