@@ -192,20 +192,6 @@ char *replaceStr(char *string, char *find, char *replace) {
 	return s;
 }
 
-char *replaceToken(char *string, char *token, char *replace) {
-	char *dollarToken = malloc(strlen(token) + 2);
-	char *poundToken = malloc(strlen(token) + 2);
-	char *s;
-
-	sprintf(dollarToken, "$%s", token);
-	sprintf(poundToken, "#%s", token);
-
-	s = replaceStr(string, dollarToken, replace);
-	s = replaceStr(s, poundToken, replace);
-
-	return s;
-}
-
 /*
 ======================
 CL_AddReliableCommand
@@ -226,7 +212,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 
 	Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
 	pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
-	s = replaceToken(s, "p", pName);
+	s = replaceStr(s, "$p", pName);
 
 	oTeamName = "Everyone";
 	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
@@ -253,10 +239,10 @@ void CL_AddReliableCommand( const char *cmd ) {
 		teamName = "Spectator";
 	}
 
-	s = replaceToken(s, "hp", health);
+	s = replaceStr(s, "$hp", health);
 	
-	s = replaceToken(s, "team", teamName);
-	s = replaceToken(s, "oteam", oTeamName);
+	s = replaceStr(s, "$team", teamName);
+	s = replaceStr(s, "$oteam", oTeamName);
 
 	cmd = s;
 
