@@ -168,11 +168,15 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 
 	// echo to console if we're not a dedicated server
 	if ( com_dedicated && !com_dedicated->integer ) {
+		#ifdef DEDICATED
+		CL_ConsolePrint(msg);
+		#else
 		if (!dev) {
 			CL_ConsolePrint( msg );
 		} else {
 			CL_DevConsolePrint(msg);
 		}
+		#endif
 	}
 
 	// echo to dedicated console and early console

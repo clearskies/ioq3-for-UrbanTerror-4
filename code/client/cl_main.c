@@ -2637,12 +2637,14 @@ void CL_Frame ( int msec ) {
 		if (cl_randomRGB->integer == 3)
 			CL_RandomRGB_f();
 
+		#ifdef USE_AUTOMATION
 		if (cl_autoKevlarDrop->integer > 0 && cl_autoKevlarDrop->integer < 100) {
 			int threshold = cl_autoKevlarDrop->integer;
 			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
 				Cbuf_AddText("ut_itemdrop kevlar\n");
 			}
 		}
+		#endif
 		cl.lastHealth = cl.snap.ps.stats[0];
 	}
 
