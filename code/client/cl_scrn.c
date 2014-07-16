@@ -405,15 +405,16 @@ void SCR_DrawHealth( void ) {
 		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
-	char healthStr[6];
+	char healthStr[12];
 	int healthCol;
-	vec4_t boxCol;
+	float xx = 54.0f;
+	float yy = 449.0f;
 
-	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
-	boxCol[3] = 0.85;
+	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
+		yy = 439.0f;
+	}
 
-	Com_sprintf(healthStr, 6, "%3d%%", health);
-	SCR_FillRect(3, 414, 32.0, 16.0, boxCol);
+	
 	if (health >= 60) {
 		healthCol = 2;
 	} else if (health >= 35) {
@@ -424,7 +425,9 @@ void SCR_DrawHealth( void ) {
 		healthCol = 1;
 	}
 
-	SCR_DrawStringExtNoShadow(18 - strlen(healthStr) * 4, 417, 8, healthStr, g_color_table[healthCol], qtrue );
+	Com_sprintf(healthStr, 12, "H:^%i%3d%%", healthCol, health);
+
+	SCR_DrawStringExt(xx, yy, 8, healthStr, g_color_table[7], qfalse);
 
 }
 
