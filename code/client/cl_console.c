@@ -59,8 +59,9 @@ typedef struct {
 #define CONSOLE_ALL 0
 #define CONSOLE_GENERAL 1
 #define CONSOLE_KILLS 2
-#define CONSOLE_CHAT 3
-#define CONSOLE_DEV 4
+#define CONSOLE_HITS 3
+#define CONSOLE_CHAT 4
+#define CONSOLE_DEV 5
 
 console_t consoles[5];
 int currentConsoleNum = CONSOLE_ALL;
@@ -69,6 +70,7 @@ char *consoleNames[] = {
 	"All",
 	"General",
 	"Kills",
+	"Hits",
 	"Chat",
 	"Dev"
 };
@@ -955,8 +957,10 @@ void CL_ConsolePrint( char *txt ) {
 
 	writeTextToConsole(&consoles[CONSOLE_ALL], txt, skipnotify);
 
-	if (isHit || isKill) {
+	if (isKill) {
 		writeTextToConsole(&consoles[CONSOLE_KILLS], txt, skipnotify);
+	} else if (isHit) {
+		writeTextToConsole(&consoles[CONSOLE_HITS], txt, skipnotify);
 	} else if (isChat) {
 		writeTextToConsole(&consoles[CONSOLE_CHAT], txt, skipnotify);
 	} else {
@@ -1200,7 +1204,7 @@ void Con_DrawSolidConsole( float frac ) {
 		int vertOffset;
 		int horizOffset;
 		horizOffset = margin;
-		vertOffset = conPixHeight + margin - 2;
+		vertOffset = conPixHeight + margin - 1;
 		int tabWidth;
 		int tabHeight;
 		float old;
@@ -1379,9 +1383,9 @@ void Con_DrawConsole( void ) {
 	}
 
 	if (com_developer && com_developer->integer) {
-		numConsoles = 5;
+		numConsoles = 6;
 	} else {
-		numConsoles = 4;
+		numConsoles = 5;
 	}
 
 	// check for console width changes from a vid mode change
