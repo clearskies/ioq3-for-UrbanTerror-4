@@ -3048,7 +3048,7 @@ void CL_Init( void ) {
 	// 1: new implementation
 	cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
 
-	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
+	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 
