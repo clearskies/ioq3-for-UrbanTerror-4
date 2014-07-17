@@ -74,7 +74,7 @@ char *consoleNames[] = {
 	"Chat",
 	"Dev"
 };
-int numConsoles = 4;
+int numConsoles = 5;
 
 qboolean chatNext = qfalse; // Used to send the \n that follows a chat message to the chat console
 qboolean hitNext = qfalse;
@@ -661,7 +661,7 @@ void CL_DevConsolePrint(char *txt) {
 		return;
 	}
 
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < 6; i++) {
 		if (!consoles[i].initialized) {
 			consoles[i].color[0] = 
 			consoles[i].color[1] = 
