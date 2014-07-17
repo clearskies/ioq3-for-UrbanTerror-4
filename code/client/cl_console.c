@@ -157,7 +157,7 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 		c[2] = 1;
 		c[3] = opacityMult;
 	}
-	SCR_DrawStringExtNoShadow(x, y, size, string, c, forceColor);
+	SCR_DrawStringExt(x, y, size, string, c, forceColor);
 }
 
 #define BOX_MARGIN 30

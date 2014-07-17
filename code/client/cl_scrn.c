@@ -217,37 +217,10 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 			continue;
 		}
 		SCR_DrawChar( xx+1, y+1, size, *s );
-		xx += size - 0.5;
+		xx += size;
 		s++;
 	}
 
-
-	// draw the colored text
-	s = string;
-	xx = x;
-	re.SetColor( setColor );
-	while ( *s ) {
-		if ( Q_IsColorString( s ) ) {
-			if ( !forceColor ) {
-				Com_Memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
-				color[3] = setColor[3];
-				re.SetColor( color );
-			}
-			s += 2;
-			continue;
-		}
-		SCR_DrawChar( xx, y, size, *s );
-		xx += size - 0.5;
-		s++;
-	}
-	re.SetColor( NULL );
-}
-
-
-void SCR_DrawStringExtNoShadow( int x, int y, float size, const char *string, float *setColor, qboolean forceColor ) {
-	vec4_t		color;
-	const char	*s;
-	int			xx;
 
 	// draw the colored text
 	s = string;
@@ -265,6 +238,49 @@ void SCR_DrawStringExtNoShadow( int x, int y, float size, const char *string, fl
 		}
 		SCR_DrawChar( xx, y, size, *s );
 		xx += size;
+		s++;
+	}
+	re.SetColor( NULL );
+}
+
+void SCR_DrawCondensedString( int x, int y, float size, const char *string, float *setColor, qboolean forceColor ) {
+	vec4_t		color;
+	const char	*s;
+	int			xx;
+
+	// draw the drop shadow
+	color[0] = color[1] = color[2] = 0;
+	color[3] = setColor[3];
+	re.SetColor( color );
+	s = string;
+	xx = x;
+	while ( *s ) {
+		if ( Q_IsColorString( s ) ) {
+			s += 2;
+			continue;
+		}
+		SCR_DrawChar( xx+1, y+1, size, *s );
+		xx += size - (size / 8);
+		s++;
+	}
+
+
+	// draw the colored text
+	s = string;
+	xx = x;
+	re.SetColor( setColor );
+	while ( *s ) {
+		if ( Q_IsColorString( s ) ) {
+			if ( !forceColor ) {
+				Com_Memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
+				color[3] = setColor[3];
+				re.SetColor( color );
+			}
+			s += 2;
+			continue;
+		}
+		SCR_DrawChar( xx, y, size, *s );
+		xx += size - (size / 8);
 		s++;
 	}
 	re.SetColor( NULL );
@@ -370,7 +386,7 @@ void SCR_DrawDemoRecording( void ) {
 	pos = FS_FTell( clc.demofile );
 	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExt( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
+	SCR_DrawCondensedString( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
 }
 
 
@@ -427,7 +443,7 @@ void SCR_DrawHealth( void ) {
 
 	Com_sprintf(healthStr, 12, "H:^%i%i%%", healthCol, health);
 
-	SCR_DrawStringExt(x, y, 8, healthStr, g_color_table[7], qfalse);
+	SCR_DrawCondensedString(x, y, 8, healthStr, g_color_table[7], qfalse);
 
 }
 
@@ -460,7 +476,7 @@ void SCR_DrawKills( void ) {
 	}
 
 	Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
-	SCR_DrawStringExt(x, y, 8, killStr, g_color_table[7], qfalse );
+	SCR_DrawCondensedString(x, y, 8, killStr, g_color_table[7], qfalse );
 }
 
 
