@@ -84,7 +84,6 @@ int lastServerCmdNum = -1;
 qboolean ignoreNewline = qtrue;
 
 void Con_SpecificBottom(console_t *console);
-int hourTo12(int hour);
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
@@ -1204,7 +1203,7 @@ void Con_DrawSolidConsole( float frac ) {
 		int vertOffset;
 		int horizOffset;
 		horizOffset = margin;
-		vertOffset = conPixHeight + margin - 1;
+		vertOffset = conPixHeight + margin - 2;
 		int tabWidth;
 		int tabHeight;
 		float old;
@@ -1522,7 +1521,6 @@ void Con_Close( void ) {
 	currentCon->finalFrac = 0;				// none visible
 	currentCon->displayFrac = 0;
 }
-
 
 int hourTo12(int hour) {
 	return (hour % 12) ? (hour % 12) : 12;

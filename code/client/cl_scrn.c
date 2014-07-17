@@ -396,12 +396,22 @@ SCR_DrawClock
 =================
 */
 void SCR_DrawClock( void ) {
+	if (!Cvar_VariableIntegerValue("cg_draw2d") ||
+		cl_paused->integer ||
+		!cl_drawclock->integer)
+		return;
+
 	qtime_t myTime;
+	int hour;
 	char	string[16];
-	if (Cvar_VariableValue ("cl_drawclock")) {
+	if (cl_drawclock->integer) {
 		Com_RealTime( &myTime );
-		Com_sprintf( string, sizeof ( string ), "%02i:%02i:%02i", myTime.tm_hour, myTime.tm_min, myTime.tm_sec );
-		SCR_DrawStringExt( 320 - strlen( string ) * 4, 11, 8, string, g_color_table[7], qtrue );
+		hour = myTime.tm_hour;
+		if (cl_drawclock->integer == 2)
+			hour = hourTo12(hour);
+
+		Com_sprintf( string, sizeof (string), "%02i:%02i:%02i", hour, myTime.tm_min, myTime.tm_sec );
+		SCR_DrawCondensedString( 320 - strlen(string) * 4, 11, 8, string, g_color_table[7], qtrue );
 	}
 }
 
