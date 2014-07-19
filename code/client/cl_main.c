@@ -2647,11 +2647,11 @@ void CL_Frame ( int msec ) {
 		if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
 			cl.spawnCount = cl.snap.ps.persistant[PERS_SPAWN_COUNT];
 			cl.currentKills = 0;
-			if (cl_randomRGB->integer == 3)
+			if (cl_randomRGB->integer == 4)
 				CL_RandomRGB_f();
 		}
 
-		if (cl_randomRGB->integer == 4)
+		if (cl_randomRGB->integer == 3)
 				CL_RandomRGB_f();
 
 		#ifdef USE_AUTOMATION
