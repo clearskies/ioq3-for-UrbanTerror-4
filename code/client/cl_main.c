@@ -205,19 +205,27 @@ void CL_AddReliableCommand( const char *cmd ) {
 	int   index;
 	char *s, *serverInfo;
 	char *redTeam, *blueTeam;
-	char *pName, *teamName, *oTeamName;
+	char *teamName, *oTeamName;
+	char *pName;
 	char *locName;
+	int lastHitByNum;
+	char *lastHitBy;
 	char health[4];
 
-	s = Z_Malloc(strlen(cmd) + 1);
-	Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
+	s = CopyString(cmd);
 
 	Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
+	s = replaceStr(s, "$hp", health);
+
 	pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
 	s = replaceStr(s, "$p", pName);
 
 	locName = cl.gameState.stringData + cl.gameState.stringOffsets[640 + cl.lastLocation];
 	s = replaceStr(s, "$loc", locName);
+
+	lastHitByNum = cl.snap.ps.persistant[PERS_ATTACKER];
+	lastHitBy = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + lastHitByNum], "n");
+	s = replaceStr(s, "$lasthitby", lastHitBy);
 
 	oTeamName = "Everyone";
 	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
@@ -243,9 +251,6 @@ void CL_AddReliableCommand( const char *cmd ) {
 	} else {
 		teamName = "Spectator";
 	}
-
-	s = replaceStr(s, "$hp", health);
-	
 	s = replaceStr(s, "$team", teamName);
 	s = replaceStr(s, "$oteam", oTeamName);
 
