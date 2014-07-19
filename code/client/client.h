@@ -399,9 +399,7 @@ extern  cvar_t  *cl_teamchatIndicator;
 extern	cvar_t	*cl_consoleCommand;
 
 #ifdef USE_AUTOMATION
-extern	cvar_t	*cl_weapAutoSwitch;
-extern	cvar_t	*cl_weapAutoReload;
-extern	cvar_t	*cl_weapAutoDrop;
+extern	cvar_t	*cl_noAmmo;
 #endif
 
 
