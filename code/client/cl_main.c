@@ -2994,8 +2994,6 @@ CL_Init
 void CL_Init( void ) {
 	Com_Printf( "----- Client Initialization -----\n" );
 
-	srand((unsigned)time(NULL));
-
 	Con_Init ();  
 
 	CL_ClearState ();
@@ -4110,6 +4108,13 @@ CL_RandomRGB_f
 ====================
 */
 void CL_RandomRGB_f(void) {
+	static qboolean seeded = qfalse;
+
+	if (!seeded) {
+		srand((unsigned)time(NULL));
+		seeded = qtrue;
+	}
+
 	char s[12];
 	int r, g, b;
 
