@@ -471,12 +471,6 @@ void SCR_DrawKills( void ) {
 		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
-	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
-		cl.spawnCount = cl.snap.ps.persistant[PERS_SPAWN_COUNT];
-		cl.currentKills = 0;
-	}
-
-
 	char killStr[12];
 	int x = 56;
 	int y = 437;
