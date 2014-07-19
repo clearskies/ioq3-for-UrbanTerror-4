@@ -92,6 +92,7 @@ cvar_t  *cl_clanPos;
 #ifdef USE_AUTOMATION
 cvar_t  *cl_weapAutoSwitch;
 cvar_t  *cl_weapAutoReload;
+cvar_t  *cl_weapAutoDrop;
 cvar_t  *cl_autoKevlarDrop;
 #endif
 
@@ -3055,6 +3056,7 @@ void CL_Init( void ) {
 	#ifdef USE_AUTOMATION
 	cl_weapAutoSwitch = Cvar_Get( "cl_weapAutoSwitch", "0", CVAR_ARCHIVE );
 	cl_weapAutoReload = Cvar_Get( "cl_weapAutoReload", "0", CVAR_ARCHIVE );
+	cl_weapAutoDrop = Cvar_Get( "cl_weapAutoDrop", "0", CVAR_ARCHIVE );
 	cl_autoKevlarDrop = Cvar_Get( "cl_autoKevlarDrop", "0", CVAR_ARCHIVE );
 	#endif
 

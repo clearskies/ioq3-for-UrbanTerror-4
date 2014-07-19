@@ -509,6 +509,11 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 				Cbuf_AddText("+button5;wait;-button5\n");
 				return;
 			}
+
+			if (cl_weapAutoDrop->integer) {
+				Cbuf_AddText("ut_weapdrop\n");
+				return;
+			}
 		}
 	#endif
 
