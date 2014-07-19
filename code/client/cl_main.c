@@ -4130,12 +4130,7 @@ CL_RandomRGB_f
 ====================
 */
 void CL_RandomRGB_f(void) {
-	static qboolean seeded = qfalse;
-
-	if (!seeded) {
-		srand((unsigned)time(NULL));
-		seeded = qtrue;
-	}
+	srand(Com_Milliseconds());
 
 	char s[12];
 	int r, g, b;
