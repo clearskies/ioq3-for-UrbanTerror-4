@@ -65,6 +65,7 @@ Client
       + `$p` - Current player name
       + `$team` - Current team
       + `$oteam` - Other team
+      + `$loc` - Latest location (works even when dead or spec)
 
 **********
 

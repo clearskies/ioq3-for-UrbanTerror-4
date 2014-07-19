@@ -420,6 +420,11 @@ rescan:
 		}
 	}
 
+	if (!strcmp(cmd, "location")) {
+		int locNum = atoi(Cmd_Argv(1));
+		cl.lastLocation = locNum;
+	}
+
 	// we may want to put a "connect to other server" command here
 
 	// cgame can now act on the command

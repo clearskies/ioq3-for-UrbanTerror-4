@@ -204,6 +204,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 	char *s, *serverInfo;
 	char *redTeam, *blueTeam;
 	char *pName, *teamName, *oTeamName;
+	char *locName;
 	char health[4];
 
 	s = Z_Malloc(strlen(cmd) + 1);
@@ -212,6 +213,9 @@ void CL_AddReliableCommand( const char *cmd ) {
 	Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
 	pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
 	s = replaceStr(s, "$p", pName);
+
+	locName = cl.gameState.stringData + cl.gameState.stringOffsets[640 + cl.lastLocation];
+	s = replaceStr(s, "$loc", locName);
 
 	oTeamName = "Everyone";
 	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];

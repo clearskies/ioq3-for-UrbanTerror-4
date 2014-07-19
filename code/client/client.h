@@ -142,6 +142,7 @@ typedef struct {
 	int spawnCount; // Used for kill counter
 
 	int lastHealth;
+	int lastLocation;
 } clientActive_t;
 
 extern	clientActive_t		cl;
