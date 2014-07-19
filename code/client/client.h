@@ -143,6 +143,7 @@ typedef struct {
 
 	int lastHealth;
 	int lastLocation;
+	int lastDeaths;
 } clientActive_t;
 
 extern	clientActive_t		cl;

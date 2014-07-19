@@ -89,6 +89,8 @@ cvar_t  *cl_crosshairHealth;
 cvar_t  *clan;
 cvar_t  *cl_clanPos;
 
+cvar_t  *cl_deathBind;
+
 #ifdef USE_AUTOMATION
 cvar_t  *cl_noAmmo;
 cvar_t  *cl_autoKevlarDrop;
@@ -2649,6 +2651,15 @@ void CL_Frame ( int msec ) {
 		}
 		#endif
 		cl.lastHealth = cl.snap.ps.stats[0];
+
+		if (cl.snap.ps.clientNum == clc.clientNum) {
+			if (cl.snap.ps.persistant[PERS_KILLED] != cl.lastDeaths) {
+				if (*cl_deathBind->string) {
+					Cbuf_AddText(va("%s\n", cl_deathBind->string));
+				}
+			}
+			cl.lastDeaths = cl.snap.ps.persistant[PERS_KILLED];
+		}
 	}
 
 	// update the screen
@@ -3052,6 +3063,8 @@ void CL_Init( void ) {
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
+
+	cl_deathBind = Cvar_Get( "cl_deathBind", "", CVAR_ARCHIVE );
 
 	#ifdef USE_AUTOMATION
 	cl_noAmmo = Cvar_Get( "cl_noAmmo", "0", CVAR_ARCHIVE );
