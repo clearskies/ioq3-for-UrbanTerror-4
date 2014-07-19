@@ -2650,7 +2650,7 @@ void CL_Frame ( int msec ) {
 		#ifdef USE_AUTOMATION
 		if (cl_autoKevlarDrop->integer > 0 && cl_autoKevlarDrop->integer < 100) {
 			int threshold = cl_autoKevlarDrop->integer;
-			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
+			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold && cl.snap.ps.stats[0]) {
 				Cbuf_AddText("ut_itemdrop kevlar\n");
 			}
 		}
