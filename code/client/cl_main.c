@@ -2651,6 +2651,9 @@ void CL_Frame ( int msec ) {
 				CL_RandomRGB_f();
 		}
 
+		if (cl_randomRGB->integer == 4)
+				CL_RandomRGB_f();
+
 		#ifdef USE_AUTOMATION
 		if (cl_autoKevlarDrop->integer > 0 && cl_autoKevlarDrop->integer < 100) {
 			int threshold = cl_autoKevlarDrop->integer;
