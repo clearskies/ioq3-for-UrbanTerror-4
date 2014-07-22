@@ -2665,11 +2665,9 @@ void CL_Frame ( int msec ) {
 		cl.lastHealth = cl.snap.ps.stats[0];
 
 		if (cl.snap.ps.clientNum == clc.clientNum) {
-			if (cl.snap.ps.persistant[PERS_KILLED] != cl.lastDeaths) {
-				if (*cl_deathBind->string) {
-					Cbuf_AddText(va("%s\n", cl_deathBind->string));
-				}
-			}
+			if (cl.snap.ps.persistant[PERS_KILLED] > cl.lastDeaths && *cl_deathBind->string)
+				Cbuf_AddText(va("%s\n", cl_deathBind->string));
+
 			cl.lastDeaths = cl.snap.ps.persistant[PERS_KILLED];
 		}
 	}
