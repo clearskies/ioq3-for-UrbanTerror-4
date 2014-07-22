@@ -415,6 +415,9 @@ rescan:
 			int team = atoi(Cmd_Argv(1));
 			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 
+			if (team == TEAM_SPECTATOR)
+				colour = 7;
+
 			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"%s^%i%s\"", Cmd_Argv(1), cl_teamchatIndicator->string, colour, Cmd_Argv(2));
 			Cmd_TokenizeString(s2);
 		}
