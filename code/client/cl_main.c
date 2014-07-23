@@ -2651,8 +2651,12 @@ void CL_Frame ( int msec ) {
 				CL_RandomRGB_f();
 		}
 
-		if (cl_randomRGB->integer == 3)
-				CL_RandomRGB_f();
+		static int lastMilli = 0;
+
+		if (cl_randomRGB->integer == 3 && Com_Milliseconds() - lastMilli >= 500) {
+			CL_RandomRGB_f();
+			lastMilli = Com_Milliseconds();
+		}
 
 		#ifdef USE_AUTOMATION
 		if (cl_autoKevlarDrop->integer > 0 && cl_autoKevlarDrop->integer < 100) {
