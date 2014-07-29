@@ -410,7 +410,20 @@ rescan:
 
 	if (strcmp(cl_deadText->string, "(DEAD) ")) {
 		if (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat")) {
-			s = replaceStr(s, "(DEAD) ", cl_deadText->string);
+			int myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			int chatTeam = atoi(Cmd_Argv(1));
+			int colour;
+
+			if (myTeam == chatTeam)
+				colour = skinToChatColour(chatTeam, Cvar_VariableValue("cg_skinAlly"));
+			else
+				colour = skinToChatColour(chatTeam, Cvar_VariableValue("cg_skinEnemy"));
+			
+
+			if (chatTeam == TEAM_SPECTATOR)
+				colour = 7;
+
+			s = replaceStr(s, "(DEAD) ", va("%s^%i", cl_deadText->string, colour));
 			Cmd_TokenizeString(s);
 		}
 	}

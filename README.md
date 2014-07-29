@@ -41,7 +41,7 @@ Client
    + `con_chatTime <0|1|2>` - Enables a timestamp next to every chat message. `1` adds a 24-hour timestamp and `2` adds a 12-hour timestamp. Default is `0`
    + `con_borderRGB <0-255> <0-255> <0-255> ` - Changes the console border colour. Default is `0 100 100`
    + `cl_deathBind ""` - Executes a command on death. Default is `""`
-   + `cl_deadText "(DEAD"` - Changes the `(DEAD)` text to something else. Default is `(DEAD)`
+   + `cl_deadText "(DEAD)"` - Changes the `(DEAD)` text to something else. Default is `(DEAD)`
 
 
 ### Commands ###
