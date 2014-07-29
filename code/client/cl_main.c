@@ -83,6 +83,8 @@ cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
+cvar_t  *cl_deadText;
+
 cvar_t  *cl_randomRGB;
 cvar_t  *cl_crosshairHealth;
 
@@ -179,7 +181,7 @@ char *replaceStr(char *string, char *find, char *replace) {
 		numFound++;
 	}
 
-	s = (char *)malloc(strlen(string) + (repLen - findLen) * numFound + 1);
+	s = (char *)malloc(strlen(string) + (repLen - findLen) * numFound + 10);
 	s[0] = 0;
 
 	while (numFound--) {
@@ -3076,6 +3078,8 @@ void CL_Init( void ) {
 	cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
 
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
+	cl_deadText = Cvar_Get( "cl_deadText", "(DEAD) ", CVAR_ARCHIVE );
+
 	cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 

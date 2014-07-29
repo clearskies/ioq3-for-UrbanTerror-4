@@ -408,6 +408,13 @@ rescan:
 		}
 	}
 
+	if (strcmp(cl_deadText->string, "(DEAD) ")) {
+		if (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat")) {
+			s = replaceStr(s, "(DEAD) ", cl_deadText->string);
+			Cmd_TokenizeString(s);
+		}
+	}
+
 	if (*cl_teamchatIndicator->string) {
 		if (!strcmp(cmd, "tcchat")) {
 			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator->string) + 3;

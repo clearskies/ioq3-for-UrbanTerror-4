@@ -401,6 +401,7 @@ extern  cvar_t  *cl_mouseAccelOffset;
 extern  cvar_t  *cl_mouseAccelStyle;
 
 extern  cvar_t  *cl_teamchatIndicator;
+extern	cvar_t	*cl_deadText;
 extern	cvar_t	*cl_consoleCommand;
 
 #ifdef USE_AUTOMATION
@@ -446,6 +447,8 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum );
 int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
 
 qboolean CL_CheckPaused(void);
+
+char *replaceStr(char *string, char *find, char *replace);
 
 //
 // cl_input
