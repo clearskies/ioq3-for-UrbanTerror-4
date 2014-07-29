@@ -141,9 +141,12 @@ typedef struct {
 	int currentKills; // Used for kill counter
 	int spawnCount; // Used for kill counter
 
-	int lastHealth;
 	int lastLocation;
 	int lastDeaths;
+
+	#ifdef USE_AUTOMATION
+	int lastHealth;
+	#endif
 } clientActive_t;
 
 extern	clientActive_t		cl;
@@ -402,6 +405,7 @@ extern	cvar_t	*cl_consoleCommand;
 
 #ifdef USE_AUTOMATION
 extern	cvar_t	*cl_noAmmo;
+extern	cvar_t	*cl_dropKevlarOnFlag;
 #endif
 
 

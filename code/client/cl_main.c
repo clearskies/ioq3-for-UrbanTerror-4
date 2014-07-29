@@ -94,6 +94,7 @@ cvar_t  *cl_deathBind;
 #ifdef USE_AUTOMATION
 cvar_t  *cl_noAmmo;
 cvar_t  *cl_autoKevlarDrop;
+cvar_t  *cl_dropKevlarOnFlag;
 #endif
 
 cvar_t  *cl_consoleCommand;
@@ -2665,8 +2666,8 @@ void CL_Frame ( int msec ) {
 				Cbuf_AddText("ut_itemdrop kevlar\n");
 			}
 		}
-		#endif
 		cl.lastHealth = cl.snap.ps.stats[0];
+		#endif
 
 		if (cl.snap.ps.clientNum == clc.clientNum) {
 			if (cl.snap.ps.persistant[PERS_KILLED] > cl.lastDeaths && *cl_deathBind->string)
@@ -3083,6 +3084,7 @@ void CL_Init( void ) {
 	#ifdef USE_AUTOMATION
 	cl_noAmmo = Cvar_Get( "cl_noAmmo", "0", CVAR_ARCHIVE );
 	cl_autoKevlarDrop = Cvar_Get( "cl_autoKevlarDrop", "0", CVAR_ARCHIVE );
+	cl_dropKevlarOnFlag = Cvar_Get( "cl_dropKevlarOnFlag", "0", CVAR_ARCHIVE );
 	#endif
 
 	cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );

@@ -428,6 +428,14 @@ rescan:
 		cl.lastLocation = locNum;
 	}
 
+	#ifdef USE_AUTOMATION
+	if (cl_dropKevlarOnFlag->integer && !strcmp(cmd, "ccprint")) {
+		if (!atoi(Cmd_Argv(1)) && !strcmp(Cmd_Argv(3), Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n"))) {
+			Cbuf_AddText("ut_itemdrop kevlar\n");
+		}
+	}
+	#endif
+
 	// we may want to put a "connect to other server" command here
 
 	// cgame can now act on the command
