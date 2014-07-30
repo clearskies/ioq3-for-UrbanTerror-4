@@ -408,19 +408,20 @@ rescan:
 		}
 	}
 
+	int myTeam, colour, team;
+
 	if (strcmp(cl_deadText->string, "(DEAD) ")) {
 		if (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat")) {
-			int myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
-			int chatTeam = atoi(Cmd_Argv(1));
-			int colour;
+			myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			team = atoi(Cmd_Argv(1));
 
-			if (myTeam == chatTeam)
-				colour = skinToChatColour(chatTeam, Cvar_VariableValue("cg_skinAlly"));
+			if (myTeam == team)
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 			else
-				colour = skinToChatColour(chatTeam, Cvar_VariableValue("cg_skinEnemy"));
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
 			
 
-			if (chatTeam == TEAM_SPECTATOR)
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
 				colour = 7;
 
 			s = replaceStr(s, "(DEAD) ", va("%s^%i", cl_deadText->string, colour));
@@ -432,15 +433,35 @@ rescan:
 		if (!strcmp(cmd, "tcchat")) {
 			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator->string) + 3;
 			char *s2 = (char *)malloc(newStrlen);
-			int team = atoi(Cmd_Argv(1));
-			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			team = atoi(Cmd_Argv(1));
+			colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 
-			if (team == TEAM_SPECTATOR)
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
 				colour = 7;
 
 			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"%s^%i%s\"", Cmd_Argv(1), cl_teamchatIndicator->string, colour, Cmd_Argv(2));
 			Cmd_TokenizeString(s2);
 		}
+	}
+
+	if (!cl_chatArrow->integer && (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat"))) {
+		team = atoi(Cmd_Argv(1));
+		char *newCmd;
+		if (!strcmp(cmd, "tcchat")) {
+			colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+		} else {
+			myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			
+			if (team == myTeam)
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			else
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
+
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
+				colour = 7;
+		}
+		newCmd = CopyString(va("chat \"^%i%s\"", colour, Cmd_Argv(2)));
+		Cmd_TokenizeString(newCmd);
 	}
 
 	if (!strcmp(cmd, "location")) {

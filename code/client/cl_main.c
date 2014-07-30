@@ -84,6 +84,7 @@ cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_deadText;
+cvar_t  *cl_chatArrow;
 
 cvar_t  *cl_randomRGB;
 cvar_t  *cl_crosshairHealth;
@@ -3079,6 +3080,7 @@ void CL_Init( void ) {
 
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_deadText = Cvar_Get( "cl_deadText", "(DEAD) ", CVAR_ARCHIVE );
+	cl_chatArrow = Cvar_Get( "cl_chatArrow", "1 ", CVAR_ARCHIVE );
 
 	cl_randomRGB = Cvar_Get( "cl_randomRGB", "0", CVAR_ARCHIVE );
 	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );

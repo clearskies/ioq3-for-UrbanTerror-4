@@ -42,6 +42,7 @@ Client
    + `con_borderRGB <0-255> <0-255> <0-255> ` - Changes the console border colour. Default is `0 100 100`
    + `cl_deathBind ""` - Executes a command on death. Default is `""`
    + `cl_deadText "(DEAD)"` - Changes the `(DEAD)` text to something else. Default is `(DEAD)`
+   + `cl_chatArrow <0|1>` - Enables the `>` next to chat messages. Default is `1`
 
 
 ### Commands ###
