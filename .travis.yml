@@ -1,4 +1,5 @@
-language: c
+language:
+  - c
 compiler:
   - gcc
 install:
@@ -8,4 +9,17 @@ install:
 script:
   - make
   - ./cross-make-mingw.sh
-
+cache:
+  - apt
+deploy:
+  provider: releases
+  api-key: "GITHUB OAUTH TOKEN"
+  file:
+    - build/release-linux-x86_64/Quake3-UrT-Ded.x86_64
+    - build/release-linux-x86_64/Quake3-UrT.x86_64
+    - build/release-mingw32-x86/Quake3-UrT-Ded.x86.exe
+    - build/release-mingw32-x86/Quake3-UrT.x86.exe
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
