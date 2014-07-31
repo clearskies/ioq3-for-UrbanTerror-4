@@ -1,0 +1,10 @@
+language: c
+compiler:
+  - gcc
+install:
+  - sudo apt-get install libsdl1.2-dev
+  - sudo apt-get install gcc-mingw-w64-i686
+script:
+  - make
+  - ./cross-make-mingw.sh
+
