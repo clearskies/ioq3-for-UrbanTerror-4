@@ -22,4 +22,5 @@ deploy:
     - build/release-mingw32-x86/Quake3-UrT.x86.exe
   skip_cleanup: true
   on:
+    on_tag: true
     all_branches: true
