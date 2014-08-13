@@ -338,6 +338,9 @@ extern  cvar_t  *sv_auth_engine;
 //
 // sv_main.c
 //
+
+void QDECL SV_LogPrintf(const char *fmt, ...);
+
 void SV_FinalMessage (char *message);
 void QDECL SV_SendServerCommand( client_t *cl, const char *fmt, ...);
 
