@@ -1332,6 +1332,70 @@ void SV_UpdateUserinfo_f( client_t *cl ) {
 	VM_Call( gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients );
 }
 
+/*
+==================
+SV_Maplist_f
+==================
+*/
+void SV_Maplist_f(client_t *cl) {
+	int numMaps, j;
+	char **maplist;
+
+	maplist = FS_ListFiles("maps", ".bsp", &numMaps);
+	SV_SendServerCommand(cl, "print \"Maps:\"");
+	for (j = 0; j < numMaps; j++) {
+		maplist[j][strlen(maplist[j])-4] = 0;
+		SV_SendServerCommand(cl, "print \"%s\"", maplist[j]);
+	}
+}
+
+/*
+==================
+SV_FriendlyFire_f
+==================
+*/
+void SV_FriendlyFire_f(client_t *cl) {
+	if (!Cvar_VariableIntegerValue("g_friendlyfire")) {
+		SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^1OFF^7. Go crazy.\"");
+	} else {
+		SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^2ON^7. DON'T SHOOT YOUR TEAMMATES.\"");
+	}
+}
+
+/*
+==================
+SV_Mapcycle_f
+==================
+*/
+void SV_Mapcycle_f(client_t *cl) {
+	int s;
+	fileHandle_t h;
+	char *cycleFile;
+	char *allMaps, *singleMap;
+
+	cycleFile = Cvar_VariableString("g_mapcycle");
+
+	s = FS_FOpenFileRead(cycleFile, &h, qtrue);
+	if (s != NULL) {
+		allMaps = Z_Malloc(s + 1);
+		if (FS_Read(allMaps, s, h)) {
+			SV_SendServerCommand(cl, "print \"Mapcycle:\"");
+			singleMap = strtok(allMaps, "\r\n");
+			while (singleMap) {
+				if (!Q_stricmp(sv_mapname->string, singleMap)) {
+					SV_SendServerCommand(cl, "print \"^2%s <- We are here\"", singleMap);
+				} else {
+					SV_SendServerCommand(cl, "print \"%s\"", singleMap);
+				}
+				singleMap = strtok(NULL, "\r\n");
+			}
+		}
+	} else {
+		SV_SendServerCommand(cl, "print \"Mapcycle retrieval failed.\"");
+	}
+}
+
+
 typedef struct {
 	char	*name;
 	void	(*func)( client_t *cl );
@@ -1346,6 +1410,10 @@ static ucmd_t ucmds[] = {
 	{"nextdl", SV_NextDownload_f},
 	{"stopdl", SV_StopDownload_f},
 	{"donedl", SV_DoneDownload_f},
+
+	{"maplist", SV_Maplist_f},
+	{"ff?", SV_FriendlyFire_f},
+	{"mapcycle", SV_Mapcycle_f},
 
 	{NULL, NULL}
 };
@@ -1409,53 +1477,6 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 				return;
 			} else if (!sv_allowTell->integer && !Q_stricmp("tell", Cmd_Argv(0))) {
 				SV_SendServerCommand(cl, "print \"This server doesn't allow telling.\n\"");
-				return;
-			} else if (!Q_stricmp("ff?", Cmd_Argv(0))) {
-				cvar_t *ff;
-
-				ff = Cvar_Get("g_friendlyfire", "", 0);
-				if (!ff->integer) {
-					SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^1OFF^7. Go crazy.\"");
-				} else {
-					SV_SendServerCommand(cl, "chat \"^7Friendly fire is ^2ON^7. DON'T SHOOT YOUR TEAMMATES.\"");
-				}
-				return;
-			} else if (!Q_stricmp("maplist", Cmd_Argv(0))) {
-				int numMaps, j;
-				char **maplist;
-
-				maplist = FS_ListFiles("maps", ".bsp", &numMaps);
-				SV_SendServerCommand(cl, "print \"Maps:\"");
-				for ( j = 0; j < numMaps; j++ ) {
-					maplist[j][strlen(maplist[j])-4] = 0;
-					SV_SendServerCommand(cl, "print \"%s\"", maplist[j]);
-				}
-				return;
-			} else if (!Q_stricmp("mapcycle", Cmd_Argv(0))) {
-				int s;
-				fileHandle_t h;
-				cvar_t *g_mapcycle;
-				char *allMaps, *singleMap;
-
-				g_mapcycle = Cvar_Get("g_mapcycle", "", 0);
-				s = FS_FOpenFileRead(g_mapcycle->string, &h, qtrue);
-				if (s != NULL) {
-					allMaps = Z_Malloc(s + 1);
-					if (FS_Read(allMaps, s, h)) {
-						SV_SendServerCommand(cl, "print \"Mapcycle:\"");
-						singleMap = strtok(allMaps, "\r\n");
-						while (singleMap) {
-							if (!Q_stricmp(sv_mapname->string, singleMap)) {
-								SV_SendServerCommand(cl, "print \"^2%s <- We are here\"", singleMap);
-							} else {
-								SV_SendServerCommand(cl, "print \"%s\"", singleMap);
-							}
-							singleMap = strtok(NULL, "\r\n");
-						}
-					}
-				} else {
-					SV_SendServerCommand(cl, "print \"Mapcycle retrieval failed.\"");
-				}
 				return;
 			} else if (!Q_stricmp("callvote", Cmd_Argv(0))) {
 				if (!sv_allowVote->integer) {
