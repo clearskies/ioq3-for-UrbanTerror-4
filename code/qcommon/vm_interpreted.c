@@ -134,11 +134,11 @@ static ID_INLINE unsigned int __lwbrx(register void *addr,
 #endif
 
 #else
-    static ID_INLINE int loadWord(void *addr) {
+	static ID_INLINE int loadWord(void *addr) {
 	int word;
 	memcpy(&word, addr, 4);
 	return LittleLong(word);
-    }
+	}
 #endif
 
 char *VM_Indent( vm_t *vm ) {

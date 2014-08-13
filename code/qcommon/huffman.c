@@ -92,7 +92,7 @@ static void swap (huff_t* huff, node_t *node1, node_t *node2) {
 		if (par1->left == node1) {
 			par1->left = node2;
 		} else {
-	      par1->right = node2;
+		  par1->right = node2;
 		}
 	} else {
 		huff->tree = node2;
@@ -153,7 +153,7 @@ static void increment(huff_t* huff, node_t *node) {
 	}
 
 	if (node->next != NULL && node->next->weight == node->weight) {
-	    lnode = *node->head;
+		lnode = *node->head;
 		if (lnode != node->parent) {
 			swap(huff, lnode, node);
 		}
@@ -162,7 +162,7 @@ static void increment(huff_t* huff, node_t *node) {
 	if (node->prev && node->prev->weight == node->weight) {
 		*node->head = node->prev;
 	} else {
-	    *node->head = NULL;
+		*node->head = NULL;
 		free_ppnode(huff, node->head);
 	}
 	node->weight++;
@@ -218,7 +218,7 @@ void Huff_addRef(huff_t* huff, byte ch) {
 				/* this should never happen */
 				tnode->head = get_ppnode(huff);
 				*tnode->head = tnode2;
-		    }
+			}
 		} else {
 			/* this should never happen */
 			tnode->head = get_ppnode(huff);
@@ -243,7 +243,7 @@ void Huff_addRef(huff_t* huff, byte ch) {
  
 		tnode2->parent = huff->lhead->parent;
 		huff->lhead->parent = tnode->parent = tnode2;
-     
+	 
 		huff->loc[ch] = tnode;
  
 		increment(huff, tnode2->parent);
@@ -364,7 +364,7 @@ void Huff_Decompress(msg_t *mbuf, int offset) {
 				ch = (ch<<1) + get_bit(buffer);
 			}
 		}
-    
+	
 		seq[j] = ch;									/* Write symbol */
 
 		Huff_addRef(&huff, (byte)ch);								/* Increment node */

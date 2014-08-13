@@ -53,7 +53,7 @@ int			CM_PointLeafnum( const vec3_t p );
 // only returns non-solid leafs
 // overflow if return listsize and if *lastLeaf != list[listsize-1]
 int			CM_BoxLeafnums( const vec3_t mins, const vec3_t maxs, int *list,
-		 					int listsize, int *lastLeaf );
+							int listsize, int *lastLeaf );
 
 int			CM_LeafCluster (int leafnum);
 int			CM_LeafArea (int leafnum);

@@ -308,7 +308,7 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 	qboolean	fragmented;
 
 	// XOR unscramble all data in the packet after the header
-    // Netchan_UnScramblePacket( msg );
+	// Netchan_UnScramblePacket( msg );
 
 	// get sequence numbers		
 	MSG_BeginReadingOOB( msg );
@@ -596,11 +596,11 @@ void NET_SendLoopPacket (netsrc_t sock, int length, const void *data, netadr_t t
 //=============================================================================
 
 typedef struct packetQueue_s {
-        struct packetQueue_s *next;
-        int length;
-        byte *data;
-        netadr_t to;
-        int release;
+		struct packetQueue_s *next;
+		int length;
+		byte *data;
+		netadr_t to;
+		int release;
 } packetQueue_t;
 
 packetQueue_t *packetQueue = NULL;

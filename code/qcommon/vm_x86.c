@@ -203,7 +203,7 @@ void callAsmCall(void)
 	//VM_LogSyscalls((int *)((byte *)currentVM->dataBase + callProgramStack + 4) );
 	*(callOpStack2+1) = currentVM->systemCall( (intptr_t *)((byte *)currentVM->dataBase + callProgramStack + 4) );
 
- 	currentVM = savedVM;
+	currentVM = savedVM;
 }
 
 // Note the C space function AsmCall is never actually called, and is in fact

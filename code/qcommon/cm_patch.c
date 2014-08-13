@@ -1092,7 +1092,7 @@ static void CM_PatchCollideFromGrid( cGrid_t *grid, patchCollide_t *pf ) {
 						facet->borderPlanes[2] = CM_EdgePlaneNum( grid, gridPlanes, i, j, 4 );
 					}
 				}
- 				CM_SetBorderInward( facet, grid, gridPlanes, i, j, 0 );
+				CM_SetBorderInward( facet, grid, gridPlanes, i, j, 0 );
 				if ( CM_ValidateFacet( facet ) ) {
 					CM_AddFacetBevels( facet );
 					numFacets++;

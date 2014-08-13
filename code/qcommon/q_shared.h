@@ -115,20 +115,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    typedef int intptr_t;
 #else
   #ifndef _MSC_VER
-    #include <stdint.h>
-    #define Q_vsnprintf vsnprintf
+	#include <stdint.h>
+	#define Q_vsnprintf vsnprintf
   #else
-    #include <io.h>
-    typedef __int64 int64_t;
-    typedef __int32 int32_t;
-    typedef __int16 int16_t;
-    typedef __int8 int8_t;
-    typedef unsigned __int64 uint64_t;
-    typedef unsigned __int32 uint32_t;
-    typedef unsigned __int16 uint16_t;
-    typedef unsigned __int8 uint8_t;
+	#include <io.h>
+	typedef __int64 int64_t;
+	typedef __int32 int32_t;
+	typedef __int16 int16_t;
+	typedef __int8 int8_t;
+	typedef unsigned __int64 uint64_t;
+	typedef unsigned __int32 uint32_t;
+	typedef unsigned __int16 uint16_t;
+	typedef unsigned __int8 uint8_t;
 
-    int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
+	int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
   #endif
 #endif
 
@@ -388,9 +388,9 @@ extern	vec3_t	axisDefault[3];
 
 static ID_INLINE float Q_rsqrt( float number ) {
 		float x = 0.5f * number;
-                float y;
+				float y;
 #ifdef __GNUC__            
-                asm("frsqrte %0,%1" : "=f" (y) : "f" (number));
+				asm("frsqrte %0,%1" : "=f" (y) : "f" (number));
 #else
 		y = __frsqrte( number );
 #endif
@@ -399,10 +399,10 @@ static ID_INLINE float Q_rsqrt( float number ) {
 
 #ifdef __GNUC__            
 static ID_INLINE float Q_fabs(float x) {
-    float abs_x;
-    
-    asm("fabs %0,%1" : "=f" (abs_x) : "f" (x));
-    return abs_x;
+	float abs_x;
+	
+	asm("fabs %0,%1" : "=f" (abs_x) : "f" (x));
+	return abs_x;
 }
 #else
 #define Q_fabs __fabsf

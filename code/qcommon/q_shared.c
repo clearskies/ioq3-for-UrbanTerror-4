@@ -206,8 +206,8 @@ qint64 Long64NoSwap (qint64 ll)
 }
 
 typedef union {
-    float	f;
-    unsigned int i;
+	float	f;
+	unsigned int i;
 } _FloatByteUnion;
 
 float FloatSwap (const float *f) {
@@ -361,48 +361,48 @@ int COM_Compress( char *data_p ) {
 					in++;
 				if ( *in ) 
 					in += 2;
-                        // record when we hit a newline
-                        } else if ( c == '\n' || c == '\r' ) {
-                            newline = qtrue;
-                            in++;
-                        // record when we hit whitespace
-                        } else if ( c == ' ' || c == '\t') {
-                            whitespace = qtrue;
-                            in++;
-                        // an actual token
+						// record when we hit a newline
+						} else if ( c == '\n' || c == '\r' ) {
+							newline = qtrue;
+							in++;
+						// record when we hit whitespace
+						} else if ( c == ' ' || c == '\t') {
+							whitespace = qtrue;
+							in++;
+						// an actual token
 			} else {
-                            // if we have a pending newline, emit it (and it counts as whitespace)
-                            if (newline) {
-                                *out++ = '\n';
-                                newline = qfalse;
-                                whitespace = qfalse;
-                            } if (whitespace) {
-                                *out++ = ' ';
-                                whitespace = qfalse;
-                            }
-                            
-                            // copy quoted strings unmolested
-                            if (c == '"') {
-                                    *out++ = c;
-                                    in++;
-                                    while (1) {
-                                        c = *in;
-                                        if (c && c != '"') {
-                                            *out++ = c;
-                                            in++;
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                    if (c == '"') {
-                                        *out++ = c;
-                                        in++;
-                                    }
-                            } else {
-                                *out = c;
-                                out++;
-                                in++;
-                            }
+							// if we have a pending newline, emit it (and it counts as whitespace)
+							if (newline) {
+								*out++ = '\n';
+								newline = qfalse;
+								whitespace = qfalse;
+							} if (whitespace) {
+								*out++ = ' ';
+								whitespace = qfalse;
+							}
+							
+							// copy quoted strings unmolested
+							if (c == '"') {
+									*out++ = c;
+									in++;
+									while (1) {
+										c = *in;
+										if (c && c != '"') {
+											*out++ = c;
+											in++;
+										} else {
+											break;
+										}
+									}
+									if (c == '"') {
+										*out++ = c;
+										in++;
+									}
+							} else {
+								*out = c;
+								out++;
+								in++;
+							}
 			}
 		}
 	}
@@ -730,24 +730,24 @@ char* Q_strnchr( const char* string, int c, int n )
 {
 		char *s;
 
-    if( string == 0 ) return (char *)0;
+	if( string == 0 ) return (char *)0;
 
-    for( s = (char *)string; *s; s++ ) {
+	for( s = (char *)string; *s; s++ ) {
 			if( *s == c ) {
 				n--;
 				if(!n)
-        	return s;
+			return s;
 			}
 		}
 
-    return (char *)0;
+	return (char *)0;
 }
 
 char* Q_strnrchr( const char *string, int c, int n )
 {
-    char *s;
+	char *s;
 
-    if( string == 0 ) return (char *)0;
+	if( string == 0 ) return (char *)0;
 
 		for( s = (char *)string+strlen(string)-1; s>=string; s-- ) {
 			if( *s == c ) {
@@ -757,7 +757,7 @@ char* Q_strnrchr( const char *string, int c, int n )
 			}
 		}
 
-    return (char *)0;
+	return (char *)0;
 }
 
 #ifdef _MSC_VER
@@ -802,7 +802,7 @@ Safe strncpy that ensures a trailing zero
 */
 void Q_strncpyz( char *dest, const char *src, int destsize ) {
   if ( !dest ) {
-    Com_Error( ERR_FATAL, "Q_strncpyz: NULL dest" );
+	Com_Error( ERR_FATAL, "Q_strncpyz: NULL dest" );
   }
 	if ( !src ) {
 		Com_Error( ERR_FATAL, "Q_strncpyz: NULL src" );
@@ -814,18 +814,18 @@ void Q_strncpyz( char *dest, const char *src, int destsize ) {
 	strncpy( dest, src, destsize-1 );
   dest[destsize-1] = 0;
 }
-                 
+				 
 int Q_stricmpn (const char *s1, const char *s2, int n) {
 	int		c1, c2;
 
-        if ( s1 == NULL ) {
-           if ( s2 == NULL )
-             return 0;
-           else
-             return -1;
-        }
-        else if ( s2==NULL )
-          return 1;
+		if ( s1 == NULL ) {
+		   if ( s2 == NULL )
+			 return 0;
+		   else
+			 return -1;
+		}
+		else if ( s2==NULL )
+		  return 1;
 
 
 	
@@ -884,27 +884,27 @@ int Q_stricmp (const char *s1, const char *s2) {
 ////////////////////////////////////////////////////////////////////////
 int Q_strsub (const char *s1, const char *s2) {
 
-    int i, j, match;
-    int len1 = strlen(s1);
-    int len2 = strlen(s2);
+	int i, j, match;
+	int len1 = strlen(s1);
+	int len2 = strlen(s2);
 
-    // Check for proper input value
-    if ((!len2) || (!len1) || (len2 > len1)) {
-        return 0;
-    }
+	// Check for proper input value
+	if ((!len2) || (!len1) || (len2 > len1)) {
+		return 0;
+	}
 
-    for(i = 0; i <= len1 - len2; i++) {
+	for(i = 0; i <= len1 - len2; i++) {
 
-        for(j = i; j < i + len2; j++) {
-            match = 1;
-            if (s1[j] != s2[j-i]) {
-                match = 0;
-                break;
-            }
-        }
+		for(j = i; j < i + len2; j++) {
+			match = 1;
+			if (s1[j] != s2[j-i]) {
+				match = 0;
+				break;
+			}
+		}
 
-        // We got a substring
-        if (match == 1) break;
+		// We got a substring
+		if (match == 1) break;
    }
 
    return match;
@@ -919,27 +919,27 @@ int Q_strsub (const char *s1, const char *s2) {
 //////////////////////////////////////////////////////////////////////////
 int Q_strisub (const char *s1, const char *s2) {
 
-    int i, j, match;
-    int len1 = strlen(s1);
-    int len2 = strlen(s2);
+	int i, j, match;
+	int len1 = strlen(s1);
+	int len2 = strlen(s2);
 
-    // Check for proper input value
-    if ((!len2) || (!len1) || (len2 > len1)) {
-        return 0;
-    }
+	// Check for proper input value
+	if ((!len2) || (!len1) || (len2 > len1)) {
+		return 0;
+	}
 
-    for(i = 0; i <= len1 - len2; i++) {
+	for(i = 0; i <= len1 - len2; i++) {
 
-        for(j = i; j < i + len2; j++) {
-            match = 1;
-            if (tolower(s1[j]) != tolower(s2[j-i])) {
-                match = 0;
-                break;
-            }
-        }
+		for(j = i; j < i + len2; j++) {
+			match = 1;
+			if (tolower(s1[j]) != tolower(s2[j-i])) {
+				match = 0;
+				break;
+			}
+		}
 
-        // We got a substring
-        if (match == 1) break;
+		// We got a substring
+		if (match == 1) break;
    }
 
    return match;
@@ -948,25 +948,25 @@ int Q_strisub (const char *s1, const char *s2) {
 
 
 char *Q_strlwr( char *s1 ) {
-    char	*s;
+	char	*s;
 
-    s = s1;
+	s = s1;
 	while ( *s ) {
 		*s = tolower(*s);
 		s++;
 	}
-    return s1;
+	return s1;
 }
 
 char *Q_strupr( char *s1 ) {
-    char	*s;
+	char	*s;
 
-    s = s1;
+	s = s1;
 	while ( *s ) {
 		*s = toupper(*s);
 		s++;
 	}
-    return s1;
+	return s1;
 }
 
 
@@ -991,24 +991,24 @@ const char *Q_stristr( const char *s, const char *find)
 
   if ((c = *find++) != 0)
   {
-    if (c >= 'a' && c <= 'z')
-    {
-      c -= ('a' - 'A');
-    }
-    len = strlen(find);
-    do
-    {
-      do
-      {
-        if ((sc = *s++) == 0)
-          return NULL;
-        if (sc >= 'a' && sc <= 'z')
-        {
-          sc -= ('a' - 'A');
-        }
-      } while (sc != c);
-    } while (Q_stricmpn(s, find, len) != 0);
-    s--;
+	if (c >= 'a' && c <= 'z')
+	{
+	  c -= ('a' - 'A');
+	}
+	len = strlen(find);
+	do
+	{
+	  do
+	  {
+		if ((sc = *s++) == 0)
+		  return NULL;
+		if (sc >= 'a' && sc <= 'z')
+		{
+		  sc -= ('a' - 'A');
+		}
+	  } while (sc != c);
+	} while (Q_stricmpn(s, find, len) != 0);
+	s--;
   }
   return s;
 }

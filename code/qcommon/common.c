@@ -160,7 +160,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 			*rd_buffer = 0;
 		}
 		Q_strcat(rd_buffer, rd_buffersize, msg);
-    // TTimo nooo .. that would defeat the purpose
+	// TTimo nooo .. that would defeat the purpose
 		//rd_flush(rd_buffer);			
 		//*rd_buffer = 0;
 		return;
@@ -184,13 +184,13 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 
 	// logfile
 	if ( com_logfile && com_logfile->integer ) {
-    // TTimo: only open the qconsole.log if the filesystem is in an initialized state
-    //   also, avoid recursing in the qconsole.log opening (i.e. if fs_debug is on)
+	// TTimo: only open the qconsole.log if the filesystem is in an initialized state
+	//   also, avoid recursing in the qconsole.log opening (i.e. if fs_debug is on)
 		if ( !logfile && FS_Initialized() && !opening_qconsole) {
 			struct tm *newtime;
 			time_t aclock;
 
-      opening_qconsole = qtrue;
+	  opening_qconsole = qtrue;
 
 			time( &aclock );
 			newtime = localtime( &aclock );
@@ -214,7 +214,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 				Cvar_SetValue("logfile", 0);
 			}
 
-      opening_qconsole = qfalse;
+	  opening_qconsole = qfalse;
 		}
 		if ( logfile && FS_Initialized()) {
 			FS_Write(msg, strlen(msg), logfile);
@@ -388,26 +388,26 @@ Break it up into multiple console lines
 ==================
 */
 void Com_ParseCommandLine( char *commandLine ) {
-    int inq = 0;
-    com_consoleLines[0] = commandLine;
-    com_numConsoleLines = 1;
+	int inq = 0;
+	com_consoleLines[0] = commandLine;
+	com_numConsoleLines = 1;
 
-    while ( *commandLine ) {
-        if (*commandLine == '"') {
-            inq = !inq;
-        }
-        // look for a + seperating character
-        // if commandLine came from a file, we might have real line seperators
-        if ( (*commandLine == '+' && !inq) || *commandLine == '\n'  || *commandLine == '\r' ) {
-            if ( com_numConsoleLines == MAX_CONSOLE_LINES ) {
-                return;
-            }
-            com_consoleLines[com_numConsoleLines] = commandLine + 1;
-            com_numConsoleLines++;
-            *commandLine = 0;
-        }
-        commandLine++;
-    }
+	while ( *commandLine ) {
+		if (*commandLine == '"') {
+			inq = !inq;
+		}
+		// look for a + seperating character
+		// if commandLine came from a file, we might have real line seperators
+		if ( (*commandLine == '+' && !inq) || *commandLine == '\n'  || *commandLine == '\r' ) {
+			if ( com_numConsoleLines == MAX_CONSOLE_LINES ) {
+				return;
+			}
+			com_consoleLines[com_numConsoleLines] = commandLine + 1;
+			com_numConsoleLines++;
+			*commandLine = 0;
+		}
+		commandLine++;
+	}
 }
 
 
@@ -1545,7 +1545,7 @@ void Com_InitHunkMemory( void ) {
 
 	if ( cv->integer < nMinAlloc ) {
 		s_hunkTotal = 1024 * 1024 * nMinAlloc;
-	    Com_Printf(pMsg, nMinAlloc, s_hunkTotal / (1024 * 1024));
+		Com_Printf(pMsg, nMinAlloc, s_hunkTotal / (1024 * 1024));
 	} else {
 		s_hunkTotal = cv->integer * 1024 * 1024;
 	}
@@ -2127,8 +2127,8 @@ int Com_EventLoop( void ) {
 		  // bk001129 - was ev.evTime
 			Com_Error( ERR_FATAL, "Com_EventLoop: bad event type %i", ev.evType );
 			break;
-        case SE_NONE:
-            break;
+		case SE_NONE:
+			break;
 		case SE_KEY:
 			CL_KeyEvent( ev.evValue, ev.evValue2, ev.evTime );
 			break;

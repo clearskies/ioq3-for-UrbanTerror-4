@@ -476,15 +476,15 @@ void Cvar_SetCheatState( void ) {
 	// set all default vars to the safe value
 	for ( var = cvar_vars ; var ; var = var->next ) {
 		if ( var->flags & CVAR_CHEAT ) {
-      // the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here 
-      // because of a different var->latchedString
-      if (var->latchedString)
-      {
-        Z_Free(var->latchedString);
-        var->latchedString = NULL;
-      }
+	  // the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here 
+	  // because of a different var->latchedString
+	  if (var->latchedString)
+	  {
+		Z_Free(var->latchedString);
+		var->latchedString = NULL;
+	  }
 			if (strcmp(var->resetString,var->string)) {
-        Cvar_Set( var->name, var->resetString );
+		Cvar_Set( var->name, var->resetString );
 			}
 		}
 	}
@@ -924,8 +924,8 @@ void	Cvar_Update( vmCvar_t *vmCvar ) {
 	vmCvar->modificationCount = cv->modificationCount;
 	if ( strlen(cv->string)+1 > MAX_CVAR_VALUE_STRING ) 
 	  Com_Error( ERR_DROP, "Cvar_Update: src %s length %d exceeds MAX_CVAR_VALUE_STRING",
-		     cv->string, 
-		     (int)strlen(cv->string));
+			 cv->string, 
+			 (int)strlen(cv->string));
 	Q_strncpyz( vmCvar->string, cv->string,  MAX_CVAR_VALUE_STRING ); 
 
 	vmCvar->value = cv->value;

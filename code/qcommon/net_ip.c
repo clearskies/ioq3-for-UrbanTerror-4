@@ -1062,11 +1062,11 @@ void NET_Sleep( int msec ) {
 		}
 	}
 	#ifdef __linux__
-    else{
-        if ( msec < 0 )
-            msec = 2;
-        usleep( msec * 1000);
-    }
+	else{
+		if ( msec < 0 )
+			msec = 2;
+		usleep( msec * 1000);
+	}
 	#endif
 }
 

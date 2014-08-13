@@ -103,7 +103,7 @@ static long callAsmCall(long callProgramStack, long callSyscallNum)
 	}
 	ret = currentVM->systemCall(args);
 
- 	currentVM = savedVM;
+	currentVM = savedVM;
 //	Com_Printf("<- callAsmCall %s, level %d, num %ld\n", currentVM->name, currentVM->callLevel, callSyscallNum);
 
 	return ret;
@@ -336,9 +336,9 @@ void emit(const char* fmt, ...)
 static void* getentrypoint(vm_t* vm)
 {
 #ifdef USE_GAS
-       return vm->codeBase+64; // skip ELF header
+	   return vm->codeBase+64; // skip ELF header
 #else
-       return vm->codeBase;
+	   return vm->codeBase;
 #endif // USE_GAS
 }
 
@@ -635,7 +635,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 				emit("push %%rbx");
 				emit("negl %%eax");        // convert to actual number
 				emit("decl %%eax");
-				                           // first argument already in rdi
+										   // first argument already in rdi
 				emit("movq %%rax, %%rsi"); // second argument in rsi
 				emit("movq $%lu, %%rax", (unsigned long)callAsmCall);
 				emit("callq *%%rax");

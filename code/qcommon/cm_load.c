@@ -485,7 +485,7 @@ void CMod_LoadVisibility( lump_t *l ) {
 	int		len;
 	byte	*buf;
 
-    len = l->filelen;
+	len = l->filelen;
 	if ( !len ) {
 		cm.clusterBytes = ( cm.numClusters + 31 ) & ~31;
 		cm.visibility = Hunk_Alloc( cm.clusterBytes, h_high );

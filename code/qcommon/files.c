@@ -1333,7 +1333,7 @@ int FS_Seek( fileHandle_t f, long offset, int origin ) {
 
 	if (fsh[f].streamed) {
 		fsh[f].streamed = qfalse;
-	 	FS_Seek( f, offset, origin );
+		FS_Seek( f, offset, origin );
 		fsh[f].streamed = qtrue;
 	}
 
@@ -1909,8 +1909,8 @@ char **FS_ListFilteredFiles( const char *path, const char *extension, char *filt
 
 			// don't scan directories for files if we are pure or restricted
 			if ( fs_numServerPaks ) {
-		        continue;
-		    } else {
+				continue;
+			} else {
 				netpath = FS_BuildOSPath( search->dir->path, search->dir->gamedir, path );
 				sysFiles = Sys_ListFiles( netpath, extension, filter, &numSysFiles, qfalse );
 				for ( i = 0 ; i < numSysFiles ; i++ ) {
@@ -2014,7 +2014,7 @@ int	FS_GetFileList(  const char *path, const char *extension, char *listbuf, int
 Sys_ConcatenateFileLists
 
 mkv: Naive implementation. Concatenates three lists into a
-     new list, and frees the old lists from the heap.
+	 new list, and frees the old lists from the heap.
 bk001129 - from cvs1.17 (mkv)
 
 FIXME TTimo those two should move to common.c next to Sys_ListFiles
@@ -2859,24 +2859,24 @@ Return pak checksums as a binary blob with length at start
 =====================
 */
 int FS_LoadedPakChecksumsBlob( unsigned char *dst, int dstlen ) {
-    searchpath_t    *search;
-    int num = 0;
-    int dp = 0;
+	searchpath_t    *search;
+	int num = 0;
+	int dp = 0;
 
-    for ( search = fs_searchpaths ; search ; search = search->next ) {
-        // is the element a pak file?
-        if ( !search->pack ) {
-            continue;
-        }
-        if (dp+4>=dstlen) return 0;
-        dst[dp+0] = search->pack->checksum&0xFF;
-        dst[dp+1] = (search->pack->checksum>>8)&0xFF;
-        dst[dp+2] = (search->pack->checksum>>16)&0xFF;
-        dst[dp+3] = (search->pack->checksum>>24)&0xFF;
-        dp+=4;
-        num++;
-    }
-    return dp;
+	for ( search = fs_searchpaths ; search ; search = search->next ) {
+		// is the element a pak file?
+		if ( !search->pack ) {
+			continue;
+		}
+		if (dp+4>=dstlen) return 0;
+		dst[dp+0] = search->pack->checksum&0xFF;
+		dst[dp+1] = (search->pack->checksum>>8)&0xFF;
+		dst[dp+2] = (search->pack->checksum>>16)&0xFF;
+		dst[dp+3] = (search->pack->checksum>>24)&0xFF;
+		dp+=4;
+		num++;
+	}
+	return dp;
 }
 
 /*
