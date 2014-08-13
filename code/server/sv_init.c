@@ -528,32 +528,32 @@ int SV_MakeCompressedPureList()
    shl-=7;
    int v = (sh>>shl)&127;
    if (v==0 || v=='"' || v=='%' || v=='@') {
-    tmp[ol++] = '@';
+	tmp[ol++] = '@';
 //    Com_Printf("OUT:%02X\n",tmp[ol-1]);
-    if (ol==sizeof(tmp)-1) {
-     tmp[ol]=0;
-     if (csnr==PURE_COMPRESS_NUMCS) {
-      Com_Printf(err_chunk);
-      return 1;
-     }
-     SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-     csnr++;
-     ol=0;
-    }
-    tmp[ol++] = v+1;
+	if (ol==sizeof(tmp)-1) {
+	 tmp[ol]=0;
+	 if (csnr==PURE_COMPRESS_NUMCS) {
+	  Com_Printf(err_chunk);
+	  return 1;
+	 }
+	 SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+	 csnr++;
+	 ol=0;
+	}
+	tmp[ol++] = v+1;
    } else {
-    tmp[ol++] = v;
+	tmp[ol++] = v;
    }
 //   Com_Printf("OUT:%02X\n",tmp[ol-1]);
    if (ol==sizeof(tmp)-1) {
-    tmp[ol]=0;
-    if (csnr==PURE_COMPRESS_NUMCS) {
-     Com_Printf(err_chunk);
-     return 1;
-    }
-    SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-    csnr++;
-    ol=0;
+	tmp[ol]=0;
+	if (csnr==PURE_COMPRESS_NUMCS) {
+	 Com_Printf(err_chunk);
+	 return 1;
+	}
+	SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+	csnr++;
+	ol=0;
    }
   }
  }
@@ -565,14 +565,14 @@ int SV_MakeCompressedPureList()
   if (v==0 || v=='"' || v=='%' || v=='@') {
    tmp[ol++] = '@';
    if (ol==sizeof(tmp)-1) {
-    tmp[ol]=0;
-    if (csnr==PURE_COMPRESS_NUMCS) {
-     Com_Printf(err_chunk);
-     return 1;
-    }
-    SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-    csnr++;
-    ol=0;
+	tmp[ol]=0;
+	if (csnr==PURE_COMPRESS_NUMCS) {
+	 Com_Printf(err_chunk);
+	 return 1;
+	}
+	SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+	csnr++;
+	ol=0;
    }
    tmp[ol++] = v+1;
   } else {
@@ -777,29 +777,29 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	if ( sv_pure->integer ) {
 		// the server sends these to the clients so they will only
 		// load pk3s also loaded at the server
-        if (sv_newpurelist->integer) {
-            if (SV_MakeCompressedPureList()) {
-                int i;
-                // Do cleanup
-                for(i=0;i<PURE_COMPRESS_NUMCS;i++) SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+i,"");
-                // No clients will be able to connect...
-                Cvar_Set( "sv_paks", "TooManyFiles" );
-                Cvar_Set( "sv_pakNames", "TooManyFiles" );
-                // ... so use RCON to fix it
-                Com_Printf( "----------------------------------\nToo many PK3 files to fit into pure file list. Remove some PK3s and reload server.\n----------------------------------\n" );
-            } else {
-                Cvar_Set( "sv_paks", "*" );
-                Cvar_Set( "sv_pakNames", "*" );
-            }
-        } else {
-            p = FS_LoadedPakChecksums();
-            Cvar_Set( "sv_paks", p );
-            if (!p[0]) {
-                Com_Printf( "WARNING: sv_pure set but no PK3 files loaded\n" );
-            }
-            p = FS_LoadedPakNames();
-            Cvar_Set( "sv_pakNames", p );
-        }
+		if (sv_newpurelist->integer) {
+			if (SV_MakeCompressedPureList()) {
+				int i;
+				// Do cleanup
+				for(i=0;i<PURE_COMPRESS_NUMCS;i++) SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+i,"");
+				// No clients will be able to connect...
+				Cvar_Set( "sv_paks", "TooManyFiles" );
+				Cvar_Set( "sv_pakNames", "TooManyFiles" );
+				// ... so use RCON to fix it
+				Com_Printf( "----------------------------------\nToo many PK3 files to fit into pure file list. Remove some PK3s and reload server.\n----------------------------------\n" );
+			} else {
+				Cvar_Set( "sv_paks", "*" );
+				Cvar_Set( "sv_pakNames", "*" );
+			}
+		} else {
+			p = FS_LoadedPakChecksums();
+			Cvar_Set( "sv_paks", p );
+			if (!p[0]) {
+				Com_Printf( "WARNING: sv_pure set but no PK3 files loaded\n" );
+			}
+			p = FS_LoadedPakNames();
+			Cvar_Set( "sv_pakNames", p );
+		}
 
 		// if a dedicated pure server we need to touch the cgame because it could be in a
 		// seperate pk3 file and the client will need to load the latest cgame.qvm
@@ -821,27 +821,27 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// save systeminfo and serverinfo strings
 	Q_strncpyz( systemInfo, Cvar_InfoString_Big( CVAR_SYSTEMINFO ), sizeof( systemInfo ) );
 
-    {
-     const char *t,*tt;
-     int l,l2;
+	{
+	 const char *t,*tt;
+	 int l,l2;
 
-     t = Info_ValueForKey( systemInfo, "sv_paks" );
-     l = 0;
-     if (t) {
-      tt = t;
-      while(*tt) { if (*tt==' ') l++; tt++; }
-     }
+	 t = Info_ValueForKey( systemInfo, "sv_paks" );
+	 l = 0;
+	 if (t) {
+	  tt = t;
+	  while(*tt) { if (*tt==' ') l++; tt++; }
+	 }
 
-     t = Info_ValueForKey( systemInfo, "sv_pakNames" );
-     l2 = 0;
-     if (t) {
-      tt = t;
-      while(*tt) { if (*tt==' ') l2++; tt++; }
-     }
-     if (abs(l-l2)>1) { // seems pakNames may have one extra item without checksum at the end
-      Com_Printf( "WARNING: Pure pak file list inconsistency (%d checksums, %d file names). Players may not be able to connect to server.\n",l,l2 );
-     }
-    }
+	 t = Info_ValueForKey( systemInfo, "sv_pakNames" );
+	 l2 = 0;
+	 if (t) {
+	  tt = t;
+	  while(*tt) { if (*tt==' ') l2++; tt++; }
+	 }
+	 if (abs(l-l2)>1) { // seems pakNames may have one extra item without checksum at the end
+	  Com_Printf( "WARNING: Pure pak file list inconsistency (%d checksums, %d file names). Players may not be able to connect to server.\n",l,l2 );
+	 }
+	}
 
 	cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
 	SV_SetConfigstring( CS_SYSTEMINFO, systemInfo );

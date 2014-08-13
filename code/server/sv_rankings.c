@@ -582,7 +582,7 @@ qboolean SV_RankUserValidate( int index, const char* player_id, const char* key,
 
 	if (status == GR_STATUS_OK)
 	{
- 		ranked_player->grank_status = QGR_STATUS_ACTIVE;
+		ranked_player->grank_status = QGR_STATUS_ACTIVE;
 		ranked_player->final_status = QGR_STATUS_NEW;
 		ranked_player->grank = rank;
 		rVal = qtrue;
