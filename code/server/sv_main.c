@@ -79,6 +79,8 @@ cvar_t  *sv_infiniteAmmo;
 cvar_t  *sv_infiniteWalljumps;
 cvar_t  *sv_weaponCycle;
 
+cvar_t  *sv_mapColor;
+
 //@Barbatos
 #ifdef USE_AUTH
 cvar_t	*sv_authServerIP;
@@ -483,7 +485,12 @@ void SVC_Info( netadr_t from ) {
 
 	Info_SetValueForKey( infostring, "protocol", va("%i", PROTOCOL_VERSION) );
 	Info_SetValueForKey( infostring, "hostname", sv_hostname->string );
-	Info_SetValueForKey( infostring, "mapname", sv_mapname->string );
+
+	if (sv_mapColor->integer != 7)
+		Info_SetValueForKey(infostring, "mapname", va("^%i%s", sv_mapColor->integer, sv_mapname->string));
+	else
+		Info_SetValueForKey(infostring, "mapname", sv_mapname->string);
+
 	Info_SetValueForKey( infostring, "clients", va("%i", count) );
 	Info_SetValueForKey( infostring, "sv_maxclients",
 		va("%i", sv_maxclients->integer - sv_privateClients->integer ) );

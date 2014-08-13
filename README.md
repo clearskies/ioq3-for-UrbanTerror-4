@@ -94,6 +94,7 @@ Server
    + `sv_infiniteWalljumps <0|1>` - Enables unlimited walljumps. Default is `0`
    + `sv_weaponCycle <0|1>` - Removes weapon shooting delay. Default is `0`
    + `sv_rainbowChat <0|1>` - Makes player chat rainbow-coloured
+   + `sv_mapColor <0|1>` - Colours the map name in the server list
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility

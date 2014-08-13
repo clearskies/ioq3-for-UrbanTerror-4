@@ -949,6 +949,8 @@ void SV_Init (void) {
 	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
 	sv_infiniteWalljumps = Cvar_Get("sv_infiniteWalljumps", "0", CVAR_ARCHIVE);
 	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
+
+	sv_mapColor = Cvar_Get("sv_mapColor", "7", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);

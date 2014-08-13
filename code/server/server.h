@@ -326,6 +326,8 @@ extern	cvar_t  *sv_infiniteAmmo;
 extern	cvar_t  *sv_infiniteWalljumps;
 extern	cvar_t  *sv_weaponCycle;
 
+extern	cvar_t  *sv_mapColor;
+
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;
 extern  cvar_t  *sv_auth_engine;
