@@ -894,8 +894,8 @@ static qboolean S_AL_CheckInput(int entityNum, sfxHandle_t sfx)
 	if (sfx < 0 || sfx >= numSfx)
 	{
 		Com_Printf(S_COLOR_RED "ERROR: S_AL_CheckInput: handle %i out of range\n", sfx);
-                return qtrue;
-        }
+				return qtrue;
+		}
 
 	return qfalse;
 }
@@ -1096,7 +1096,7 @@ void S_AL_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t 
 	// of ET_SPEAKERS in the PVS at any given time. OpenAL can't cope with mixing
 	// large numbers of sounds, so this culls them by distance
 	if( DistanceSquared( origin, lastListenerOrigin ) > (s_alMaxDistance->value + s_alGraceDistance->value) *
-							    (s_alMaxDistance->value + s_alGraceDistance->value) )
+								(s_alMaxDistance->value + s_alGraceDistance->value) )
 		return;
 
 	S_AL_SrcLoop(SRCPRI_AMBIENT, sfx, origin, velocity, entityNum);
@@ -1209,7 +1209,7 @@ void S_AL_SrcUpdate( void )
 		if(curSource->isTracking && !state)
 		{
 			qalSourcefv(curSource->alSource, AL_POSITION, entityList[entityNum].origin);
- 			S_AL_ScaleGain(curSource, entityList[entityNum].origin);
+			S_AL_ScaleGain(curSource, entityList[entityNum].origin);
 		}
 	}
 }

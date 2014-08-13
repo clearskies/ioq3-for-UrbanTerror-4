@@ -979,11 +979,11 @@ int Key_GetKey(const char *binding) {
   int i;
 
   if (binding) {
-  	for (i=0 ; i < MAX_KEYS ; i++) {
-      if (keys[i].binding && Q_stricmp(binding, keys[i].binding) == 0) {
-        return i;
-      }
-    }
+	for (i=0 ; i < MAX_KEYS ; i++) {
+	  if (keys[i].binding && Q_stricmp(binding, keys[i].binding) == 0) {
+		return i;
+	  }
+	}
   }
   return -1;
 }
@@ -1421,7 +1421,7 @@ void CL_KeyEvent (int key, qboolean down, unsigned time) {
 		Cvar_SetValue( "r_minimize", 1 );
 		return;
 	}
-     
+	 
 
 	// console key is hardcoded, so the user can never unbind it
 	if (key == '`' || key == '~' ||
@@ -1602,17 +1602,17 @@ void CL_CharEvent( int key ) {
 		// support paste ctrl+v
 		if (key == 'v' - 'a' + 1) {
 
-		    cbd = Sys_GetClipboardData();
+			cbd = Sys_GetClipboardData();
 
-		    if (!cbd) {
-		        // Fenix: on Linux copy&paste support works only
-		        // if xclip is installed on the system. If not
-		        // Sys_GetClipboardData will return NULL and the
-		        // following VM_Call will generate a segfault
-		        return;
-		    }
+			if (!cbd) {
+				// Fenix: on Linux copy&paste support works only
+				// if xclip is installed on the system. If not
+				// Sys_GetClipboardData will return NULL and the
+				// following VM_Call will generate a segfault
+				return;
+			}
 
-		    len = strlen(cbd);
+			len = strlen(cbd);
 
 			for (i = 0; i < len && i < MAX_STRING_CHARS; i++) {
 				if (Q_isprint(cbd[i])) {

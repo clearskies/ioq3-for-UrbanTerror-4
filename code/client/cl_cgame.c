@@ -726,7 +726,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return Key_GetCatcher();
   case CG_KEY_SETCATCHER:
 		Key_SetCatcher( args[1] );
-    return 0;
+	return 0;
   case CG_KEY_GETKEY:
 		return Key_GetKey( VMA(1) );
 
@@ -815,7 +815,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return re.inPVS( VMA(1), VMA(2) );
 
 	default:
-	    assert(0); // bk010102
+		assert(0); // bk010102
 		Com_Error( ERR_DROP, "Bad cgame system trap: %ld", (long int) args[0] );
 		break;
 	}

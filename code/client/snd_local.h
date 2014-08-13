@@ -38,14 +38,14 @@ typedef struct {
 } portable_samplepair_t;
 
 typedef struct adpcm_state {
-    short	sample;		/* Previous output value */
-    char	index;		/* Index into stepsize table */
+	short	sample;		/* Previous output value */
+	char	index;		/* Index into stepsize table */
 } adpcm_state_t;
 
 typedef	struct sndBuffer_s {
 	short					sndChunk[SND_CHUNK_SIZE];
 	struct sndBuffer_s		*next;
-    int						size;
+	int						size;
 	adpcm_state_t			adpcm;
 } sndBuffer;
 

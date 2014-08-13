@@ -1407,9 +1407,9 @@ void CL_Connect_f( void ) {
 		clc.serverAddress.port = BigShort( PORT_SERVER );
 	}
 	Com_sprintf( serverString, sizeof( serverString ), "%i.%i.%i.%i:%i",
-					      clc.serverAddress.ip[0], clc.serverAddress.ip[1],
-					      clc.serverAddress.ip[2], clc.serverAddress.ip[3],
-					      BigShort( clc.serverAddress.port ) );
+						  clc.serverAddress.ip[0], clc.serverAddress.ip[1],
+						  clc.serverAddress.ip[2], clc.serverAddress.ip[3],
+						  BigShort( clc.serverAddress.port ) );
  
 	Com_Printf( "%s resolved to %s\n", cls.servername, serverString );
 
@@ -1917,8 +1917,8 @@ void CL_InitDownloads(void) {
 			// NOTE TTimo I would rather have that printed as a modal message box
 			//   but at this point while joining the game we don't know wether we will successfully join or not
 			Com_Printf( "\nWARNING: You are missing some files referenced by the server:\n%s"
-					        "You might not be able to join the game\n"
-					        "Go to the setting menu to turn on autodownload, or get the file elsewhere\n\n", missingfiles );
+							"You might not be able to join the game\n"
+							"Go to the setting menu to turn on autodownload, or get the file elsewhere\n\n", missingfiles );
 		}
 	}
 	else if ( FS_ComparePaks( clc.downloadList, sizeof( clc.downloadList ) , qtrue ) ) {
@@ -3423,7 +3423,7 @@ void CL_ServerInfoPacket( netadr_t from, msg_t *msg ) {
 	cls.localServers[i].auth = 0;
 	cls.localServers[i].password = 0;
 	cls.localServers[i].modversion[0] = '\0';
-					         
+							 
 	Q_strncpyz( info, MSG_ReadString( msg ), MAX_INFO_STRING );
 	if (strlen(info)) {
 		if (info[strlen(info)-1] != '\n') {
@@ -3974,19 +3974,19 @@ qboolean CL_UpdateVisiblePings_f(int source) {
 					}
 					for (j = 0; j < MAX_PINGREQUESTS; j++) {
 					  if (!cl_pinglist[j].adr.port) {
-					    continue;
+						continue;
 					  }
 					  if (NET_CompareAdr( cl_pinglist[j].adr, server[i].adr)) {
-					    // already on the list
-					    break;
+						// already on the list
+						break;
 					  }
 					}
 					if (j >= MAX_PINGREQUESTS) {
 					  status = qtrue;
 					  for (j = 0; j < MAX_PINGREQUESTS; j++) {
-					    if (!cl_pinglist[j].adr.port) {
-					      break;
-					    }
+						if (!cl_pinglist[j].adr.port) {
+						  break;
+						}
 					  }
 					  memcpy(&cl_pinglist[j].adr, &server[i].adr, sizeof(netadr_t));
 					  cl_pinglist[j].start = cls.realtime;
@@ -4002,10 +4002,10 @@ qboolean CL_UpdateVisiblePings_f(int source) {
 					if (source == AS_GLOBAL) {
 					  //
 					  if ( cls.numGlobalServerAddresses > 0 ) {
-					    // overwrite this server with one from the additional global servers
-					    cls.numGlobalServerAddresses--;
-					    CL_InitServerInfo(&server[i], &cls.globalServerAddresses[cls.numGlobalServerAddresses]);
-					    // NOTE: the server[i].visible flag stays untouched
+						// overwrite this server with one from the additional global servers
+						cls.numGlobalServerAddresses--;
+						CL_InitServerInfo(&server[i], &cls.globalServerAddresses[cls.numGlobalServerAddresses]);
+						// NOTE: the server[i].visible flag stays untouched
 					  }
 					}
 				}

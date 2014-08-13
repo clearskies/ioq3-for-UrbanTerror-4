@@ -154,7 +154,7 @@ static void *GPA(char *str)
 	else
 	{
 		Com_DPrintf( " Loaded symbol %s (%p)\n", str, rv);
-        return rv;
+		return rv;
 	}
 }
 

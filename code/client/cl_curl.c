@@ -70,19 +70,19 @@ const char *(*qcurl_easy_strerror)(CURLcode);
 
 CURLM* (*qcurl_multi_init)(void);
 CURLMcode (*qcurl_multi_add_handle)(CURLM *multi_handle,
-                                                CURL *curl_handle);
+												CURL *curl_handle);
 CURLMcode (*qcurl_multi_remove_handle)(CURLM *multi_handle,
-                                                CURL *curl_handle);
+												CURL *curl_handle);
 CURLMcode (*qcurl_multi_fdset)(CURLM *multi_handle,
-                                                fd_set *read_fd_set,
-                                                fd_set *write_fd_set,
-                                                fd_set *exc_fd_set,
-                                                int *max_fd);
+												fd_set *read_fd_set,
+												fd_set *write_fd_set,
+												fd_set *exc_fd_set,
+												int *max_fd);
 CURLMcode (*qcurl_multi_perform)(CURLM *multi_handle,
-                                                int *running_handles);
+												int *running_handles);
 CURLMcode (*qcurl_multi_cleanup)(CURLM *multi_handle);
 CURLMsg *(*qcurl_multi_info_read)(CURLM *multi_handle,
-                                                int *msgs_in_queue);
+												int *msgs_in_queue);
 const char *(*qcurl_multi_strerror)(CURLMcode);
 
 static OBJTYPE cURLLib = NULL;
@@ -106,7 +106,7 @@ static void *GPA(char *str)
 	else
 	{
 		Com_DPrintf("Loaded symbol %s (0x%p)\n", str, rv);
-        return rv;
+		return rv;
 	}
 }
 #endif /* USE_CURL_DLOPEN */

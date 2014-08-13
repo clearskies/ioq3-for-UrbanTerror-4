@@ -353,57 +353,57 @@ void TextDecode6Bit(unsigned char *buf, int blen, char *out, int olen)
    if (!v) return; // null terminated, we are done
   } else {
    switch (v-60) {
-    case 0:
-     if (op+5>olen) {
-      buf[op]=0;
-      Com_Printf("TextDecode6Bit: target buffer overflow!\n");
-      return;
-     }
-     if (op>=0) out[op+0] = ' ';
-     out[op+1] = 'u';
-     out[op+2] = 't';
-     out[op+3] = '4';
-     out[op+4] = '_';
-     op+=5;
-     break;
-    case 1:
-     if (op+4>olen) {
-      buf[op]=0;
-      Com_Printf("TextDecode6Bit: target buffer overflow!\n");
-      return;
-     }
-     if (op>=0) out[op+0] = ' ';
-     out[op+1] = 'u';
-     out[op+2] = 't';
-     out[op+3] = '_';
-     op+=4;
-     break;
-    case 2:
-     if (op+5>olen) {
-      buf[op]=0;
-      Com_Printf("TextDecode6Bit: target buffer overflow!\n");
-      return;
-     }
-     if (op>=0) out[op+0] = '_';
-     out[op+1] = 'b';
-     out[op+2] = 'e';
-     out[op+3] = 't';
-     out[op+4] = 'a';
-     op+=5;
-     break;
-    case 3:
-     if (op+5>olen) {
-      buf[op]=0;
-      Com_Printf("TextDecode6Bit: target buffer overflow!\n");
-      return;
-     }
-     if (op>=0) out[op+0] = 'j';
-     out[op+1] = 'u';
-     out[op+2] = 'm';
-     out[op+3] = 'p';
-     out[op+4] = 's';
-     op+=5;
-     break;
+	case 0:
+	 if (op+5>olen) {
+	  buf[op]=0;
+	  Com_Printf("TextDecode6Bit: target buffer overflow!\n");
+	  return;
+	 }
+	 if (op>=0) out[op+0] = ' ';
+	 out[op+1] = 'u';
+	 out[op+2] = 't';
+	 out[op+3] = '4';
+	 out[op+4] = '_';
+	 op+=5;
+	 break;
+	case 1:
+	 if (op+4>olen) {
+	  buf[op]=0;
+	  Com_Printf("TextDecode6Bit: target buffer overflow!\n");
+	  return;
+	 }
+	 if (op>=0) out[op+0] = ' ';
+	 out[op+1] = 'u';
+	 out[op+2] = 't';
+	 out[op+3] = '_';
+	 op+=4;
+	 break;
+	case 2:
+	 if (op+5>olen) {
+	  buf[op]=0;
+	  Com_Printf("TextDecode6Bit: target buffer overflow!\n");
+	  return;
+	 }
+	 if (op>=0) out[op+0] = '_';
+	 out[op+1] = 'b';
+	 out[op+2] = 'e';
+	 out[op+3] = 't';
+	 out[op+4] = 'a';
+	 op+=5;
+	 break;
+	case 3:
+	 if (op+5>olen) {
+	  buf[op]=0;
+	  Com_Printf("TextDecode6Bit: target buffer overflow!\n");
+	  return;
+	 }
+	 if (op>=0) out[op+0] = 'j';
+	 out[op+1] = 'u';
+	 out[op+2] = 'm';
+	 out[op+3] = 'p';
+	 out[op+4] = 's';
+	 op+=5;
+	 break;
    }
   }
   if (op==olen) {
@@ -439,20 +439,20 @@ void CL_ParseCompressedPureList()
   while(*s) {
    int v = *(s++);
    if (esc) {
-    v--;
-    esc=0;
+	v--;
+	esc=0;
    } else {
-    if (v=='@') {
-     esc=1;
-     continue;
-    }
+	if (v=='@') {
+	 esc=1;
+	 continue;
+	}
    }
    sh=(sh<<7)|v;
    shc+=7;
    if (shc>=8) {
-    shc-=8;
-    v = (sh>>shc)&0xFF;
-    buf[bl++] = v;
+	shc-=8;
+	v = (sh>>shc)&0xFF;
+	buf[bl++] = v;
 //    fprintf(stderr,"%02X",v);
    }
   }
@@ -625,7 +625,7 @@ static void CL_ParseServerInfo(void)
 		Info_ValueForKey(serverInfo, "sv_dlURL"),
 		sizeof(clc.sv_dlURL));
 	Q_strncpyz(clc.mapname,
-    Info_ValueForKey(serverInfo, "mapname"),
+	Info_ValueForKey(serverInfo, "mapname"),
 		sizeof(clc.mapname));
 }
 

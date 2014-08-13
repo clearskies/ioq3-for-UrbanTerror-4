@@ -277,12 +277,12 @@ short* dmaHD_AllocateSoundBuffer(int samples)
 // =======================================================
 // x0-----x1--t--x2-----x3 / x0/2/3/4 are know samples / t = 0.0 - 1.0 between x1 and x2 / returns y value at point t
 static float dmaHD_InterpolateCubic(float x0, float x1, float x2, float x3, float t) {
-    float a0,a1,a2,a3;a0=x3-x2-x0+x1;a1=x0-x1-a0;a2=x2-x0;a3=x1;
-    return (a0*(t*t*t))+(a1*(t*t))+(a2*t)+(a3);
+	float a0,a1,a2,a3;a0=x3-x2-x0+x1;a1=x0-x1-a0;a2=x2-x0;a3=x1;
+	return (a0*(t*t*t))+(a1*(t*t))+(a2*t)+(a3);
 }
 static float dmaHD_InterpolateHermite4pt3oX(float x0, float x1, float x2, float x3, float t) {
-    float c0,c1,c2,c3;c0=x1;c1=0.5f*(x2-x0);c2=x0-(2.5f*x1)+(2*x2)-(0.5f*x3);c3=(0.5f*(x3-x0))+(1.5f*(x1-x2));
-    return (((((c3*t)+c2)*t)+c1)*t)+c0;
+	float c0,c1,c2,c3;c0=x1;c1=0.5f*(x2-x0);c2=x0-(2.5f*x1)+(2*x2)-(0.5f*x3);c3=(0.5f*(x3-x0))+(1.5f*(x1-x2));
+	return (((((c3*t)+c2)*t)+c1)*t)+c0;
 }
 static float dmaHD_NormalizeSamplePosition(float t, int samples) {
 	while (t<0.0) t+=(float)samples; while (t>=(float)samples) t-=(float)samples; return t;
@@ -879,7 +879,7 @@ void dmaHD_SpatializeOrigin_HHRTF(vec3_t so, channel_t* ch)
 	vec3_t sod, sodl, sodr;
 	// lo = listener origin/[l]eft/[r]ight
 	vec3_t lol, lor;
-    // distance to ears/[l]eft/[r]ight
+	// distance to ears/[l]eft/[r]ight
 	int distl, distr; // using int since calculations are integer based.
 	// temp, index
 	int tmp, idx;
@@ -976,7 +976,7 @@ void dmaHD_SpatializeOrigin_dmaEX2(vec3_t so, channel_t* ch)
 {
 	// so = sound origin/[d]irection/[n]ormalized/[rot]ated
 	vec3_t sod;
-    // distance to head
+	// distance to head
 	int dist; // using int since calculations are integer based.
 	// temp, index
 	int tmp, idx, vol;
@@ -1066,10 +1066,10 @@ void dmaHD_SpatializeOrigin_dmaEX2(vec3_t so, channel_t* ch)
 
 void dmaHD_SpatializeOrigin_dmaEX(vec3_t origin, channel_t* ch)
 {
-    vec_t		dot;
-    vec_t		dist;
-    vec_t		lscale, rscale, scale;
-    vec3_t		source_vec;
+	vec_t		dot;
+	vec_t		dist;
+	vec_t		lscale, rscale, scale;
+	vec3_t		source_vec;
 	int tmp;
 
 	const float dist_mult = SOUND_ATTENUATE;

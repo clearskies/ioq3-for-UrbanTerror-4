@@ -411,11 +411,11 @@ Used for spatializing s_channels
 */
 void S_SpatializeOrigin (vec3_t origin, int master_vol, int *left_vol, int *right_vol)
 {
-    vec_t		dot;
-    vec_t		dist;
-    vec_t		lscale, rscale, scale;
-    vec3_t		source_vec;
-    vec3_t		vec;
+	vec_t		dot;
+	vec_t		dist;
+	vec_t		lscale, rscale, scale;
+	vec3_t		source_vec;
+	vec3_t		vec;
 
 	const float dist_mult = SOUND_ATTENUATE;
 	
@@ -675,10 +675,10 @@ void S_Base_ClearSoundBuffer( void ) {
 
 	SNDDMA_BeginPainting ();
 	if (dma.buffer)
-    // TTimo: due to a particular bug workaround in linux sound code,
-    //   have to optionally use a custom C implementation of Com_Memset
-    //   not affecting win32, we have #define Snd_Memset Com_Memset
-    // https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=371
+	// TTimo: due to a particular bug workaround in linux sound code,
+	//   have to optionally use a custom C implementation of Com_Memset
+	//   not affecting win32, we have #define Snd_Memset Com_Memset
+	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=371
 		Snd_Memset(dma.buffer, clear, dma.samples * dma.samplebits/8);
 	SNDDMA_Submit ();
 }

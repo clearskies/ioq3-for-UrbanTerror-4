@@ -278,10 +278,10 @@ long RllDecodeStereoToStereo(unsigned char *from,short *to,unsigned int size,cha
 	}
 
 	for (z=0;z<size;z+=2) {
-                prevL = (short)(prevL + cin.sqrTable[*zz++]); 
-                prevR = (short)(prevR + cin.sqrTable[*zz++]);
-                to[z+0] = (short)(prevL);
-                to[z+1] = (short)(prevR);
+				prevL = (short)(prevL + cin.sqrTable[*zz++]); 
+				prevR = (short)(prevR + cin.sqrTable[*zz++]);
+				to[z+0] = (short)(prevL);
+				to[z+1] = (short)(prevR);
 	}
 	
 	return (size>>1);	//*sizeof(short));
@@ -434,8 +434,8 @@ int		spl;
 	celdata = 0;
 	index	= 0;
 	
-        spl = cinTable[currentHandle].samplesPerLine;
-        
+		spl = cinTable[currentHandle].samplesPerLine;
+		
 	do {
 		if (!newd) { 
 			newd = 7;
@@ -531,7 +531,7 @@ static void ROQ_GenYUVTables( void )
 }
 
 #define VQ2TO4(a,b,c,d) { \
-    	*c++ = a[0];	\
+		*c++ = a[0];	\
 	*d++ = a[0];	\
 	*d++ = a[0];	\
 	*c++ = a[1];	\
@@ -985,17 +985,17 @@ static void readQuadInfo( byte *qData )
 	cinTable[currentHandle].t[0] = cinTable[currentHandle].screenDelta;
 	cinTable[currentHandle].t[1] = -cinTable[currentHandle].screenDelta;
 
-        cinTable[currentHandle].drawX = cinTable[currentHandle].CIN_WIDTH;
-        cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
-        
+		cinTable[currentHandle].drawX = cinTable[currentHandle].CIN_WIDTH;
+		cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
+		
 	// rage pro is very slow at 512 wide textures, voodoo can't do it at all
 	if ( glConfig.hardwareType == GLHW_RAGEPRO || glConfig.maxTextureSize <= 256) {
-                if (cinTable[currentHandle].drawX>256) {
-                        cinTable[currentHandle].drawX = 256;
-                }
-                if (cinTable[currentHandle].drawY>256) {
-                        cinTable[currentHandle].drawY = 256;
-                }
+				if (cinTable[currentHandle].drawX>256) {
+						cinTable[currentHandle].drawX = 256;
+				}
+				if (cinTable[currentHandle].drawY>256) {
+						cinTable[currentHandle].drawY = 256;
+				}
 		if (cinTable[currentHandle].CIN_WIDTH != 256 || cinTable[currentHandle].CIN_HEIGHT != 256) {
 			Com_Printf("HACK: approxmimating cinematic for Rage Pro or Voodoo\n");
 		}
@@ -1093,9 +1093,9 @@ static void RoQReset( void ) {
 static void RoQInterrupt(void)
 {
 	byte				*framedata;
-        short		sbuf[32768];
-        int		ssize;
-        
+		short		sbuf[32768];
+		int		ssize;
+		
 	if (currentHandle < 0) return;
 
 	Sys_StreamedRead( cin.file, cinTable[currentHandle].RoQFrameSize+8, 1, cinTable[currentHandle].iFile );
@@ -1143,7 +1143,7 @@ redump:
 		case	ZA_SOUND_MONO:
 			if (!cinTable[currentHandle].silent) {
 				ssize = RllDecodeMonoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, (unsigned short)cinTable[currentHandle].roq_flags);
-                                S_RawSamples( ssize, 22050, 2, 1, (byte *)sbuf, 1.0f );
+								S_RawSamples( ssize, 22050, 2, 1, (byte *)sbuf, 1.0f );
 			}
 			break;
 		case	ZA_SOUND_STEREO:
@@ -1153,7 +1153,7 @@ redump:
 					s_rawend = s_soundtime;
 				}
 				ssize = RllDecodeStereoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, (unsigned short)cinTable[currentHandle].roq_flags);
-                                S_RawSamples( ssize, 22050, 2, 2, (byte *)sbuf, 1.0f );
+								S_RawSamples( ssize, 22050, 2, 2, (byte *)sbuf, 1.0f );
 			}
 			break;
 		case	ROQ_QUAD_INFO:
@@ -1332,7 +1332,7 @@ Fetch and decompress the pending frame
 
 e_status CIN_RunCinematic (int handle)
 {
-        // bk001204 - init
+		// bk001204 - init
 	int	start = 0;
 	int     thisTime = 0;
 
@@ -1533,53 +1533,53 @@ void CIN_DrawCinematic (int handle) {
 
 	if (cinTable[handle].dirty && (cinTable[handle].CIN_WIDTH != cinTable[handle].drawX || cinTable[handle].CIN_HEIGHT != cinTable[handle].drawY)) {
 		int ix, iy, *buf2, *buf3, xm, ym, ll;
-                
+				
 		xm = cinTable[handle].CIN_WIDTH/256;
 		ym = cinTable[handle].CIN_HEIGHT/256;
-                ll = 8;
-                if (cinTable[handle].CIN_WIDTH==512) {
-                    ll = 9;
-                }
-                
+				ll = 8;
+				if (cinTable[handle].CIN_WIDTH==512) {
+					ll = 9;
+				}
+				
 		buf3 = (int*)buf;
 		buf2 = Hunk_AllocateTempMemory( 256*256*4 );
-                if (xm==2 && ym==2) {
-                    byte *bc2, *bc3;
-                    int	ic, iiy;
-                    
-                    bc2 = (byte *)buf2;
-                    bc3 = (byte *)buf3;
-                    for (iy = 0; iy<256; iy++) {
-                            iiy = iy<<12;
-                            for (ix = 0; ix<2048; ix+=8) {
-                                for(ic = ix;ic<(ix+4);ic++) {
-                                    *bc2=(bc3[iiy+ic]+bc3[iiy+4+ic]+bc3[iiy+2048+ic]+bc3[iiy+2048+4+ic])>>2;
-                                    bc2++;
-                                }
-                            }
-                    }
-                } else if (xm==2 && ym==1) {
-                    byte *bc2, *bc3;
-                    int	ic, iiy;
-                    
-                    bc2 = (byte *)buf2;
-                    bc3 = (byte *)buf3;
-                    for (iy = 0; iy<256; iy++) {
-                            iiy = iy<<11;
-                            for (ix = 0; ix<2048; ix+=8) {
-                                for(ic = ix;ic<(ix+4);ic++) {
-                                    *bc2=(bc3[iiy+ic]+bc3[iiy+4+ic])>>1;
-                                    bc2++;
-                                }
-                            }
-                    }
-                } else {
-                    for (iy = 0; iy<256; iy++) {
-                            for (ix = 0; ix<256; ix++) {
-                                    buf2[(iy<<8)+ix] = buf3[((iy*ym)<<ll) + (ix*xm)];
-                            }
-                    }
-                }
+				if (xm==2 && ym==2) {
+					byte *bc2, *bc3;
+					int	ic, iiy;
+					
+					bc2 = (byte *)buf2;
+					bc3 = (byte *)buf3;
+					for (iy = 0; iy<256; iy++) {
+							iiy = iy<<12;
+							for (ix = 0; ix<2048; ix+=8) {
+								for(ic = ix;ic<(ix+4);ic++) {
+									*bc2=(bc3[iiy+ic]+bc3[iiy+4+ic]+bc3[iiy+2048+ic]+bc3[iiy+2048+4+ic])>>2;
+									bc2++;
+								}
+							}
+					}
+				} else if (xm==2 && ym==1) {
+					byte *bc2, *bc3;
+					int	ic, iiy;
+					
+					bc2 = (byte *)buf2;
+					bc3 = (byte *)buf3;
+					for (iy = 0; iy<256; iy++) {
+							iiy = iy<<11;
+							for (ix = 0; ix<2048; ix+=8) {
+								for(ic = ix;ic<(ix+4);ic++) {
+									*bc2=(bc3[iiy+ic]+bc3[iiy+4+ic])>>1;
+									bc2++;
+								}
+							}
+					}
+				} else {
+					for (iy = 0; iy<256; iy++) {
+							for (ix = 0; ix<256; ix++) {
+									buf2[(iy<<8)+ix] = buf3[((iy*ym)<<ll) + (ix*xm)];
+							}
+					}
+				}
 		re.DrawStretchRaw( x, y, w, h, 256, 256, (byte *)buf2, handle, qtrue);
 		cinTable[handle].dirty = qfalse;
 		Hunk_FreeTempMemory(buf2);
