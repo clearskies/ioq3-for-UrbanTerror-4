@@ -70,6 +70,7 @@ cvar_t	*sv_removeKnife;
 cvar_t	*sv_antiblock;
 cvar_t	*sv_forceGear;
 cvar_t	*sv_chatColor;
+cvar_t	*sv_rainbowChat;
 cvar_t	*sv_allowVote;
 
 cvar_t  *sv_infiniteStamina;
@@ -171,13 +172,48 @@ void SV_AddServerCommand( client_t *client, const char *cmd ) {
 	if( client->state < CS_PRIMED )
 		return;
 
-	if (sv_chatColor) {
+	cPos = strstr(cmd, ": ^3");
+	if (sv_chatColor->integer != 3) {
 		chatColor = sv_chatColor->value;
-		cPos = strstr(cmd, ": ^3");
+		
 		if (cPos && chatColor < 10 && chatColor > -1) {
 			*(cPos + 3) = chatColor + 48;
 		}
 	}
+
+	cPos += 4;
+
+	
+	if (sv_rainbowChat->integer) {
+		Cmd_TokenizeString(cmd);
+		if (!Q_stricmp(Cmd_Argv(0), "cchat") ||
+			!Q_stricmp(Cmd_Argv(0), "tcchat")) {
+
+			char *newCmd = malloc(strlen(cmd) * 4);
+			strcpy(newCmd, cmd);
+
+			int current = 0;
+			int len;
+			int pos;
+
+			cPos = &newCmd[cPos - cmd];
+			while (*cPos) {
+				if (!Q_IsColorString(cPos)) {
+					pos = cPos - newCmd;
+					len = strlen(cPos);
+					memmove(cPos + 2, cPos, len + 1);
+					cPos[0] = '^';
+					cPos[1] = current % 9 + 49;
+					current++;
+					
+				}
+				cPos += 3;
+			}
+
+			cmd = newCmd;
+		}
+	}
+
 
 	client->reliableSequence++;
 	// if we would be losing an old command that hasn't been acknowledged,

@@ -93,6 +93,7 @@ Server
    + `sv_infiniteAmmo <0|1>` - Enables unlimited ammo. In burst mode, weapons will only consume 2 bullets. Default is `0`
    + `sv_infiniteWalljumps <0|1>` - Enables unlimited walljumps. Default is `0`
    + `sv_weaponCycle <0|1>` - Removes weapon shooting delay. Default is `0`
+   + `sv_rainbowChat <0|1>` - Makes player chat rainbow-coloured
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility

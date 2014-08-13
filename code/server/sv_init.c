@@ -941,6 +941,7 @@ void SV_Init (void) {
 	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
 	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
 	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
+	sv_rainbowChat = Cvar_Get("sv_rainbowChat", "0", CVAR_ARCHIVE);
 	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
 
 	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);

@@ -317,6 +317,7 @@ extern  cvar_t  *sv_removeKnife;
 extern	cvar_t  *sv_antiblock;
 extern	cvar_t  *sv_forceGear;
 extern	cvar_t  *sv_chatColor;
+extern	cvar_t  *sv_rainbowChat;
 extern	cvar_t  *sv_allowVote;
 
 extern	cvar_t  *sv_infiniteStamina;
