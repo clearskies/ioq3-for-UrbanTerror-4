@@ -1396,6 +1396,51 @@ void SV_Mapcycle_f(client_t *cl) {
 }
 
 
+/*
+==================
+SV_Say_f
+An engine-side implementation of the `say` command for more customization
+
+Currently missing:
+	+ (SUB) indicator
+	+ Chat variables
+==================
+*/
+void SV_Say_f(client_t *cl) {
+	/*
+	-- to client:
+	cchat "0" "6th|Clear^3: ^3asd"
+
+	-- log:
+	say: 0 6th|Clear: asd
+	*/
+	int team;
+	char *message;
+	playerState_t *ps;
+
+	ps = SV_GameClientNum(cl - svs.clients);
+
+	team = ps->persistant[PERS_TEAM];
+	message = CopyString(Cmd_Args());
+
+	/* 
+	If this ever gets finished, there should be a cvar for allowing coloured text
+	For now, `csay` will leave coloured text
+
+	Q_CleanStr(message);
+	*/
+
+	SV_SendServerCommand(NULL, "cchat \"%i\" \"%s%s%s^3: ^3%s\"", 
+		team,
+		ps->pm_type == PM_DEAD ? "(DEAD) " : "",
+		team == TEAM_SPECTATOR ? "(SPEC) " : "",
+		cl->name, message);
+
+	SV_LogPrintf("say: %i %s: %s\n", team, cl->name, message);
+}
+
+
+
 typedef struct {
 	char	*name;
 	void	(*func)( client_t *cl );
@@ -1414,6 +1459,8 @@ static ucmd_t ucmds[] = {
 	{"maplist", SV_Maplist_f},
 	{"ff?", SV_FriendlyFire_f},
 	{"mapcycle", SV_Mapcycle_f},
+
+	{"csay", SV_Say_f},
 
 	{NULL, NULL}
 };
