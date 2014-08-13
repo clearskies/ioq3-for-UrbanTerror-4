@@ -301,6 +301,8 @@ typedef vec_t vec3_t[3];
 typedef vec_t vec4_t[4];
 typedef vec_t vec5_t[5];
 
+typedef vec4_t vec4_pair[2];
+
 typedef	int	fixed4_t;
 typedef	int	fixed8_t;
 typedef	int	fixed16_t;
@@ -367,7 +369,8 @@ extern	vec4_t		colorDkGrey;
 #define S_COLOR_ORANGE 	"^8"
 #define S_COLOR_OLIVE  	"^9"
 
-extern vec4_t	g_color_table[10];
+extern vec4_t	 g_color_table[10];
+extern vec4_pair colour_conversion_table[10];
 
 #define	MAKERGB( v, r, g, b ) v[0]=r;v[1]=g;v[2]=b
 #define	MAKERGBA( v, r, g, b, a ) v[0]=r;v[1]=g;v[2]=b;v[3]=a

@@ -262,6 +262,22 @@ void	RE_SetColor( const float *rgba ) {
 	cmd->color[1] = rgba[1];
 	cmd->color[2] = rgba[2];
 	cmd->color[3] = rgba[3];
+
+	int i;
+	for (i = 0; i < 10; i++) {
+		if (cmd->color[0] == colour_conversion_table[i][0][0] &&
+			cmd->color[1] == colour_conversion_table[i][0][1] &&
+			cmd->color[2] == colour_conversion_table[i][0][2] &&
+			cmd->color[3] == colour_conversion_table[i][0][3]) {
+
+			cmd->color[0] = colour_conversion_table[i][1][0];
+			cmd->color[1] = colour_conversion_table[i][1][1];
+			cmd->color[2] = colour_conversion_table[i][1][2];
+			cmd->color[3] = colour_conversion_table[i][1][3];
+
+			break;
+		}
+	}
 }
 
 
