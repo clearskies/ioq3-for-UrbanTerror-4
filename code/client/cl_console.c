@@ -787,7 +787,7 @@ void CL_ConsolePrint( char *txt ) {
 			search = killLog1;
 		} else if (killLogNum == 2) {
 			search = killLog2;
-		} else if (killLogNum == 3) {
+		} else if (killLogNum > 2) {
 			search = killLog3;
 		}
 
@@ -804,7 +804,7 @@ void CL_ConsolePrint( char *txt ) {
 			txt = newtxt;
 		}
 
-		if (killLogNum > 0 && killLogNum < 4) {
+		if (killLogNum > 0 && killLogNum < 6) {
 			int temp;
 			for (i = 0; ; i++) {
 				if (!search[i])
