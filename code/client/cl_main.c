@@ -4191,3 +4191,4 @@ void CL_Maplist_f(void) {
 
 	Com_Printf("-----------------------\nEnd of current maplist\n");
 }
+
