@@ -321,14 +321,14 @@ void Con_Dump_f (void)
 		return;
 	}
 
-	Com_Printf ("Dumped console text to %s.\n", Cmd_Argv(1) );
-
 	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
 	if (!f)
 	{
 		Com_Printf ("ERROR: couldn't open.\n");
 		return;
 	}
+
+	Com_Printf ("Dumped console text to %s.\n", Cmd_Argv(1) );
 
 	// skip empty lines
 	for (l = currentCon->current - currentCon->totallines + 1 ; l <= currentCon->current ; l++)
