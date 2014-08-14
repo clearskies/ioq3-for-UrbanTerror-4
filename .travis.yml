@@ -1,0 +1,30 @@
+language:
+  - c
+compiler:
+  - gcc
+install:
+  - sudo apt-get update
+  - sudo apt-get install libsdl1.2-dev libxxf86vm-dev
+  - sudo apt-get install mingw-w64 gcc-mingw-w64-base gcc-mingw-w64 binutils-mingw-w64
+script:
+  - make
+  - ./cross-make-mingw.sh
+cache:
+  - apt
+deploy:
+  provider: releases
+  api_key:
+    secure: gKlSUbKXH0AcjiERxNcNY3tOQIcjvJYZdgfHbqjDG3d4T8dgF5ePeY6kxHArQ343G4e27oiqNyOW3iUzH16AiU7SDU90lt9j8WQ8VChmLVT5i006eOQxopQXL+95zDHQRp6GNNLS7V1DLeQDE42q/xdzkRFuDKr90pvOWU7GGmI=
+  file:
+    - build/release-linux-x86_64/Quake3-UrT-Ded.x86_64
+    - build/release-linux-x86_64/Quake3-UrT.x86_64
+    - build/release-mingw32-x86/Quake3-UrT-Ded.x86.exe
+    - build/release-mingw32-x86/Quake3-UrT.x86.exe
+  skip_cleanup: true
+  on:
+    on_tag: true
+    all_branches: true
+notifications:
+  irc: "irc.quakenet.org#nuubs"
+  on_success: always
+  on_failure: always
