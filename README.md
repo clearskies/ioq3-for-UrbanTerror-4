@@ -105,6 +105,7 @@ Server
    + `teleport <player> <toPlayer>` - Teleports `player` to `toPlayer`
    + `callvoteas <player> <vote type> [vote value]` - Calls a vote as a certain player. Useful in conjunction with `sv_allowVote 0` so that votes can be called through rcon but not by the players themselves
    + `backwards <player>` - Reverses a player's movement
+   + `src <player> <command>` - Sends a reliable command for a client (or `all` clients) to execute
 
 ### Player Commands (commands a player can call while connected to the server) ###
    + `ff?` - Informs the player of the status of g_friendlyfire

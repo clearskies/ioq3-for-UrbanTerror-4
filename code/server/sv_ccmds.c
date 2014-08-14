@@ -1829,6 +1829,32 @@ static void SV_CallVoteAs_f(void) {
 }
 
 /*
+======================
+SV_SendReliableCommand
+======================
+*/
+static void SV_SendReliableCommand_f(void) {
+	if (!com_sv_running->integer) {
+		Com_Printf("Server is not running\n");
+		return;
+	}
+
+	if (Cmd_Argc() < 3) {
+		Com_Printf("Usage: src <player> <command>\n");
+		return;
+	}
+
+	client_t *cl;
+
+	cl = SV_GetPlayerByHandle();
+
+	if (!cl && Q_stricmp(Cmd_Argv(1), "all"))
+		return;
+
+	SV_SendServerCommand(cl, "%s", Cmd_ArgsFrom(2));
+}
+
+/*
 ==================
 SV_CompleteMapName
 ==================
@@ -1982,6 +2008,8 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("teleport", SV_Teleport_f);
 	Cmd_AddCommand ("callvoteas", SV_CallVoteAs_f);
 	Cmd_AddCommand ("backwards", SV_Backwards_f);
+
+	Cmd_AddCommand ("src", SV_SendReliableCommand_f);
 
 #ifndef PRE_RELEASE_DEMO
 	Cmd_AddCommand ("devmap", SV_Map_f);
