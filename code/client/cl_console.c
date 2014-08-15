@@ -95,7 +95,6 @@ cvar_t		*con_bgColour;
 cvar_t		*con_prompt;
 cvar_t		*con_height;
 cvar_t		*con_promptColour;
-cvar_t		*con_timePrompt;
 cvar_t		*con_scrollLock;
 cvar_t		*con_drawScrollbar;
 cvar_t		*con_fadeIn;
@@ -481,7 +480,6 @@ void Con_Init (void) {
 	con_prompt = Cvar_Get("con_prompt", "]", CVAR_ARCHIVE);
 	con_height = Cvar_Get("con_height", "50", CVAR_ARCHIVE);
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
-	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
 	con_drawScrollbar = Cvar_Get("con_drawScrollbar", "0", CVAR_ARCHIVE);
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
@@ -1009,19 +1007,8 @@ void Con_DrawInput (void) {
 	int i;
 	char *prompt;
 
-	if (con_timePrompt->integer) {
-		qtime_t curTime;
-		Com_RealTime(&curTime);
-		prompt = Z_Malloc(promptLen + 11);
-		int hour = curTime.tm_hour;
-		if (con_timePrompt->integer == 2) {
-			hour = hourTo12(curTime.tm_hour);
-		}
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);
-	} else {
-		prompt = Z_Malloc(promptLen);
-		Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
-	}
+	prompt = Z_Malloc(promptLen);
+	Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
 
 	promptLen = strlen(prompt);
 

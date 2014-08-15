@@ -30,7 +30,6 @@ Client
    + `con_height <0-100>` - Sets the console height in percent of the game window's height. Default is `50`
    + `con_bgColor <0-9>` - Sets the console background colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
    + `con_promptColor <0-9>` - Sets the console prompt colour. Values can be any standard Quake 3 colour (0-9). Default is `0`
-   + `con_timePrompt <0|1>` - Adds a little time indicator to the console prompt. `1` adds a 24-hour clock and `2` adds a 12-hour clock. Default is `0`
    + `con_scrollLock <0|1>` - Keeps the console in place when a new line comes in. Default is `1`
    + `con_drawScrollbar <0|1>` - Draws a scrollbar in the console to indicate your position in the scrollback. Default is `0`
    + `cl_consoleCommand ""` - Sets the command that will be automatically run when no command prefix (`/` or `\`) is entered. Default is `say`
