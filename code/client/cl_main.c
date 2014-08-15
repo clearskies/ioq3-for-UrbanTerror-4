@@ -93,6 +93,7 @@ cvar_t  *clan;
 cvar_t  *cl_clanPos;
 
 cvar_t  *cl_deathBind;
+cvar_t  *cl_rainbowTeamchat;
 
 #ifdef USE_AUTOMATION
 cvar_t  *cl_noAmmo;
@@ -259,6 +260,33 @@ void CL_AddReliableCommand( const char *cmd ) {
 	s = replaceStr(s, "$oteam", oTeamName);
 
 	cmd = s;
+
+	if (cl_rainbowTeamchat->integer) {
+		Cmd_TokenizeString(cmd);
+		if (!Q_stricmp(Cmd_Argv(0), "say_team")) {
+			char *text = Cmd_Args();
+			char *newStr = malloc(strlen(text) * 4 + 8);
+			int i, j, current = 0;
+
+			sprintf(newStr, "say_team ");
+
+			for (i = 0, j = 9; i < strlen(text); i++, j += 3) {
+				if (Q_IsColorString(&text[i])) {
+					memcpy(&newStr[j], &text[i], 3);
+					i += 2;
+				} else {
+					newStr[j] = '^';
+					newStr[j + 1] = current % 9 + 49;
+					newStr[j + 2] = text[i];
+					current++;
+				}
+			}
+
+			newStr[j] = 0;
+
+			cmd = newStr;
+		}
+	}
 
 	// if we would be losing an old command that hasn't been acknowledged,
 	// we must drop the connection
@@ -3086,6 +3114,8 @@ void CL_Init( void ) {
 	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
 
 	cl_deathBind = Cvar_Get( "cl_deathBind", "", CVAR_ARCHIVE );
+	cl_rainbowTeamchat = Cvar_Get( "cl_rainbowTeamchat", "0", CVAR_ARCHIVE );
+
 
 	#ifdef USE_AUTOMATION
 	cl_noAmmo = Cvar_Get( "cl_noAmmo", "0", CVAR_ARCHIVE );

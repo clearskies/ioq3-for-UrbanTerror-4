@@ -43,6 +43,7 @@ Client
    + `cl_deathBind ""` - Executes a command on death. Default is `""`
    + `cl_deadText "(DEAD)"` - Changes the `(DEAD)` text to something else. Default is `(DEAD)`
    + `cl_chatArrow <0|1>` - Enables the `>` next to chat messages. Default is `1`
+   + `cl_rainbowTeamchat <0|1>` - Makes teamchat rainbow-coloured
 
 
 ### Commands ###
