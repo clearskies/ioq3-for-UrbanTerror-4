@@ -22,7 +22,7 @@ deploy:
     - build/release-mingw32-x86/Quake3-UrT.x86.exe
   skip_cleanup: true
   on:
-    on_tag: true
+    tags: true
     all_branches: true
 notifications:
   irc: "irc.quakenet.org#nuubs"
