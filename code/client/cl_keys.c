@@ -614,7 +614,14 @@ void Console_Key (int key) {
 			colour = 7;
 		}
 
-		Com_Printf ( "^%i%s^7%s\n", colour, con_prompt->string, g_consoleField.buffer );
+		if (con_timeDisplay->integer > 1) {
+			qtime_t curTime;
+			Com_RealTime(&curTime);
+			int hour = curTime.tm_hour;
+			Com_Printf ( "^%i[%02i:%02i:%02i] %s^7%s\n",  colour, hour, curTime.tm_min, curTime.tm_sec, con_prompt->string, g_consoleField.buffer );
+		} else {
+			Com_Printf ( "^%i%s^7%s\n", colour, con_prompt->string, g_consoleField.buffer );
+		}
 
 		// leading slash is an explicit command
 		if ( g_consoleField.buffer[0] == '\\' || g_consoleField.buffer[0] == '/' ) {

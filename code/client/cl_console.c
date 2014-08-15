@@ -94,6 +94,7 @@ cvar_t		*con_bgAlpha;
 cvar_t		*con_bgColour;
 cvar_t		*con_prompt;
 cvar_t		*con_height;
+cvar_t		*con_timeDisplay;
 cvar_t		*con_promptColour;
 cvar_t		*con_scrollLock;
 cvar_t		*con_drawScrollbar;
@@ -479,6 +480,7 @@ void Con_Init (void) {
 	con_bgColour = Cvar_Get("con_bgColor", "0", CVAR_ARCHIVE);
 	con_prompt = Cvar_Get("con_prompt", "]", CVAR_ARCHIVE);
 	con_height = Cvar_Get("con_height", "50", CVAR_ARCHIVE);
+	con_timeDisplay = Cvar_Get("con_timeDisplay", "1", CVAR_ARCHIVE);
 	con_promptColour = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_scrollLock = Cvar_Get("con_scrollLock", "1", CVAR_ARCHIVE);
 	con_drawScrollbar = Cvar_Get("con_drawScrollbar", "0", CVAR_ARCHIVE);
@@ -1007,8 +1009,16 @@ void Con_DrawInput (void) {
 	int i;
 	char *prompt;
 
-	prompt = Z_Malloc(promptLen);
-	Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
+	if (con_timeDisplay->integer > 1) {
+		qtime_t curTime;
+		Com_RealTime(&curTime);
+		prompt = Z_Malloc(promptLen + 11);
+		int hour = curTime.tm_hour;
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);
+	} else {
+		prompt = Z_Malloc(promptLen);
+		Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
+	}
 
 	promptLen = strlen(prompt);
 
@@ -1268,9 +1278,11 @@ void Con_DrawSolidConsole( float frac ) {
 		Com_RealTime(&now);
 
 		i = strlen(SVN_VERSION) + 12;
-		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - margin * 2,
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
-			va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
+
+		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
+			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - margin * 2,
+				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
+				va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
 
 		lineColour[3] = 0.3;
 		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - margin * 2,

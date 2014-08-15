@@ -43,6 +43,7 @@ Client
    + `cl_deadText "(DEAD)"` - Changes the `(DEAD)` text to something else. Default is `(DEAD)`
    + `cl_chatArrow <0|1>` - Enables the `>` next to chat messages. Default is `1`
    + `cl_rainbowTeamchat <0|1>` - Makes teamchat rainbow-coloured
+   + `con_timeDisplay <0-3>` - Displays a timestamp in the console. `0` will hide it, `1` will put it next to the version number, `2` will put it next to the prompt, and `3` will put it in both places. Default is `1`
 
 
 ### Commands ###

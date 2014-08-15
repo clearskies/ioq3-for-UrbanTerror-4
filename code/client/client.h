@@ -505,6 +505,7 @@ qboolean CL_UpdateVisiblePings_f( int source );
 
 extern	cvar_t	*con_prompt;
 extern	cvar_t	*con_promptColour;
+extern	cvar_t	*con_timeDisplay;
 extern	cvar_t	*con_tabs;
 void Con_DrawCharacter (int cx, int line, int num);
 
