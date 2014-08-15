@@ -1529,12 +1529,12 @@ void CL_KeyEvent (int key, qboolean down, unsigned time) {
 
 		// send the bound action
 		kb = keys[key].binding;
-		if ( !kb ) {
+		/*if ( !kb ) {
 			if (key >= 200) {
 				Com_Printf ("%s is unbound, use controls menu to set.\n"
 					, Key_KeynumToString( key ) );
 			}
-		} else if (kb[0] == '+') {	
+		} else*/ if (kb[0] == '+') {	
 			int i;
 			char button[1024], *buttonPtr;
 			buttonPtr = button;
