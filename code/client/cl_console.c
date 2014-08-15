@@ -324,7 +324,7 @@ void Con_Dump_f (void)
 	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
 	if (!f)
 	{
-		Com_Printf ("ERROR: couldn't open.\n");
+		Com_Printf ("ERROR: couldn't open %s.\n", Cmd_Argv(1));
 		return;
 	}
 
@@ -355,7 +355,13 @@ void Con_Dump_f (void)
 			else
 				break;
 		}
-		strcat( buffer, "\n" );
+
+		#ifdef _WIN32
+		strcat(buffer, "\r\n");
+		#else
+		strcat(buffer, "\n");
+		#endif
+
 		FS_Write(buffer, strlen(buffer), f);
 	}
 
