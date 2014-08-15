@@ -72,69 +72,6 @@ vm_t *VM_ByName(char *string) {
 	return NULL;
 }
 
-/*
-====================
-VM_FindVal_f
-====================
-*/
-void VM_FindVal_f(void) {
-	if (Cmd_Argc() < 3) {
-		Com_Printf("usage: findval <vm> <value>\n");
-		return;
-	}
-
-	vm_t *vm = VM_ByName(Cmd_Argv(1));
-
-	if (vm == NULL) {
-		Com_Printf("No VM found with the name '%s'.\n", Cmd_Argv(1));
-		return;
-	}
-
-
-	int target = atoi(Cmd_Argv(2));
-	int i, *ptr, found = 0;
-
-	for (i = 1; i < vm->dataMask; i++) {
-		ptr = (int *)VM_ExplicitArgPtr(vm, i);
-		if (*ptr == target) {
-			Com_Printf("Value found at ^2%i\n", i);
-			found++;
-		}
-	}
-
-	Com_Printf("%i matches found in %s.\n", found, vm->name);
-}
-
-/*
-====================
-VM_SetVal_f
-====================
-*/
-void VM_SetVal_f(void) {
-	if (Cmd_Argc() < 4) {
-		Com_Printf("usage: setval <vm> <address> <value>\n");
-		return;
-	}
-
-	vm_t *vm = VM_ByName(Cmd_Argv(1));
-
-	if (vm == NULL) {
-		Com_Printf("No VM found with the name '%s'.\n", Cmd_Argv(1));
-		return;
-	}
-
-	int address = atoi(Cmd_Argv(2));
-	int value = atoi(Cmd_Argv(3));
-	int *ptr;
-
-	ptr = (int *)VM_ExplicitArgPtr(vm, address);
-	*ptr = value;
-
-	Com_Printf("Value at ^2%i^7: ^2%i\n", address, *ptr);
-
-}
-
-
 
 /*
 ==============
@@ -148,10 +85,6 @@ void VM_Init( void ) {
 
 	Cmd_AddCommand ("vmprofile", VM_VmProfile_f );
 	Cmd_AddCommand ("vminfo", VM_VmInfo_f );
-
-	Cmd_AddCommand ("findval", VM_FindVal_f);
-	Cmd_AddCommand ("setval", VM_SetVal_f);
-
 
 	Com_Memset( vmTable, 0, sizeof( vmTable ) );
 }
