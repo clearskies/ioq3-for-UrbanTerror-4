@@ -1277,11 +1277,19 @@ void Con_DrawSolidConsole( float frac ) {
 	Con_RE_SetColor(lineColour);
 
 	if (con_showVersion && con_showVersion->integer) {
-		i = strlen( SVN_VERSION );
-		for (x=0 ; x<i ; x++) {
-			SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH - margin * 2, 
-				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin, SVN_VERSION[x] );
-		}
+		qtime_t now;
+		Com_RealTime(&now);
+
+		i = strlen(SVN_VERSION) + 12;
+		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - margin * 2,
+			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
+			va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
+
+		lineColour[3] = 0.3;
+		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - margin * 2,
+			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
+			SVN_VERSION, lineColour, qtrue);
+		lineColour[3] = 1;
 	}
 
 	// draw the text
