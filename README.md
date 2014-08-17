@@ -69,7 +69,7 @@ Client
       + `$p` - Current player name
       + `$team` - Current team
       + `$oteam` - Other team
-      + `$loc` - Latest location (works even when dead or spec)
+      + `$lastloc` - Latest location (works even when dead or spec)
       + `$lasthitby` - Name of the last person who shot the current player
 
 **********

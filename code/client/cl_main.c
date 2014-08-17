@@ -226,7 +226,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 	s = replaceStr(s, "$p", pName);
 
 	locName = cl.gameState.stringData + cl.gameState.stringOffsets[640 + cl.lastLocation];
-	s = replaceStr(s, "$loc", locName);
+	s = replaceStr(s, "$lastloc", locName);
 
 	lastHitByNum = cl.snap.ps.persistant[PERS_ATTACKER];
 	lastHitBy = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + lastHitByNum], "n");
