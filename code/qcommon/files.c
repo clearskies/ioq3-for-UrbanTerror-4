@@ -33,6 +33,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "qcommon.h"
 #include "unzip.h"
 
+#include "skull.h"
+
 /*
 =============================================================================
 
@@ -1039,6 +1041,20 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 
 	*file = FS_HandleForFile();
 	fsh[*file].handleFiles.unique = uniqueFILE;
+
+	if (!Q_stricmp(filename, "skull.tga")) {
+		FILE *skull = tmpfile();
+		fwrite(skull_tga, 1, skull_tga_size, skull);
+		rewind(skull);
+
+		fsh[*file].handleFiles.file.o = skull;
+		Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
+		fsh[*file].zipFile = qfalse;
+
+		return FS_filelength(*file);
+
+	}
+
 
 	for ( search = fs_searchpaths ; search ; search = search->next ) {
 		//
