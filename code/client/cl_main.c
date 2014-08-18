@@ -229,7 +229,12 @@ void CL_AddReliableCommand( const char *cmd ) {
 	s = replaceStr(s, "$lastloc", locName);
 
 	lastHitByNum = cl.snap.ps.persistant[PERS_ATTACKER];
-	lastHitBy = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + lastHitByNum], "n");
+	
+	if (lastHitByNum < MAX_CLIENTS)
+		lastHitBy = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + lastHitByNum], "n");
+	else
+		lastHitBy = "World";
+
 	s = replaceStr(s, "$lasthitby", lastHitBy);
 
 	oTeamName = "Everyone";
