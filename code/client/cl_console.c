@@ -1084,7 +1084,7 @@ void Con_DrawNotify (void)
 		v += SMALLCHAR_HEIGHT;
 	}
 
-	Con_RE_SetColor( NULL );
+	Con_RE_SetColor(NULL);
 
 	if (cls.keyCatchers & (KEYCATCH_UI | KEYCATCH_CGAME) ) {
 		return;
@@ -1093,6 +1093,14 @@ void Con_DrawNotify (void)
 	// draw the chat line
 	if ( cls.keyCatchers & KEYCATCH_MESSAGE )
 	{
+		vec4_t black;
+		black[0] = black[1] = black[2] = 0;
+		black[3] = 0.5;
+		SCR_FillRect(0, 0, 640, 22, black);
+
+		black[0] = black[1] = black[2] = 1;
+		SCR_FillRect(0, 22 - 1, 640, 1, black);
+
 		if (chat_team)
 		{
 			SCR_DrawBigString (8, v, "say_team:", 1.0f );
