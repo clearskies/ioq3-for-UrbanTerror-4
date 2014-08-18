@@ -484,7 +484,7 @@ void SCR_DrawKills( void ) {
 		SCR_DrawCondensedString(x, y, 8, killStr, g_color_table[7], qfalse );
 	}
 
-	int spacing = 4;
+	int spacing = 2;
 	int size = 20;
 
 	int width;
