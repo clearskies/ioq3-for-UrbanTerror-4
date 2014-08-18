@@ -286,6 +286,12 @@ void SCR_DrawCondensedString( int x, int y, float size, const char *string, floa
 	re.SetColor( NULL );
 }
 
+int SCR_CondensedStringWidth(float size, char *s) {
+	int len = strlen(s);
+
+	return (int)(size * len - size / 8 * len);
+}
+
 
 void SCR_DrawBigString( int x, int y, const char *s, float alpha ) {
 	float	color[4];
@@ -376,17 +382,25 @@ void SCR_DrawDemoRecording( void ) {
 	char	string[1024];
 	int		pos;
 
-	if ( !clc.demorecording ) {
+	if (!clc.demorecording || clc.spDemoRecording)
 		return;
-	}
-	if ( clc.spDemoRecording ) {
-		return;
-	}
 
-	pos = FS_FTell( clc.demofile );
-	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
+	pos = FS_FTell(clc.demofile);
 
-	SCR_DrawCondensedString( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
+	int nameLen = strlen(clc.demoName) + 1;
+	char *demoName = malloc(nameLen);
+	COM_StripExtension(clc.demoName, demoName, nameLen);
+
+	char *fmt;
+
+	if (strlen(demoName) > 20)
+		fmt = "^1[DEMO]^7 %.20s...: ^1%iKB";
+	else
+		fmt = "^1[DEMO]^7 %s: ^1%iKB";
+
+	sprintf( string, fmt, demoName, pos / 1024);
+
+	SCR_DrawCondensedString(320 - SCR_CondensedStringWidth(7, string) / 2, 1, 7, string, g_color_table[7], qfalse);
 }
 
 
