@@ -542,7 +542,7 @@ void Sys_ConsoleInputInit( void )
     tcsetattr (0, TCSADRAIN, &tc);    
     ttycon_on = qtrue;
 
-    ttycon_ansicolor = Cvar_Get( "ttycon_ansicolor", "0", CVAR_ARCHIVE );
+    ttycon_ansicolor = Cvar_Get( "ttycon_ansicolor", "1", CVAR_ARCHIVE );
     if( ttycon_ansicolor && ttycon_ansicolor->value )
     {
       ttycon_color_on = qtrue;
