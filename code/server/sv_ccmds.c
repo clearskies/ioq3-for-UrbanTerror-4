@@ -40,6 +40,8 @@ client_t *SV_BetterGetPlayerByHandle(const char *handle) {
 	client_t  *cl;
 	int       i;
 	char      cleanName[64];
+	client_t *match;
+	int matches = 0;
 
 	// make sure server is running
 	if (!com_sv_running->integer) {
@@ -82,9 +84,20 @@ client_t *SV_BetterGetPlayerByHandle(const char *handle) {
 			return cl;
 		}
 
+		// check for and count substring matches
+		if (Q_strisub(cleanName, handle)) {
+			match = cl;
+			matches++;
+		}
 	}
 
-	return NULL;
+	// no or multiple matches
+	if (matches != 1)
+		return NULL;
+	else
+		return match;
+
+	
 }
 
 /*
