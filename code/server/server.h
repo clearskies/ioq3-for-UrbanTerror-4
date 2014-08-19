@@ -509,3 +509,5 @@ qboolean SV_Netchan_Process( client_t *client, msg_t *msg );
 //
 void SV_BansInit(void);
 void SV_BansShutdown(void);
+
+void Bans_AddIP(void);
