@@ -302,6 +302,24 @@ void Con_Clear_f (void) {
 	Con_Bottom();		// go to end
 }
 
+void Con_DumpThis_f(void) {
+	if (Cmd_Argc() != 2) {
+		Com_Printf ("Usage: condump <filename>\n");
+		return;
+	}
+
+	Con_Dump(currentCon);
+}
+
+void Con_ChatDump_f(void) {
+	if (Cmd_Argc() != 2) {
+		Com_Printf ("Usage: chatdump <filename>\n");
+		return;
+	}
+
+	Con_Dump(&consoles[CONSOLE_CHAT]);
+}
+
 						
 /*
 ================
@@ -310,18 +328,11 @@ Con_Dump_f
 Save the console contents out to a file
 ================
 */
-void Con_Dump_f (void)
-{
+void Con_Dump (console_t *console) {
 	int		l, x, i;
 	short	*line;
 	fileHandle_t	f;
 	char	buffer[1024];
-
-	if (Cmd_Argc() != 2)
-	{
-		Com_Printf ("usage: condump <filename>\n");
-		return;
-	}
 
 	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
 	if (!f)
@@ -333,24 +344,24 @@ void Con_Dump_f (void)
 	Com_Printf ("Dumped console text to %s.\n", Cmd_Argv(1) );
 
 	// skip empty lines
-	for (l = currentCon->current - currentCon->totallines + 1 ; l <= currentCon->current ; l++)
+	for (l = console->current - console->totallines + 1 ; l <= console->current ; l++)
 	{
-		line = currentCon->text + (l%currentCon->totallines)*currentCon->linewidth;
-		for (x=0 ; x<currentCon->linewidth ; x++)
+		line = console->text + (l%console->totallines)*console->linewidth;
+		for (x=0 ; x<console->linewidth ; x++)
 			if ((line[x] & 0xff) != ' ')
 				break;
-		if (x != currentCon->linewidth)
+		if (x != console->linewidth)
 			break;
 	}
 
 	// write the remaining lines
-	buffer[currentCon->linewidth] = 0;
-	for ( ; l <= currentCon->current ; l++)
+	buffer[console->linewidth] = 0;
+	for ( ; l <= console->current ; l++)
 	{
-		line = currentCon->text + (l%currentCon->totallines)*currentCon->linewidth;
-		for(i=0; i<currentCon->linewidth; i++)
+		line = console->text + (l%console->totallines)*console->linewidth;
+		for(i=0; i<console->linewidth; i++)
 			buffer[i] = line[i] & 0xff;
-		for (x=currentCon->linewidth-1 ; x>=0 ; x--)
+		for (x=console->linewidth-1 ; x>=0 ; x--)
 		{
 			if (buffer[x] == ' ')
 				buffer[x] = 0;
@@ -509,7 +520,8 @@ void Con_Init (void) {
 	Cmd_AddCommand ("messagemode3", Con_MessageMode3_f);
 	Cmd_AddCommand ("messagemode4", Con_MessageMode4_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
-	Cmd_AddCommand ("condump", Con_Dump_f);
+	Cmd_AddCommand ("condump", Con_DumpThis_f);
+	Cmd_AddCommand ("chatdump", Con_ChatDump_f);
 }
 
 

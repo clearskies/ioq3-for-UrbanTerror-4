@@ -60,6 +60,7 @@ Client
    + `cunbind <key1> <key2>` - Unbinds an action from a key combo
    + `cbindlist` - Lists all combo binds
    + `cunbindall` - Unbinds all combo binds
+   + `chatdump` - Dumps the chat history to a file
 
 ### Other ###
    + Supports combo binds (binds involving two keys). Use the commands `cbind`, `cunbind`, `cbindlist`, and `cunbindall`. This currently does not work with `+` commands.
