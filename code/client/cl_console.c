@@ -1303,16 +1303,17 @@ void Con_DrawSolidConsole( float frac ) {
 
 		i = strlen(version) + 12;
 
+		lineColour[3] *= opacityMult;
 		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
 			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - adjustedXMargin,
 				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 				va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
 
-		lineColour[3] = 0.3;
+		lineColour[3] = 0.3 * opacityMult;
 		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - adjustedXMargin,
 			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 			version, lineColour, qtrue);
-		lineColour[3] = 1;
+		lineColour[3] = 1 * opacityMult;
 	}
 
 	// draw the text
