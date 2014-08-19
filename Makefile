@@ -38,6 +38,10 @@ USE_OPENAL         =0
 USE_CURL           =1
 USE_CODEC_VORBIS   =0
 
+
+USE_SQLITE_BANS    =1
+
+
 USE_SOUNDHAX	   =0
 USE_AUTOMATION	   =0
 
@@ -162,6 +166,11 @@ CMDIR=$(MOUNT_DIR)/qcommon
 UDIR=$(MOUNT_DIR)/unix
 W32DIR=$(MOUNT_DIR)/win32
 SYSDIR=$(MOUNT_DIR)/sys
+
+ifeq ($(USE_SQLITE_BANS),1)
+  SQLITEDIR=$(MOUNT_DIR)/sqlite3
+endif
+
 GDIR=$(MOUNT_DIR)/game
 CGDIR=$(MOUNT_DIR)/cgame
 BLIBDIR=$(MOUNT_DIR)/botlib
@@ -249,17 +258,21 @@ ifeq ($(PLATFORM),linux)
   	BASE_CFLAGS += -DUSE_ALTGAMMA=1
   endif
 
-  OPTIMIZE = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
+  ifeq ($(USE_SQLITE_BANS),1)  
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
+  endif
+
+  OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
 
   ifeq ($(ARCH),x86_64)
-    OPTIMIZE = -O3 -fomit-frame-pointer -ffast-math -funroll-loops \
+    OPTIMIZE = -O3 -fomit-frame-pointer -funroll-loops \
       -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
       -fstrength-reduce
     # experimental x86_64 jit compiler! you need GNU as
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),i386)
-    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -ffast-math \
+    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer \
       -funroll-loops -falign-loops=2 -falign-jumps=2 \
       -falign-functions=2 -fstrength-reduce
     HAVE_VM_COMPILED=true
@@ -284,7 +297,7 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LDFLAGS=-lpthread
-  LDFLAGS=-ldl -lm
+  LDFLAGS=-ldl -lm -pthread
 
   ifeq ($(USE_SDL),1)
     CLIENT_LDFLAGS=$(shell sdl-config --libs)
@@ -429,7 +442,12 @@ ifeq ($(PLATFORM),darwin)
     #CLIENT_LDFLAGS += -L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
-  OPTIMIZE += -ffast-math -falign-loops=16
+  ifeq ($(USE_SQLITE_BANS),1)
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
+    OPTIMIZE += -falign-loops=16
+  else
+    OPTIMIZE += -falign-loops=16
+  endif
 
   ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
@@ -479,7 +497,7 @@ endif
     BASE_CFLAGS += -DUSE_CODEC_VORBIS=1
   endif
 
-  OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -ffast-math -falign-loops=2 \
+  OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -falign-loops=2 \
     -funroll-loops -falign-jumps=2 -falign-functions=2 -fstrength-reduce
 
   HAVE_VM_COMPILED = true
@@ -511,6 +529,10 @@ endif
     # build 32bit
     BASE_CFLAGS += -m32
     LDFLAGS += -m32
+  endif
+
+  ifeq ($(USE_SQLITE_BANS),1)  
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
   endif
 
 else # ifeq mingw32
@@ -550,12 +572,12 @@ ifeq ($(PLATFORM),freebsd)
 
   ifeq ($(ARCH),axp)
     BASE_CFLAGS += -DNO_VM_COMPILED
-    RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O3 -ffast-math -funroll-loops \
+    RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O3 -funroll-loops \
       -fomit-frame-pointer -fexpensive-optimizations
   else
   ifeq ($(ARCH),i386)
     RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O3 -mtune=pentiumpro \
-      -march=pentium -fomit-frame-pointer -pipe -ffast-math \
+      -march=pentium -fomit-frame-pointer -pipe \
       -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
       -funroll-loops -fstrength-reduce
     HAVE_VM_COMPILED=true
@@ -675,16 +697,16 @@ ifeq ($(PLATFORM),sunos)
     BASE_CFLAGS += -I/usr/openwin/include
   endif
 
-  OPTIMIZE = -O3 -ffast-math -funroll-loops
+  OPTIMIZE = -O3 -funroll-loops
 
   ifeq ($(ARCH),sparc)
-    OPTIMIZE = -O3 -ffast-math -falign-loops=2 \
+    OPTIMIZE = -O3 -falign-loops=2 \
       -falign-jumps=2 -falign-functions=2 -fstrength-reduce \
       -mtune=ultrasparc -mv8plus -mno-faster-structs \
       -funroll-loops
   else
   ifeq ($(ARCH),i386)
-    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -ffast-math \
+    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer \
       -funroll-loops -falign-loops=2 -falign-jumps=2 \
       -falign-functions=2 -fstrength-reduce
     HAVE_VM_COMPILED=true
@@ -1274,6 +1296,12 @@ Q3DOBJ = \
   $(B)/ded/null_input.o \
   $(B)/ded/null_snddma.o \
 
+ifeq ($(USE_SQLITE_BANS),1)
+  Q3DOBJ += \
+    $(B)/ded/sqlite3.o \
+    $(B)/ded/sv_bans.o
+endif
+
 ifeq ($(PLATFORM),mingw32)
   Q3DOBJ += \
     $(B)/ded/win_shared.o \
@@ -1658,6 +1686,11 @@ $(B)/ded/%.o: $(W32DIR)/%.c
 
 $(B)/ded/%.o: $(SYSDIR)/%.c
 	$(DO_DED_CC)
+
+ifeq ($(USE_SQLITE_BANS),1)
+$(B)/ded/%.o: $(SQLITEDIR)/%.c
+	$(DO_DED_CC)
+endif
 
 # Extra dependencies to ensure the SVN version is incorporated
 ifeq ($(USE_SVN),1)

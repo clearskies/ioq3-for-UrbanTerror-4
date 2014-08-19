@@ -77,6 +77,10 @@ Client
 
 Server
 ------
+### Misc ###
+   + Rewrote the `tell` system
+   + Rewrote the ban system to use an sqlite database, found in the `q3ut4` folder. By default, the file is called `bans.sqlite`. This should eliminate various sources of IO lag, like when an IP is added to or removed from the banlist. This also allows more than 4096 bans to be stored.
+
 ### Cvars ###
    + `sv_allowSuicide <0|1>` - Enables suicide via `/kill`. Default is `1`
    + `sv_allowItemdrop <0|1>` - Enables item dropping. Default is `1`

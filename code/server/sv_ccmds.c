@@ -1984,7 +1984,6 @@ static void SV_Auth_Ban_f(void) {
 
 #endif
 
-
 /*
 ==================
 SV_AddOperatorCommands

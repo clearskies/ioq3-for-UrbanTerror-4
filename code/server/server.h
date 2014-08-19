@@ -504,3 +504,17 @@ void SV_Netchan_Transmit( client_t *client, msg_t *msg);
 void SV_Netchan_TransmitNextFragment( client_t *client );
 qboolean SV_Netchan_Process( client_t *client, msg_t *msg );
 
+#ifdef USE_SQLITE_BANS
+#ifdef DEDICATED
+//
+// sv_bans.c
+//
+void SV_BansInit(void);
+void SV_BansShutdown(void);
+
+void Bans_AddIP(void);
+void Bans_RemoveIP(void);
+
+qboolean Bans_CheckIP(netadr_t addr);
+#endif
+#endif
