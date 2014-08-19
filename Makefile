@@ -531,6 +531,10 @@ endif
     LDFLAGS += -m32
   endif
 
+  ifeq ($(USE_SQLITE_BANS),1)  
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
+  endif
+
 else # ifeq mingw32
 
 #############################################################################

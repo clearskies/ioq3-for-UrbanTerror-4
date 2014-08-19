@@ -964,9 +964,11 @@ void SV_Init (void) {
 	SV_BotInitBotLib();
 
 	#ifdef USE_SQLITE_BANS
+	#ifdef DEDICATED
 	SV_BansInit();
 	Cmd_AddCommand("addip", Bans_AddIP);
 	Cmd_AddCommand("removeip", Bans_RemoveIP);
+	#endif
 	#endif
 }
 
@@ -1033,7 +1035,9 @@ void SV_Shutdown( char *finalmsg ) {
 	SV_ClearServer();
 
 	#ifdef USE_SQLITE_BANS
+	#ifdef DEDICATED
 	SV_BansShutdown();
+	#endif
 	#endif
 
 	// free server static data
