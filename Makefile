@@ -258,9 +258,9 @@ ifeq ($(PLATFORM),linux)
   	BASE_CFLAGS += -DUSE_ALTGAMMA=1
   endif
 
-  
   ifeq ($(USE_SQLITE_BANS),1)
     OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
   else
     OPTIMIZE = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
   endif
@@ -446,7 +446,12 @@ ifeq ($(PLATFORM),darwin)
     #CLIENT_LDFLAGS += -L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
-  OPTIMIZE += -ffast-math -falign-loops=16
+  ifeq ($(USE_SQLITE_BANS),1)
+    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
+    OPTIMIZE += -falign-loops=16
+  else
+    OPTIMIZE += -ffast-math -falign-loops=16
+  endif
 
   ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
