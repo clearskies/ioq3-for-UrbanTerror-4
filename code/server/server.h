@@ -508,3 +508,4 @@ qboolean SV_Netchan_Process( client_t *client, msg_t *msg );
 // sv_bans.c
 //
 void SV_BansInit(void);
+void SV_BansShutdown(void);

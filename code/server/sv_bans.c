@@ -39,7 +39,7 @@ void SV_BansInit(void) {
 
 	returnCode = sqlite3_open(databaseFile, &database);
 	if (returnCode) {
-		Com_Printf("[ERROR] Database: Could not open file: %s\n", databaseFile);
+		Com_Printf("[ERROR] Could not open database file: %s\n", databaseFile);
 		Com_Printf("[ERROR] %s\n", sqlite3_errmsg(database));
 
 		sqlite3_close(database);
@@ -48,7 +48,7 @@ void SV_BansInit(void) {
 	}
 
 	active = qtrue;
-	Com_Printf("[SUCCESS] Database: file loaded.\n");
+	Com_Printf("[SUCCESS] Database file loaded.\n");
 
 	returnCode = sqlite3_exec(database, schema, Bans_SchemeCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
@@ -56,5 +56,11 @@ void SV_BansInit(void) {
 		sqlite3_free(errorMessage);
 	}
 
-	Com_Printf("[SUCCESS] Database: correct table schema.\n\n");
+	Com_Printf("[SUCCESS] Database: correct table schema.\n");
+	Com_Printf("[SUCCESS] Database ban system started.\n\n");
+}
+
+void SV_BansShutdown(void) {
+	sqlite3_close(database);
+	Com_Printf("\n\nDatabase ban system stopped.\n\n");
 }

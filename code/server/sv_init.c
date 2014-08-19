@@ -1030,6 +1030,10 @@ void SV_Shutdown( char *finalmsg ) {
 	// free current level
 	SV_ClearServer();
 
+	#ifdef USE_SQLITE_BANS
+	SV_BansShutdown();
+	#endif
+
 	// free server static data
 	if ( svs.clients ) {
 		Z_Free( svs.clients );
