@@ -397,6 +397,8 @@ void SV_WriteDownloadToClient( client_t *cl , msg_t *msg );
 //
 // sv_ccmds.c
 //
+
+client_t *SV_BetterGetPlayerByHandle(const char *handle);
 void SV_Heartbeat_f( void );
 void SVD_WriteDemoFile(const client_t*, const msg_t*);
 

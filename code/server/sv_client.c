@@ -1439,6 +1439,42 @@ void SV_Say_f(client_t *cl) {
 	SV_LogPrintf("say: %i %s: %s\n", team, cl->name, message);
 }
 
+void SV_Tell_f(client_t *cl) {
+	/*
+	-- to client
+	whatever I want
+
+	-- log:
+	saytell: from to fromname: message
+	*/
+
+	if (Cmd_Argc() < 3) {
+		SV_SendServerCommand(cl, "print \"Usage: tell <player> <message>\"");
+		return;
+	}
+
+	client_t *from, *to;
+	char *cmd, *msg;
+
+	from = cl;
+	to = SV_BetterGetPlayerByHandle(Cmd_Argv(1));
+
+	if (!to) {
+		SV_SendServerCommand(cl, "print \"Player '%s' was not found\"", Cmd_Argv(1));
+		return;
+	}
+
+	msg = Cmd_ArgsFrom(2);
+
+	cmd = va("^8[pm] <- ^7%s: ^3%s", from->name, msg);
+	SV_SendServerCommand(to, "chat \"%s\"", cmd);
+
+	cmd = va("^8[pm] -> ^7%s: ^3%s", to->name, msg);
+	SV_SendServerCommand(from, "chat \"%s\"", cmd);
+
+	SV_LogPrintf("saytell: %i %i %s: %s\n", from - svs.clients, to - svs.clients, from->name, msg);
+}
+
 
 
 typedef struct {
@@ -1461,6 +1497,7 @@ static ucmd_t ucmds[] = {
 	{"mapcycle", SV_Mapcycle_f},
 
 	{"csay", SV_Say_f},
+	{"tell", SV_Tell_f},
 
 	{NULL, NULL}
 };
