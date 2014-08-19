@@ -163,6 +163,8 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 
 int adjustedScreenWidth = SCREEN_WIDTH;
 int margin = 0;
+int adjustedXMargin = 0;
+int adjustedYMargin = 0;
 	
 
 /*
@@ -1023,13 +1025,13 @@ void Con_DrawInput (void) {
 	promptLen = strlen(prompt);
 
 	for (i = 0; i < promptLen; i++) {
-		SCR_DrawSmallChar( currentCon->xadjust + (i + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin *2, prompt[i]);
+		SCR_DrawSmallChar( currentCon->xadjust + (i + 1) * SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin, prompt[i]);
 	}
 
 	Con_RE_SetColor(currentCon->color);
 
 	if (opacityMult)
-	Field_Draw( &g_consoleField, currentCon->xadjust + (promptLen + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2,
+	Field_Draw( &g_consoleField, currentCon->xadjust + (promptLen + 1) * SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin,
 		adjustedScreenWidth - 3 * SMALLCHAR_WIDTH, qtrue);
 }
 
@@ -1288,13 +1290,13 @@ void Con_DrawSolidConsole( float frac ) {
 		i = strlen(SVN_VERSION) + 12;
 
 		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
-			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - margin * 2,
-				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
+			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - adjustedXMargin,
+				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 				va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
 
 		lineColour[3] = 0.3;
-		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - margin * 2,
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin,
+		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - adjustedXMargin,
+			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 			SVN_VERSION, lineColour, qtrue);
 		lineColour[3] = 1;
 	}
@@ -1358,7 +1360,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 	for (i=0 ; i<rows ; i++, y -= SMALLCHAR_HEIGHT, row--)
 	{
-		if (margin && y < (margin / 8)) {
+		if (y < 0) {
 			break;
 		}
 
@@ -1380,7 +1382,7 @@ void Con_DrawSolidConsole( float frac ) {
 				currentColor = (text[x] >> 8) % 10;
 				Con_RE_SetColor( g_color_table[currentColor] );
 			}
-			SCR_DrawSmallChar(  currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2, text[x] & 0xff );
+			SCR_DrawSmallChar(currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin, text[x] & 0xff );
 		}
 	}
 
@@ -1441,10 +1443,15 @@ Scroll it up or down
 void Con_RunConsole (void) {
 	adjustedScreenWidth = SCREEN_WIDTH;
 	margin = 0;
+	adjustedXMargin = 0;
+	adjustedYMargin = 0;
+
 	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50) {
 		Cvar_Set("con_fadeIn", "1");
 		adjustedScreenWidth = SCREEN_WIDTH - con_margin->integer * 2;
 		margin = con_margin->integer;
+		adjustedXMargin = margin * (cls.glconfig.vidWidth / 640.0);
+		adjustedYMargin = margin * (cls.glconfig.vidHeight / 480.0);
 		currentCon->yadjust = margin;
 	}
 
