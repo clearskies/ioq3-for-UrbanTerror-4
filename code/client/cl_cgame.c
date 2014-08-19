@@ -289,40 +289,11 @@ int skinToChatColour(int team, int skin) {
 }
 
 
-/*
-===================
-CL_GetServerCommand
-
-Set up argc/argv for the given command
-===================
-*/
-qboolean CL_GetServerCommand( int serverCommandNumber ) {
-	char	*s;
+qboolean CL_HandleServerCommand(char *s) {
 	char	*cmd;
 	static char bigConfigString[BIG_INFO_STRING];
 	int argc;
 
-	// if we have irretrievably lost a reliable command, drop the connection
-	if ( serverCommandNumber <= clc.serverCommandSequence - MAX_RELIABLE_COMMANDS ) {
-		// when a demo record was started after the client got a whole bunch of
-		// reliable commands then the client never got those first reliable commands
-		if ( clc.demoplaying )
-			return qfalse;
-		Com_Error( ERR_DROP, "CL_GetServerCommand: a reliable command was cycled out" );
-		return qfalse;
-	}
-
-	if ( serverCommandNumber > clc.serverCommandSequence ) {
-		Com_Error( ERR_DROP, "CL_GetServerCommand: requested a command not received" );
-		return qfalse;
-	}
-
-	s = clc.serverCommands[ serverCommandNumber & ( MAX_RELIABLE_COMMANDS - 1 ) ];
-	clc.lastExecutedServerCommand = serverCommandNumber;
-
-	Com_DPrintf( "serverCommand: %i : %s\n", serverCommandNumber, s );
-
-rescan:
 	Cmd_TokenizeString( s );
 	cmd = Cmd_Argv(0);
 	argc = Cmd_Argc();
@@ -358,7 +329,7 @@ rescan:
 		strcat( bigConfigString, s );
 		strcat( bigConfigString, "\"" );
 		s = bigConfigString;
-		goto rescan;
+		return CL_HandleServerCommand(s);
 	}
 
 	if ( !strcmp( cmd, "cs" ) ) {
@@ -481,6 +452,40 @@ rescan:
 
 	// cgame can now act on the command
 	return qtrue;
+}
+
+
+/*
+===================
+CL_GetServerCommand
+
+Set up argc/argv for the given command
+===================
+*/
+qboolean CL_GetServerCommand( int serverCommandNumber ) {
+	char	*s;
+
+	// if we have irretrievably lost a reliable command, drop the connection
+	if ( serverCommandNumber <= clc.serverCommandSequence - MAX_RELIABLE_COMMANDS ) {
+		// when a demo record was started after the client got a whole bunch of
+		// reliable commands then the client never got those first reliable commands
+		if ( clc.demoplaying )
+			return qfalse;
+		Com_Error( ERR_DROP, "CL_GetServerCommand: a reliable command was cycled out" );
+		return qfalse;
+	}
+
+	if ( serverCommandNumber > clc.serverCommandSequence ) {
+		Com_Error( ERR_DROP, "CL_GetServerCommand: requested a command not received" );
+		return qfalse;
+	}
+
+	s = clc.serverCommands[ serverCommandNumber & ( MAX_RELIABLE_COMMANDS - 1 ) ];
+	clc.lastExecutedServerCommand = serverCommandNumber;
+
+	Com_DPrintf( "serverCommand: %i : %s\n", serverCommandNumber, s );
+
+	return CL_HandleServerCommand(s);
 }
 
 
