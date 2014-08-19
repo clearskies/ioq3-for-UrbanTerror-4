@@ -511,3 +511,4 @@ void SV_BansInit(void);
 void SV_BansShutdown(void);
 
 void Bans_AddIP(void);
+void Bans_RemoveIP(void);

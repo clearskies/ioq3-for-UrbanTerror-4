@@ -966,6 +966,7 @@ void SV_Init (void) {
 	#ifdef USE_SQLITE_BANS
 	SV_BansInit();
 	Cmd_AddCommand("addip", Bans_AddIP);
+	Cmd_AddCommand("removeip", Bans_RemoveIP);
 	#endif
 }
 
