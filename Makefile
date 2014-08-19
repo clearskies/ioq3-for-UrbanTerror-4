@@ -38,6 +38,10 @@ USE_OPENAL         =0
 USE_CURL           =1
 USE_CODEC_VORBIS   =0
 
+
+USE_SQLITE_BANS    =1
+
+
 USE_SOUNDHAX	   =0
 USE_AUTOMATION	   =0
 
@@ -162,7 +166,10 @@ CMDIR=$(MOUNT_DIR)/qcommon
 UDIR=$(MOUNT_DIR)/unix
 W32DIR=$(MOUNT_DIR)/win32
 SYSDIR=$(MOUNT_DIR)/sys
-SQLITEDIR=$(MOUNT_DIR)/sqlite3
+
+ifeq ($(USE_SQLITE_BANS),1)
+  SQLITEDIR=$(MOUNT_DIR)/sqlite3
+endif
 
 GDIR=$(MOUNT_DIR)/game
 CGDIR=$(MOUNT_DIR)/cgame
@@ -251,14 +258,20 @@ ifeq ($(PLATFORM),linux)
   	BASE_CFLAGS += -DUSE_ALTGAMMA=1
   endif
 
-  #OPTIMIZE = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
-  OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
+  
+  ifeq ($(USE_SQLITE_BANS),1)
+    OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
+  else
+    OPTIMIZE = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
+  endif
 
   ifeq ($(ARCH),x86_64)
-    #OPTIMIZE = -O3 -fomit-frame-pointer -ffast-math -funroll-loops \
-    OPTIMIZE = -O3 -fomit-frame-pointer -ffast-math -funroll-loops \
+    OPTIMIZE = -O3 -fomit-frame-pointer -funroll-loops \
       -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
       -fstrength-reduce
+    ifneq ($(USE_SQLITE_BANS),1)
+      OPTIMIZE += -ffast-math 
+    endif
     # experimental x86_64 jit compiler! you need GNU as
     HAVE_VM_COMPILED = true
   else
@@ -1223,9 +1236,6 @@ Q3DOBJ = \
   $(B)/ded/sv_snapshot.o \
   $(B)/ded/sv_world.o \
   \
-  $(B)/ded/sqlite3.o \
-  $(B)/ded/sv_bans.o \
-  \
   $(B)/ded/cm_load.o \
   $(B)/ded/cm_patch.o \
   $(B)/ded/cm_polylib.o \
@@ -1280,6 +1290,12 @@ Q3DOBJ = \
   $(B)/ded/null_client.o \
   $(B)/ded/null_input.o \
   $(B)/ded/null_snddma.o \
+
+ifeq ($(USE_SQLITE_BANS),1)
+  Q3DOBJ += \
+    $(B)/ded/sqlite3.o \
+    $(B)/ded/sv_bans.o
+endif
 
 ifeq ($(PLATFORM),mingw32)
   Q3DOBJ += \
@@ -1666,8 +1682,10 @@ $(B)/ded/%.o: $(W32DIR)/%.c
 $(B)/ded/%.o: $(SYSDIR)/%.c
 	$(DO_DED_CC)
 
+ifeq ($(USE_SQLITE_BANS),1)
 $(B)/ded/%.o: $(SQLITEDIR)/%.c
 	$(DO_DED_CC)
+endif
 
 # Extra dependencies to ensure the SVN version is incorporated
 ifeq ($(USE_SVN),1)
