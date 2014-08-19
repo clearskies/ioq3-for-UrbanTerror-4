@@ -2,7 +2,16 @@
 #include "server.h"
 #include "../sqlite3/sqlite3.h"
 
-const char *schema = "CREATE TABLE `bans` ("
+#define BAN_TABLE_NAME "bans"
+#define RANGE_BAN_TABLE_NAME "rangebans"
+
+const char *schema = "CREATE TABLE IF NOT EXISTS `" BAN_TABLE_NAME "` ("
+					 "`id` INTEGER NULL DEFAULT NULL,"
+					 "`ip` MEDIUMTEXT(24) UNIQUE NOT NULL DEFAULT '255.255.255.255',"
+					 "`expire` INTEGER(32) NOT NULL DEFAULT -1,"
+					 "PRIMARY KEY (`id`)"
+					 ");"
+					 "CREATE TABLE IF NOT EXISTS `" RANGE_BAN_TABLE_NAME "` ("
 					 "`id` INTEGER NULL DEFAULT NULL,"
 					 "`ip` MEDIUMTEXT(24) UNIQUE NOT NULL DEFAULT '255.255.255.255',"
 					 "`expire` INTEGER(32) NOT NULL DEFAULT -1,"
@@ -13,11 +22,15 @@ sqlite3 *database;
 cvar_t *sv_bandb;
 qboolean active = qfalse;
 
-qboolean Bans_IsValidAddress(char *ipString);
-static int Bans_GenericCallback(void *x, int numColumns, char **columnText, char **columnResults);
-
 int matchRows = 0;
-static int Bans_IPExists(void *x, int numColumns, char **columnText, char **columnResults);
+
+qboolean Bans_IsValidAddress(char *ipString);
+qboolean Bans_IsRangeAddress(char *ipString);
+qboolean Bans_AddressMatches(char *ip1, char *ip2);
+
+static int Bans_GenericCallback(void *x, int numColumns, char **columnValue, char **columnName);
+static int Bans_IPExistsCallback(void *x, int numColumns, char **columnValue, char **columnName);
+static int Bans_RangeMatchesCallback(char *ip, int numColumns, char **columnValue, char **columnName);
 
 
 
@@ -69,12 +82,25 @@ qboolean Bans_CheckIP(netadr_t addr) {
 	char ip[24];
 	char *query, *errorMessage;
 	int returnCode;
+	int ipMatches = 0;
 
 	sprintf(ip, "%i.%i.%i.%i", addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3]);
 
 	matchRows = 0;
 	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
-	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
+	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
+	if (returnCode != SQLITE_OK) {
+		Com_Printf("[ERROR] Database: %s\n", errorMessage);
+		sqlite3_free(errorMessage);
+		return qfalse;
+	}
+
+	if (matchRows)
+		return qtrue;
+
+	matchRows = 0;
+	query = va("SELECT * FROM `rangebans`;", ip);
+	returnCode = sqlite3_exec(database, query, Bans_RangeMatchesCallback, ip, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
 		sqlite3_free(errorMessage);
@@ -103,11 +129,16 @@ void Bans_AddIP(void) {
 	}
 
 	char *ip = Cmd_Argv(1);
+	char *table = BAN_TABLE_NAME;
 
 	if (!Bans_IsValidAddress(ip)) {
 		Com_Printf("Invalid IP address: %s\n", ip);
 		return;
 	}
+
+	if (Bans_IsRangeAddress(ip))
+		table = RANGE_BAN_TABLE_NAME;
+	
 
 	int expireTime = -1;
 	int returnCode;
@@ -127,8 +158,8 @@ void Bans_AddIP(void) {
 
 	// If the IP already exists in the database, update the expiry timestamp
 	matchRows = 0;
-	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
-	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
+	query = va("SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
+	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
 		sqlite3_free(errorMessage);
@@ -136,11 +167,11 @@ void Bans_AddIP(void) {
 	}
 
 	if (matchRows)
-		query = va("UPDATE `bans` SET `expire` =  %i WHERE `ip` = '%s';", \
-			expireTime, ip);
+		query = va("UPDATE `%s` SET `expire` =  %i WHERE `ip` = '%s';", \
+			table, expireTime, ip);
 	else
-		query = va("INSERT INTO `bans` (`ip`, `expire`) VALUES ('%s', %i);",
-			ip, expireTime);
+		query = va("INSERT INTO `%s` (`ip`, `expire`) VALUES ('%s', %i);",
+			table, ip, expireTime);
 	
 	returnCode = sqlite3_exec(database, query, Bans_GenericCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
@@ -161,7 +192,7 @@ void Bans_AddIP(void) {
 			cl->netchan.remoteAddress.ip[2], 
 			cl->netchan.remoteAddress.ip[3]);
 
-		if (!Q_stricmp(ip, temp))
+		if (Bans_AddressMatches(ip, temp))
 			SV_DropClient(cl, "You have been banned.");
 	}
 }
@@ -178,19 +209,23 @@ void Bans_RemoveIP(void) {
 	}
 
 	char *ip = Cmd_Argv(1);
+	char *table = BAN_TABLE_NAME;
 
 	if (!Bans_IsValidAddress(ip)) {
 		Com_Printf("Invalid IP address: %s\n", ip);
 		return;
 	}
 
+	if (Bans_IsRangeAddress(ip))
+		table = RANGE_BAN_TABLE_NAME;
+
 	int returnCode;
 	char *errorMessage;
 	char *query;
 
 	matchRows = 0;
-	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
-	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
+	query = va("SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
+	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
 		sqlite3_free(errorMessage);
@@ -202,7 +237,7 @@ void Bans_RemoveIP(void) {
 		return;
 	}
 
-	query = va("DELETE FROM `bans` WHERE `ip` = '%s';", ip);
+	query = va("DELETE FROM `%s` WHERE `ip` = '%s';", table, ip);
 	returnCode = sqlite3_exec(database, query, Bans_GenericCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -236,21 +271,60 @@ qboolean Bans_IsValidAddress(char *ipString) {
 	return qtrue;
 }
 
+qboolean Bans_IsRangeAddress(char *ipString) {
+	int n = 0;
+	int octets[4];
+
+	sscanf(ipString, "%i.%i.%i.%i", octets, octets + 1, octets + 2, octets + 3);
+
+	for (n = 0; n < 4; n++) {
+		if (octets[n] == 0) 
+			return qtrue;
+	}
+
+	return qfalse;
+}
+
+qboolean Bans_AddressMatches(char *ip1, char *ip2) {
+	// ip1 is assumed to be either a range or a normal address
+	// ip2 is assumed to be a normal address
+
+	int n;
+	int octets[2][4];
+
+	sscanf(ip1, "%i.%i.%i.%i", octets[0], octets[0] + 1, octets[0] + 2, octets[0] + 3);
+	sscanf(ip2, "%i.%i.%i.%i", octets[1], octets[1] + 1, octets[1] + 2, octets[1] + 3);
+
+	for (n = 0; n < 4; n++) {
+		if (!octets[0][n] || octets[0][n] == octets[1][n])
+			continue;
+		else
+			return qfalse;
+	}
+
+	return qtrue;
+}
+
 /* ==================
   Callbacks
 ================== */
 
-static int Bans_GenericCallback(void *x, int numColumns, char **columnText, char **columnResults) {
-	int i;
-
-	for (i = 0; i < numColumns; i++)
-		Com_Printf("%s = %s\n", columnResults[i], columnText[i] ? columnText[i] : "NULL");
-	Com_Printf("\n");
-
+static int Bans_GenericCallback(void *x, int numColumns, char **columnValue, char **columnName) {
 	return 0;
 }
 
-static int Bans_IPExists(void *x, int numColumns, char **columnText, char **columnResults) {
+static int Bans_IPExistsCallback(void *x, int numColumns, char **columnValue, char **columnName) {
 	matchRows = 1;
+	return 0;
+}
+
+static int Bans_RangeMatchesCallback(char *ip, int numColumns, char **columnValue, char **columnName) {
+	int i;
+	for (i = 0; i < numColumns; i++) {
+		if (!Q_stricmp(columnName[i], "ip") && Bans_AddressMatches(columnValue[i], ip)) {
+			matchRows = 1;
+			return 0;
+		}
+	}
 	return 0;
 }
