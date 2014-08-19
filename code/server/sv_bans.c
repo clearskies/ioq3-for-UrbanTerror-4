@@ -75,8 +75,10 @@ void Bans_AddIP(void) {
 		return;
 	}
 
-	if (!Bans_IsValidAddress(Cmd_Argv(1))) {
-		Com_Printf("Invalid IP address: %s\n", Cmd_Argv(1));
+	char *ip = Cmd_Argv(1);
+
+	if (!Bans_IsValidAddress(ip)) {
+		Com_Printf("Invalid IP address: %s\n", ip);
 		return;
 	}
 
@@ -92,9 +94,23 @@ void Bans_AddIP(void) {
 		expireTime += (int)time(NULL);
 	}
 
-	query = va("INSERT INTO `bans` (`ip`, `expire`) VALUES (\"%s\", %i);",
-		Cmd_Argv(1), expireTime);
+	// If the IP already exists in the database, update the expiry timestamp
+	matchRows = 0;
+	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
+	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
+	if (returnCode != SQLITE_OK) {
+		Com_Printf("[ERROR] Database: %s\n", errorMessage);
+		sqlite3_free(errorMessage);
+		return;
+	}
 
+	if (matchRows)
+		query = va("UPDATE `bans` SET `expire` =  %i WHERE `ip` = '%s';", \
+			expireTime, ip);
+	else
+		query = va("INSERT INTO `bans` (`ip`, `expire`) VALUES ('%s', %i);",
+			ip, expireTime);
+	
 	returnCode = sqlite3_exec(database, query, Bans_GenericCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -102,7 +118,8 @@ void Bans_AddIP(void) {
 		return;
 	}
 	
-	Com_Printf("'%s' successfully added to the ban database.\n", Cmd_Argv(1));
+	Com_Printf("'%s' successfully added to the ban database. Expires: %s", ip,
+		expireTime == -1 ? "never\n" : ctime((time_t *)&expireTime));
 }
 
 void Bans_RemoveIP(void) {
@@ -118,7 +135,7 @@ void Bans_RemoveIP(void) {
 
 	char *ip = Cmd_Argv(1);
 
-	if (!Bans_IsValidAddress(Cmd_Argv(1))) {
+	if (!Bans_IsValidAddress(ip)) {
 		Com_Printf("Invalid IP address: %s\n", ip);
 		return;
 	}
@@ -128,7 +145,6 @@ void Bans_RemoveIP(void) {
 	char *query;
 
 	matchRows = 0;
-
 	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
 	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
