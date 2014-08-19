@@ -512,3 +512,5 @@ void SV_BansShutdown(void);
 
 void Bans_AddIP(void);
 void Bans_RemoveIP(void);
+
+qboolean Bans_CheckIP(netadr_t addr);

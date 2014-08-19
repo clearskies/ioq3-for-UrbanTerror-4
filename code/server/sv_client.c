@@ -286,6 +286,14 @@ void SV_DirectConnect(netadr_t from) {
 		Info_SetValueForKey(userinfo, "ip", "localhost");
 	}
 
+	#ifdef USE_SQLITE_BANS
+	if (Bans_CheckIP(from)) {
+		NET_OutOfBandPrint(NS_SERVER, from, "print\nYou are banned.\n");
+		Com_Printf("%i.%i.%i.%i rejected: banned.\n", from.ip[0], from.ip[1], from.ip[2], from.ip[3]);
+		return;
+	}
+	#endif
+
 	newcl = &temp;
 	Com_Memset(newcl, 0, sizeof(client_t));
 

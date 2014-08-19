@@ -64,6 +64,32 @@ void SV_BansShutdown(void) {
 	Com_Printf("\n\nDatabase ban system stopped.\n\n");
 }
 
+qboolean Bans_CheckIP(netadr_t addr) {
+	char ip[24];
+	char *query, *errorMessage;
+	int returnCode;
+
+	sprintf(ip, "%i.%i.%i.%i", addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3]);
+
+	matchRows = 0;
+	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
+	returnCode = sqlite3_exec(database, query, Bans_IPExists, NULL, &errorMessage);
+	if (returnCode != SQLITE_OK) {
+		Com_Printf("[ERROR] Database: %s\n", errorMessage);
+		sqlite3_free(errorMessage);
+		return qfalse;
+	}
+
+	if (matchRows)
+		return qtrue;
+	
+	return qfalse;
+}
+
+/* ==================
+  Commands
+================== */
+
 void Bans_AddIP(void) {
 	if (Cmd_Argc() < 2) {
 		Com_Printf("Usage: addip <ip> [<minutes>]\n");
