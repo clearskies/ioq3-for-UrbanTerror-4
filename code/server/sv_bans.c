@@ -79,15 +79,16 @@ void SV_BansShutdown(void) {
 }
 
 qboolean Bans_CheckIP(netadr_t addr) {
-	char ip[24];
-	char *query, *errorMessage;
+	char ip[24], query[MAX_STRING_CHARS];
+	char *errorMessage;
 	int returnCode;
 	int ipMatches = 0;
+	int currentTime = (int)time(NULL);
 
 	sprintf(ip, "%i.%i.%i.%i", addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3]);
 
 	matchRows = 0;
-	query = va("SELECT * FROM `bans` WHERE `ip` = '%s';", ip);
+	Com_sprintf(query, MAX_STRING_CHARS, "SELECT * FROM `bans` WHERE `ip` = '%s' AND (`expire` < 0 OR `expire` > %i);", ip, currentTime);
 	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -99,7 +100,7 @@ qboolean Bans_CheckIP(netadr_t addr) {
 		return qtrue;
 
 	matchRows = 0;
-	query = va("SELECT * FROM `rangebans`;", ip);
+	Com_sprintf(query, MAX_STRING_CHARS, "SELECT * FROM `rangebans` WHERE `expire` < 0 OR `expire` > %i;", currentTime);
 	returnCode = sqlite3_exec(database, query, Bans_RangeMatchesCallback, ip, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -143,7 +144,7 @@ void Bans_AddIP(void) {
 	int expireTime = -1;
 	int returnCode;
 	char *errorMessage;
-	char *query;
+	char query[MAX_STRING_CHARS];
 
 	int i;
 	client_t *cl;
@@ -158,7 +159,7 @@ void Bans_AddIP(void) {
 
 	// If the IP already exists in the database, update the expiry timestamp
 	matchRows = 0;
-	query = va("SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
+	Com_sprintf(query, MAX_STRING_CHARS, "SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
 	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -167,10 +168,10 @@ void Bans_AddIP(void) {
 	}
 
 	if (matchRows)
-		query = va("UPDATE `%s` SET `expire` =  %i WHERE `ip` = '%s';", \
+		Com_sprintf(query, MAX_STRING_CHARS, "UPDATE `%s` SET `expire` =  %i WHERE `ip` = '%s';", \
 			table, expireTime, ip);
 	else
-		query = va("INSERT INTO `%s` (`ip`, `expire`) VALUES ('%s', %i);",
+		Com_sprintf(query, MAX_STRING_CHARS, "INSERT INTO `%s` (`ip`, `expire`) VALUES ('%s', %i);",
 			table, ip, expireTime);
 	
 	returnCode = sqlite3_exec(database, query, Bans_GenericCallback, NULL, &errorMessage);
@@ -221,10 +222,10 @@ void Bans_RemoveIP(void) {
 
 	int returnCode;
 	char *errorMessage;
-	char *query;
+	char query[MAX_STRING_CHARS];
 
 	matchRows = 0;
-	query = va("SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
+	Com_sprintf(query, MAX_STRING_CHARS, "SELECT * FROM `%s` WHERE `ip` = '%s';", table, ip);
 	returnCode = sqlite3_exec(database, query, Bans_IPExistsCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
@@ -237,7 +238,7 @@ void Bans_RemoveIP(void) {
 		return;
 	}
 
-	query = va("DELETE FROM `%s` WHERE `ip` = '%s';", table, ip);
+	Com_sprintf(query, MAX_STRING_CHARS, "DELETE FROM `%s` WHERE `ip` = '%s';", table, ip);
 	returnCode = sqlite3_exec(database, query, Bans_GenericCallback, NULL, &errorMessage);
 	if (returnCode != SQLITE_OK) {
 		Com_Printf("[ERROR] Database: %s\n", errorMessage);
