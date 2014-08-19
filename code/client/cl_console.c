@@ -1347,7 +1347,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 		if (scrollbarBGHeight >= 10) {
 			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
-			scrollbarPos = (currentCon->display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
+			scrollbarPos = currentCon->display / (float)totalLines * (scrollbarBGHeight - visibleHeight);
 			
 			SCR_AdjustedFillRect(618 - margin, margin + 30, 2, scrollbarBGHeight, scrollbarBG);
 			scrollbarBG[3] = 0.8;
