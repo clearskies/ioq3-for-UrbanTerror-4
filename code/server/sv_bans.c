@@ -31,7 +31,8 @@ void SV_BansInit(void) {
 	char *errorMessage;
 
 	sv_bandb = Cvar_Get("sv_bandb", "bans.sqlite", CVAR_ARCHIVE | CVAR_LATCH);
-	char *databaseFile = sv_bandb->string;
+
+	char *databaseFile = va("%s%s/%s", Cvar_VariableString("fs_homepath"), Cvar_VariableString("fs_game"), sv_bandb->string);
 
 	Com_Printf("\n");
 
