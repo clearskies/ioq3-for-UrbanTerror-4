@@ -114,6 +114,10 @@ void Bans_AddIP(void) {
 	char *errorMessage;
 	char *query;
 
+	int i;
+	client_t *cl;
+	char temp[24];
+
 	if (Cmd_Argc() == 3) {
 		expireTime = atoi(Cmd_Argv(2));
 
@@ -147,6 +151,19 @@ void Bans_AddIP(void) {
 	
 	Com_Printf("'%s' successfully added to the ban database. Expires: %s", ip,
 		expireTime == -1 ? "never\n" : ctime((time_t *)&expireTime));
+
+	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
+		if (!cl->state)
+			continue;
+		
+		sprintf(temp, "%i.%i.%i.%i", cl->netchan.remoteAddress.ip[0],
+			cl->netchan.remoteAddress.ip[1], 
+			cl->netchan.remoteAddress.ip[2], 
+			cl->netchan.remoteAddress.ip[3]);
+
+		if (!Q_stricmp(ip, temp))
+			SV_DropClient(cl, "You have been banned.");
+	}
 }
 
 void Bans_RemoveIP(void) {
