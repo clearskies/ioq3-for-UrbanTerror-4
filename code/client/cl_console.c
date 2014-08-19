@@ -409,7 +409,7 @@ void Con_CheckResize (console_t *console)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	short	tbuf[CON_TEXTSIZE];
 
-	width = (adjustedScreenWidth / SMALLCHAR_WIDTH) - 2;
+	width = (adjustedScreenWidth / (SMALLCHAR_WIDTH - 1)) - 2;
 
 	if (width == console->linewidth)
 		return;
@@ -1037,14 +1037,14 @@ void Con_DrawInput (void) {
 	promptLen = strlen(prompt);
 
 	for (i = 0; i < promptLen; i++) {
-		SCR_DrawSmallChar( currentCon->xadjust + (i + 1) * SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin, prompt[i]);
+		SCR_DrawSmallChar( currentCon->xadjust + (i + 1) * (SMALLCHAR_WIDTH - 1) + adjustedXMargin, y + adjustedYMargin, prompt[i]);
 	}
 
 	Con_RE_SetColor(currentCon->color);
 
 	if (opacityMult)
-	Field_Draw( &g_consoleField, currentCon->xadjust + (promptLen + 1) * SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin,
-		adjustedScreenWidth - 3 * SMALLCHAR_WIDTH, qtrue);
+	Field_Draw( &g_consoleField, currentCon->xadjust + (promptLen + 1) * (SMALLCHAR_WIDTH - 1) + adjustedXMargin, y + adjustedYMargin,
+		adjustedScreenWidth - 3 * (SMALLCHAR_WIDTH - 1), qtrue);
 }
 
 
@@ -1092,7 +1092,7 @@ void Con_DrawNotify (void)
 				currentColor = (text[x]>>8)&7;
 				Con_RE_SetColor( g_color_table[currentColor] );
 			}
-			SCR_DrawSmallChar( cl_conXOffset->integer + currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH, v, text[x] & 0xff );
+			SCR_DrawSmallChar( cl_conXOffset->integer + currentCon->xadjust + (x+1)*(SMALLCHAR_WIDTH - 1), v, text[x] & 0xff );
 		}
 
 		v += SMALLCHAR_HEIGHT;
@@ -1305,12 +1305,12 @@ void Con_DrawSolidConsole( float frac ) {
 
 		lineColour[3] *= opacityMult;
 		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
-			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - adjustedXMargin,
+			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
 				(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 				va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
 
 		lineColour[3] = 0.3 * opacityMult;
-		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - adjustedXMargin,
+		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
 			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 			version, lineColour, qtrue);
 		lineColour[3] = 1 * opacityMult;
@@ -1318,7 +1318,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 	// draw the text
 	currentCon->vislines = lines;
-	rows = (lines-SMALLCHAR_WIDTH)/SMALLCHAR_WIDTH;		// rows of text to draw
+	rows = (lines-(SMALLCHAR_WIDTH - 1))/(SMALLCHAR_WIDTH - 1);		// rows of text to draw
 
 	y = lines - (SMALLCHAR_HEIGHT*3);
 
@@ -1328,7 +1328,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw arrows to show the buffer is backscrolled
 		Con_RE_SetColor(lineColour);
 		for (x=0 ; x<currentCon->linewidth ; x+=3)
-			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + margin, y + margin * 2, '*' );
+			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*(SMALLCHAR_WIDTH - 1) + margin, y + margin * 2, '*' );
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
@@ -1397,7 +1397,7 @@ void Con_DrawSolidConsole( float frac ) {
 				currentColor = (text[x] >> 8) % 10;
 				Con_RE_SetColor( g_color_table[currentColor] );
 			}
-			SCR_DrawSmallChar(currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + adjustedXMargin, y + adjustedYMargin, text[x] & 0xff );
+			SCR_DrawSmallChar(currentCon->xadjust + (x+1)*(SMALLCHAR_WIDTH - 1) + adjustedXMargin, y + adjustedYMargin, text[x] & 0xff );
 		}
 	}
 
