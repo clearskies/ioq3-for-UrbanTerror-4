@@ -1287,7 +1287,9 @@ void Con_DrawSolidConsole( float frac ) {
 		qtime_t now;
 		Com_RealTime(&now);
 
-		i = strlen(SVN_VERSION) + 12;
+		char *version = va("%s / %s", SVN_VERSION, Cvar_VariableString("ui_modversion"));
+
+		i = strlen(version) + 12;
 
 		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
 			SCR_DrawSmallStringExt(cls.glconfig.vidWidth - i * SMALLCHAR_WIDTH - adjustedXMargin,
@@ -1297,7 +1299,7 @@ void Con_DrawSolidConsole( float frac ) {
 		lineColour[3] = 0.3;
 		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * SMALLCHAR_WIDTH - adjustedXMargin,
 			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
-			SVN_VERSION, lineColour, qtrue);
+			version, lineColour, qtrue);
 		lineColour[3] = 1;
 	}
 
