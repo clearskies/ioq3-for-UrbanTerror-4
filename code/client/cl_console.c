@@ -409,7 +409,8 @@ void Con_CheckResize (console_t *console)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	short	tbuf[CON_TEXTSIZE];
 
-	width = (adjustedScreenWidth / (SMALLCHAR_WIDTH - 1)) - 2;
+	float xscale = cls.glconfig.vidWidth / 640.0;
+	width = (cls.glconfig.vidWidth - adjustedXMargin * 2 - (int)(42 * xscale)) / (SMALLCHAR_WIDTH - 1);
 
 	if (width == console->linewidth)
 		return;
