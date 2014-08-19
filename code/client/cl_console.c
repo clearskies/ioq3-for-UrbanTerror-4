@@ -156,7 +156,7 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 		c[2] = 1;
 		c[3] = opacityMult;
 	}
-	SCR_DrawStringExt(x, y, size, string, c, forceColor);
+	SCR_DrawCondensedString(x, y, size, string, c, forceColor);
 }
 
 #define BOX_MARGIN 30
@@ -1235,11 +1235,11 @@ void Con_DrawSolidConsole( float frac ) {
 
 		for (i = 0; i < numConsoles; i++) {
 			if (currentCon == &consoles[i]) {
-				tabWidth = strlen(consoleNames[i]) * 8 + 14;
+				tabWidth = strlen(consoleNames[i]) * 7 + 14;
 				tabHeight = 22;
 				lineColour[3] = 1;
 			} else {
-				tabWidth = strlen(consoleNames[i]) * 7 + 8;
+				tabWidth = strlen(consoleNames[i]) * 6 + 8;
 				tabHeight = 18;
 				lineColour[3] = 0.3;
 			}

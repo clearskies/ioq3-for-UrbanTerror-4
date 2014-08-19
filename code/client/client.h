@@ -552,6 +552,7 @@ void	SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, 
 void	SCR_DrawSmallChar( int x, int y, int ch );
 
 void	SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor );
+void	SCR_DrawCondensedString( int x, int y, float size, const char *string, float *setColor, qboolean forceColor );
 
 //
 // cl_cin.c
