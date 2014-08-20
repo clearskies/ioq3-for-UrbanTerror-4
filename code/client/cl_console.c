@@ -836,14 +836,11 @@ void CL_ConsolePrint( char *txt ) {
 					isKill = qtrue;
 					killNext = qtrue;
 					if (con_coloredKills && con_coloredKills->integer) {
-						if (killLogNum == 1) {
-							temp = strlen(player2);
-							if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
-								player2[temp - 2] = 0;
-							}
-						} else if (killLogNum > 1) {
-							temp = strlen(player2);
-							player2[temp - 1] = 0;
+						temp = strlen(search[i]);
+						if (!strcmp(&search[i][temp - 3], "%s.")) {
+							player2[strlen(player2) - 1] = 0;
+						} else if (Q_strsub(search[i], "%s's")) {
+							player2[strlen(player2) - 2] = 0;
 						}
 
 						team = nameToTeamColour(player1);
