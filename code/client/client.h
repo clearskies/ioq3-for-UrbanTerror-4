@@ -582,6 +582,8 @@ void CL_SetCGameTime( void );
 void CL_FirstSnapshot( void );
 void CL_ShaderStateChanged(void);
 
+int skinToChatColour(int team, int skin);
+
 //
 // cl_ui.c
 //

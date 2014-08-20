@@ -553,22 +553,21 @@ void Con_Linefeed (console_t *console, qboolean skipnotify)
 }
 
 int nameToTeamColour(char *name) {
-	int i, team = 2;
+	int i, team = 2, myteam;
 	char *cs;
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + i];
 		if (!Q_stricmp(Info_ValueForKey(cs, "n"), name)) {
 			team = atoi(Info_ValueForKey(cs, "t"));
-			if (team == TEAM_RED) {
-				team = 1;
-			} else if (team == TEAM_BLUE) {
-				team = 4;
-			} else {
-				team = 2;
-			}
-			break;
+			myteam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			
+			if (team == myteam)
+				return skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			else
+				return skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
 		}
 	}
+
 	return team;
 }
 

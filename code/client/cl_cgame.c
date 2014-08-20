@@ -257,12 +257,17 @@ int skinToChatColour(int team, int skin) {
 	if (skin < 0 || skin > 14)
 		skin = 0;
 
+	if (team == TEAM_SPECTATOR)
+		return 7;
+
 	int colour = skin;
 	if (!skin) {
 		if (team == TEAM_RED) {
 			colour = 1;
 		} else if (team == TEAM_BLUE) {
 			colour = 4;
+		} else if (team == TEAM_FREE) {
+			colour = 2;
 		}
 	}
 
