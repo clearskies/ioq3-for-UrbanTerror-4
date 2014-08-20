@@ -8,7 +8,7 @@ char *hitLog1[] = { //when following a player
 	"%s was hit in the Right Upper Leg by %s for %s damage.",
 	"%s was hit in the Left Upper Leg by %s for %s damage.",
 	"%s was hit in the Right Lower Leg by %s for %s damage.",
-	"%s was hit in the Left Lower Leg %s for %s damage.",
+	"%s was hit in the Left Lower Leg by %s for %s damage.",
 	"%s was hit in the Right Foot by %s for %s damage.",
 	"%s was hit in the Left Foot by %s for %s damage.",
 	"%s was hit in the Butt by %s for %s damage.",

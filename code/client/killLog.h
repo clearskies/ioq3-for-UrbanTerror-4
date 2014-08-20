@@ -40,7 +40,7 @@ char *killLog1[] = {
 	"%s was minced to death by %s's Mac 11.",
 	"%s played 'catch the shiny bullet' with %s's LR-300 rounds.",
 	"%s was on the wrong end of %s's G36.",
-	"%s was torn asunder by %s's crassk AK103.",
+	"%s was torn asunder by %s's crass AK103.",
 	"%s got a lead enema from %s's retro M4.",
 	"%s was taken out by %s's PSG1. Plink!",
 	"%s HEARD %s's HK69 gren... didn't AVOID it. Sucka.",
