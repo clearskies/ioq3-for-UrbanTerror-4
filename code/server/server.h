@@ -182,6 +182,8 @@ typedef struct client_s {
 	char backwards;
 	int powerups[MAX_WEAPONS];
 	int lastEventSequence;
+
+	char colourName[MAX_NAME_LENGTH];
 } client_t;
 
 //=============================================================================
@@ -327,6 +329,7 @@ extern	cvar_t  *sv_infiniteWalljumps;
 extern	cvar_t  *sv_weaponCycle;
 
 extern	cvar_t  *sv_mapColor;
+extern	cvar_t  *sv_colourName;
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

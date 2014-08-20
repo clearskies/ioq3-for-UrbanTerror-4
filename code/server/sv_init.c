@@ -951,6 +951,7 @@ void SV_Init (void) {
 	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
 
 	sv_mapColor = Cvar_Get("sv_mapColor", "7", CVAR_ARCHIVE);
+	sv_colourName = Cvar_Get("sv_colorNames", "0", CVAR_ARCHIVE);
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);

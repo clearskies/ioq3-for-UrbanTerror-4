@@ -1236,6 +1236,19 @@ static void SV_ResetPureClient_f( client_t *cl ) {
 	cl->gotCP = qfalse;
 }
 
+static char *SV_CleanName(char *name) {
+	static char cleaned[MAX_NAME_LENGTH];
+	int i, j = 0;
+
+	for (i = 0; i < strlen(name); i++) {
+		if (name[i] >= 32 && name[i] <= 126)
+			cleaned[j++] = name[i];
+	}
+
+	cleaned[j] = 0;
+	return cleaned;
+}
+
 /*
 =================
 SV_UserinfoChanged
@@ -1252,6 +1265,7 @@ void SV_UserinfoChanged( client_t *cl ) {
 
 	// name for C code
 	Q_strncpyz( cl->name, Info_ValueForKey (cl->userinfo, "name"), sizeof(cl->name) );
+	sprintf(cl->colourName, "%s^7", SV_CleanName(cl->name));
 
 	// rate command
 

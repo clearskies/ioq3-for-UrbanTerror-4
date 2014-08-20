@@ -80,6 +80,7 @@ cvar_t  *sv_infiniteWalljumps;
 cvar_t  *sv_weaponCycle;
 
 cvar_t  *sv_mapColor;
+cvar_t  *sv_colourName;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -310,6 +311,20 @@ void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) {
 	// fixes the problem for now
 	if ( strlen ((char *)message) > 1022 ) {
 		return;
+	}
+
+	if (sv_colourName->integer) {
+		Cmd_TokenizeString((char *)message);
+		if (!Q_stricmp(Cmd_Argv(0), "cs") && Cmd_Argc() > 2) {
+			int cnum;
+			cnum = atoi(Cmd_Argv(1));
+			if (cnum >= 544 && cnum <= 607  && svs.clients[cnum - 544].netchan.remoteAddress.type != NA_BOT) {
+				char uinfo[MAX_INFO_STRING];
+				sprintf(uinfo, "%s", Cmd_Argv(2));
+				Info_SetValueForKey(uinfo, "n", svs.clients[cnum - 544].colourName);
+				Com_sprintf((char *)message, sizeof(message), "cs %i \"%s\"", cnum, uinfo);
+			}
+		}
 	}
 
 	if ( cl != NULL ) {
