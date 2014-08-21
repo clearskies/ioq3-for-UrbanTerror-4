@@ -1710,15 +1710,18 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 		return;		// may have been kicked during the last usercmd
 	}
 
+	#ifdef USE_SERVER_EXTRAS
 	if (sv_infiniteAmmo->integer) {
 		ps = SV_GameClientNum(cl - svs.clients);
 		for (i = 0; i < MAX_POWERUPS; i++) {
 			cl->powerups[i] = ps->powerups[i];
 		}
 	}
+	#endif
 
 	VM_Call( gvm, GAME_CLIENT_THINK, cl - svs.clients );
 
+	#ifdef USE_SERVER_EXTRAS
 	if (sv_infiniteAmmo->integer) {
 		if (cl->lastEventSequence < ps->eventSequence - MAX_PS_EVENTS) {
 			cl->lastEventSequence = ps->eventSequence - MAX_PS_EVENTS;
@@ -1734,6 +1737,7 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 
 		cl->lastEventSequence = ps->eventSequence;
 	}
+	#endif
 }
 
 /*

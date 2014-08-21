@@ -69,18 +69,21 @@ cvar_t	*sv_allowTell;
 cvar_t	*sv_removeKnife;
 cvar_t	*sv_antiblock;
 cvar_t	*sv_forceGear;
-cvar_t	*sv_chatColor;
-cvar_t	*sv_rainbowChat;
 cvar_t	*sv_allowVote;
 
+
+#ifdef USE_SERVER_EXTRAS
 cvar_t  *sv_infiniteStamina;
 cvar_t  *sv_noRecoil;
 cvar_t  *sv_infiniteAmmo;
 cvar_t  *sv_infiniteWalljumps;
 cvar_t  *sv_weaponCycle;
-
+cvar_t	*sv_rainbowChat;
+cvar_t	*sv_chatColor;
 cvar_t  *sv_mapColor;
 cvar_t  *sv_colourName;
+#endif
+
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -224,6 +227,7 @@ void SV_AddServerCommand( client_t *client, const char *cmd ) {
 	if( client->state < CS_PRIMED )
 		return;
 
+	#ifdef USE_SERVER_EXTRAS
 	cPos = strstr(cmd, ": ^3");
 	if (sv_chatColor->integer != 3) {
 		chatColor = sv_chatColor->value;
@@ -265,6 +269,7 @@ void SV_AddServerCommand( client_t *client, const char *cmd ) {
 			cmd = newCmd;
 		}
 	}
+	#endif
 
 
 	client->reliableSequence++;
@@ -550,9 +555,11 @@ void SVC_Info( netadr_t from ) {
 	Info_SetValueForKey( infostring, "protocol", va("%i", PROTOCOL_VERSION) );
 	Info_SetValueForKey( infostring, "hostname", sv_hostname->string );
 
+	#ifdef USE_SERVER_EXTRAS
 	if (sv_mapColor->integer != 7)
 		Info_SetValueForKey(infostring, "mapname", va("^%i%s", sv_mapColor->integer, sv_mapname->string));
 	else
+	#endif
 		Info_SetValueForKey(infostring, "mapname", sv_mapname->string);
 
 	Info_SetValueForKey( infostring, "clients", va("%i", count) );
@@ -1207,6 +1214,7 @@ void SV_Frame( int msec ) {
 
 	if (com_dedicated->integer) SV_BotFrame (sv.time);
 
+	#ifdef USE_SERVER_EXTRAS
 	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
 		if (!cl->state) {
 			continue;
@@ -1234,6 +1242,7 @@ void SV_Frame( int msec ) {
 			ps->powerups[0] = ps->powerups[MAX_POWERUPS - 1]; // Hopefully the player hasn't filled up their weapon slots
 		}
 	}
+	#endif
 
 	// run the game simulation in chunks
 	while ( sv.timeResidual >= frameMsec ) {

@@ -1573,6 +1573,8 @@ static void SV_StopServerDemo_f(void)
 
 }
 
+#ifdef USE_SERVER_EXTRAS
+
 /*
 ==================
 SV_Invisible
@@ -1866,6 +1868,7 @@ static void SV_SendReliableCommand_f(void) {
 
 	SV_SendServerCommand(cl, "%s", Cmd_ArgsFrom(2));
 }
+#endif
 
 /*
 ==================
@@ -2012,6 +2015,7 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("sectorlist", SV_SectorList_f);
 	Cmd_AddCommand ("map", SV_Map_f);
 
+	#ifdef USE_SERVER_EXTRAS
 	Cmd_AddCommand ("invisible", SV_Invisible_f);
 	Cmd_AddCommand ("setscore", SV_SetScore_f);
 	Cmd_AddCommand ("setdeaths", SV_SetDeaths_f);
@@ -2022,6 +2026,7 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("backwards", SV_Backwards_f);
 
 	Cmd_AddCommand ("src", SV_SendReliableCommand_f);
+	#endif
 
 #ifndef PRE_RELEASE_DEMO
 	Cmd_AddCommand ("devmap", SV_Map_f);

@@ -940,18 +940,19 @@ void SV_Init (void) {
 	sv_removeKnife = Cvar_Get ("sv_removeKnife", "0", CVAR_ARCHIVE);
 	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
 	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
-	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
-	sv_rainbowChat = Cvar_Get("sv_rainbowChat", "0", CVAR_ARCHIVE);
 	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
 
+	#ifdef USE_SERVER_EXTRAS
+	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
+	sv_rainbowChat = Cvar_Get("sv_rainbowChat", "0", CVAR_ARCHIVE);
 	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);
 	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
 	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
 	sv_infiniteWalljumps = Cvar_Get("sv_infiniteWalljumps", "0", CVAR_ARCHIVE);
 	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
-
 	sv_mapColor = Cvar_Get("sv_mapColor", "7", CVAR_ARCHIVE);
 	sv_colourName = Cvar_Get("sv_colorNames", "0", CVAR_ARCHIVE);
+	#endif
   
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);

@@ -318,18 +318,19 @@ extern  cvar_t  *sv_allowTell;
 extern  cvar_t  *sv_removeKnife;
 extern	cvar_t  *sv_antiblock;
 extern	cvar_t  *sv_forceGear;
-extern	cvar_t  *sv_chatColor;
-extern	cvar_t  *sv_rainbowChat;
 extern	cvar_t  *sv_allowVote;
 
+#ifdef USE_SERVER_EXTRAS
 extern	cvar_t  *sv_infiniteStamina;
 extern	cvar_t  *sv_noRecoil;
 extern	cvar_t  *sv_infiniteAmmo;
 extern	cvar_t  *sv_infiniteWalljumps;
 extern	cvar_t  *sv_weaponCycle;
-
 extern	cvar_t  *sv_mapColor;
 extern	cvar_t  *sv_colourName;
+extern	cvar_t  *sv_chatColor;
+extern	cvar_t  *sv_rainbowChat;
+#endif
 
 #ifdef USE_AUTH
 extern	cvar_t	*sv_authServerIP;

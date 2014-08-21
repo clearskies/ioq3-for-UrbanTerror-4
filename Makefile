@@ -38,8 +38,9 @@ USE_OPENAL         =0
 USE_CURL           =1
 USE_CODEC_VORBIS   =0
 
-
+# Server
 USE_SQLITE_BANS    =1
+USE_SERVER_EXTRAS  =1
 
 
 USE_SOUNDHAX	   =0
@@ -258,10 +259,6 @@ ifeq ($(PLATFORM),linux)
   	BASE_CFLAGS += -DUSE_ALTGAMMA=1
   endif
 
-  ifeq ($(USE_SQLITE_BANS),1)  
-    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
-  endif
-
   OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
 
   ifeq ($(ARCH),x86_64)
@@ -442,12 +439,7 @@ ifeq ($(PLATFORM),darwin)
     #CLIENT_LDFLAGS += -L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
-  ifeq ($(USE_SQLITE_BANS),1)
-    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
-    OPTIMIZE += -falign-loops=16
-  else
-    OPTIMIZE += -falign-loops=16
-  endif
+  OPTIMIZE += -falign-loops=16
 
   ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
@@ -529,10 +521,6 @@ endif
     # build 32bit
     BASE_CFLAGS += -m32
     LDFLAGS += -m32
-  endif
-
-  ifeq ($(USE_SQLITE_BANS),1)  
-    BASE_CFLAGS += -DUSE_SQLITE_BANS=1
   endif
 
 else # ifeq mingw32
@@ -805,6 +793,14 @@ endif
 
 ifeq ($(USE_AUTOMATION),1)
   BASE_CFLAGS += -DUSE_AUTOMATION=1
+endif
+
+ifeq ($(USE_SQLITE_BANS),1)  
+  BASE_CFLAGS += -DUSE_SQLITE_BANS=1
+endif
+
+ifeq ($(USE_SERVER_EXTRAS),1)  
+  BASE_CFLAGS += -DUSE_SERVER_EXTRAS=1
 endif
 
 #Barbatos
