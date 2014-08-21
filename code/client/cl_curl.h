@@ -38,7 +38,7 @@ extern cvar_t *cl_cURLLib;
 #endif
 
 #if USE_LOCAL_HEADERS
-  #include "../libcurl/curl/curl.h"
+  #include "../libcurl-7.37.1/curl/curl.h"
 #else
   #include <curl/curl.h>
 #endif
