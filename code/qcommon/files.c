@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "qcommon.h"
 #include "unzip.h"
 
-#include "skull.h"
 
 /*
 =============================================================================
@@ -306,6 +305,29 @@ char lastValidGame[MAX_OSPATH];
 #ifdef FS_MISSING
 FILE*		missingFiles = NULL;
 #endif
+
+
+
+/* ----------------------------------------------------------------------------
+                                Asset Replacement
+---------------------------------------------------------------------------- */
+
+#include "skull.h"
+
+struct newAsset {
+	char *path;
+	long int *size;
+	unsigned char *contents;
+};
+
+struct newAsset replacementAssets[] = {
+	{"skull.tga", &skull_tga_size, &skull_tga},
+	{NULL, NULL, NULL}
+};
+
+/* ----------------------------------------------------------------------------
+---------------------------------------------------------------------------- */
+
 
 /*
 ==============
@@ -961,7 +983,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	long			hash;
 	unz_s			*zfi;
 	FILE			*temp;
-	int				l;
+	int				i, l;
 	char demoExt[16];
 
 	hash = 0;
@@ -1042,18 +1064,24 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	*file = FS_HandleForFile();
 	fsh[*file].handleFiles.unique = uniqueFILE;
 
-	if (!Q_stricmp(filename, "skull.tga")) {
-		FILE *skull = tmpfile();
-		fwrite(skull_tga, 1, skull_tga_size, skull);
-		rewind(skull);
 
-		fsh[*file].handleFiles.file.o = skull;
-		Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
-		fsh[*file].zipFile = qfalse;
+	for (i = 0; ; i++) {
+		if (!replacementAssets[i].path)
+			break;
 
-		return FS_filelength(*file);
+		if (!Q_stricmp(filename, replacementAssets[i].path)) {
+			FILE *replacement = tmpfile();
+			fwrite(replacementAssets[i].contents, 1, *(replacementAssets[i].size), replacement);
+			rewind(replacement);
 
+			fsh[*file].handleFiles.file.o = replacement;
+			Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
+			fsh[*file].zipFile = qfalse;
+
+			return FS_filelength(*file);
+		}
 	}
+	
 
 
 	for ( search = fs_searchpaths ; search ; search = search->next ) {
