@@ -923,8 +923,8 @@ static void SV_Status_f(void) {
 	}
 
 	Com_Printf ("map: %s\n", sv_mapname->string);
-	Com_Printf ("num score ping name            lastmsg address               qport rate\n");
-	Com_Printf ("--- ----- ---- --------------- ------- --------------------- ----- -----\n");
+	Com_Printf ("num score ping name                 lastmsg address               qport rate\n");
+	Com_Printf ("--- ----- ---- -------------------- ------- --------------------- ----- -----\n");
 
 	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
 
@@ -949,7 +949,7 @@ static void SV_Status_f(void) {
 		// TTimo adding a ^7 to reset the color
 		// NOTE: colored names in status breaks the padding (WONTFIX)
 		Com_Printf ("^7");
-		l = 16 - strlen(cl->name);
+		l = 21 - strlen(cl->name);
 		for (j=0 ; j<l ; j++) {
 			Com_Printf (" ");
 		}
