@@ -1496,8 +1496,12 @@ void CL_Rcon_f( void ) {
 	Q_strcat (message, MAX_RCON_MESSAGE, rcon_client_password->string);
 	Q_strcat (message, MAX_RCON_MESSAGE, " ");
 
-	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=543
-	Q_strcat (message, MAX_RCON_MESSAGE, Cmd_Cmd()+5);
+	if (!strcmp(rcon_client_password->string, Cmd_Argv(1))) {
+		// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=543
+		Q_strcat (message, MAX_RCON_MESSAGE, Cmd_Cmd()+ 6 + strlen(rcon_client_password->string));
+	} else {
+		Q_strcat (message, MAX_RCON_MESSAGE, Cmd_Cmd()+ 5);
+	}
 
 	if ( cls.state >= CA_CONNECTED ) {
 		to = clc.netchan.remoteAddress;
