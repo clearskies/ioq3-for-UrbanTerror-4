@@ -25,6 +25,5 @@ deploy:
     tags: true
     all_branches: true
 notifications:
-  irc: "irc.quakenet.org#nuubs"
   on_success: always
   on_failure: always
