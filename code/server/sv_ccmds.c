@@ -910,11 +910,9 @@ SV_Status_f
 */
 static void SV_Status_f(void) {
 
-	int            i, j, l;
+	int            i;
 	client_t       *cl;
 	playerState_t  *ps;
-	const char     *s;
-	int            ping;
 
 	// make sure server is running
 	if (!com_sv_running->integer) {
@@ -932,38 +930,28 @@ static void SV_Status_f(void) {
 			continue;
 		}
 
-		Com_Printf("%3i ", i);
+		Com_Printf("%-3i ", i);
 		ps = SV_GameClientNum( i );
-		Com_Printf("%5i ", ps->persistant[PERS_SCORE]);
+		Com_Printf("%-5i ", ps->persistant[PERS_SCORE]);
 
-		if (cl->state == CS_CONNECTED) {
+		if (cl->state == CS_CONNECTED)
 			Com_Printf("CNCT ");
-		} else if (cl->state == CS_ZOMBIE) {
+		else if (cl->state == CS_ZOMBIE)
 			Com_Printf("ZMBI ");
-		} else {
-			ping = cl->ping < 9999 ? cl->ping : 9999;
-			Com_Printf ("%4i ", ping);
-		}
+		else
+			Com_Printf ("%-4i ", cl->ping < 9999 ? cl->ping : 9999);
 
-		Com_Printf ("%s", cl->name);
+
 		// TTimo adding a ^7 to reset the color
-		// NOTE: colored names in status breaks the padding (WONTFIX)
-		Com_Printf ("^7");
-		l = 21 - strlen(cl->name);
-		for (j=0 ; j<l ; j++) {
-			Com_Printf (" ");
-		}
+		// NOTE: colored names in status breaks the padding (WONTFIX) <-- Fixed
+		// Com_Printf ("^7");
+		Com_Printf ("%-20s^7 ", Q_CleanStr(cl->name));
 
-		Com_Printf ("%7i ", svs.time - cl->lastPacketTime );
-		s = NET_AdrToString( cl->netchan.remoteAddress );
-		Com_Printf ("%s", s);
-		l = 22 - strlen(s);
-		for (j = 0; j < l; j++) {
-			Com_Printf(" ");
-		}
 
-		Com_Printf ("%5i", cl->netchan.qport);
-		Com_Printf (" %5i", cl->rate);
+		Com_Printf ("%-7i ", svs.time - cl->lastPacketTime);
+		Com_Printf ("%-21s ", NET_AdrToString(cl->netchan.remoteAddress));
+		Com_Printf ("%-5i ", cl->netchan.qport);
+		Com_Printf ("%-5i", cl->rate);
 		Com_Printf ("\n");
 	}
 
