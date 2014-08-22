@@ -318,6 +318,7 @@ void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) {
 		return;
 	}
 
+	#ifdef USE_SERVER_EXTRAS
 	if (sv_colourName->integer) {
 		Cmd_TokenizeString((char *)message);
 		if (!Q_stricmp(Cmd_Argv(0), "cs") && Cmd_Argc() > 2) {
@@ -331,6 +332,7 @@ void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) {
 			}
 		}
 	}
+	#endif
 
 	if ( cl != NULL ) {
 		SV_AddServerCommand( cl, (char *)message );
