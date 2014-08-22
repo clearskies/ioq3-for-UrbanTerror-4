@@ -268,13 +268,17 @@ void SV_DirectConnect(netadr_t from) {
 		if (!Sys_IsLANAddress(from)) {
 
 			if (sv_minPing->value && ping < sv_minPing->value) {
-				NET_OutOfBandPrint(NS_SERVER, from, "print\nServer is for high pings only\n");
+				NET_OutOfBandPrint(NS_SERVER, from, va("print\n               Server is for high pings only                    \n"
+					"Your ping: " S_COLOR_RED "%i" S_COLOR_WHITE " Minimum ping: " S_COLOR_GREEN "%i\n",
+					ping, sv_minPing->integer));
 				Com_DPrintf ("Client %i rejected on a too low ping\n", i);
 				return;
 			}
 
 			if (sv_maxPing->value && ping > sv_maxPing->value) {
-				NET_OutOfBandPrint(NS_SERVER, from, "print\nServer is for low pings only\n");
+				NET_OutOfBandPrint(NS_SERVER, from, va("print\n               Server is for low pings only                    \n"
+					"Your ping: " S_COLOR_RED "%i" S_COLOR_WHITE " Maximum ping: " S_COLOR_GREEN "%i\n",
+					ping, sv_maxPing->integer));
 				Com_DPrintf ("Client %i rejected on a too high ping\n", i);
 				return;
 			}
