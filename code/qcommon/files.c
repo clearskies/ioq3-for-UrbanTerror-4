@@ -2396,11 +2396,12 @@ void FS_Path_f( void ) {
 			Com_Printf ("%s (%i files)  ", s->pack->pakFilename, s->pack->numfiles);
 			if ( fs_numServerPaks ) {
 				if ( !FS_PakIsPure(s->pack) ) {
-					Com_Printf(S_COLOR_RED "not on" S_COLOR_WHITE " the pure list\n");
+					Com_Printf(S_COLOR_RED "not on" S_COLOR_WHITE " the pure list");
 				} else {
-					Com_Printf(S_COLOR_GREEN "on" S_COLOR_WHITE " the pure list\n");
+					Com_Printf(S_COLOR_GREEN "on" S_COLOR_WHITE " the pure list");
 				}
-			}
+			} 
+			Com_Printf("\n");
 		} else {
 			Com_Printf ("%s/%s\n", s->dir->path, s->dir->gamedir );
 		}
