@@ -79,6 +79,9 @@ void SV_BansShutdown(void) {
 }
 
 qboolean Bans_CheckIP(netadr_t addr) {
+	if (!active)
+		return qfalse;
+	
 	char ip[24], query[MAX_STRING_CHARS];
 	char *errorMessage;
 	int returnCode;
