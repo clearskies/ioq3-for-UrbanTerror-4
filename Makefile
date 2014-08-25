@@ -897,7 +897,7 @@ endif
 # an informational message, then start building
 targets: makedirs tools
 	@echo ""
-	@echo "Building Quake3-UrT in $(B):"
+	@echo "Building Quake3-UrT-Clear in $(B):"
 	@echo "  PLATFORM: $(PLATFORM)"
 	@echo "  ARCH: $(ARCH)"
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
@@ -1202,12 +1202,12 @@ else
     $(B)/clientsmp/sdl_glimp.o
 endif
 
-$(B)/Quake3-UrT.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
+$(B)/Quake3-UrT-Clear.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ) $(CLIENT_LDFLAGS) \
 		$(LDFLAGS) $(LIBSDLMAIN)
 
-$(B)/Quake3-UrT-smp.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ_SMP) $(LIBSDLMAIN)
+$(B)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ_SMP) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ_SMP) $(CLIENT_LDFLAGS) \
 		$(THREAD_LDFLAGS) $(LDFLAGS) $(LIBSDLMAIN)
@@ -1338,7 +1338,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   endif
 endif
 
-$(B)/Quake3-UrT-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
+$(B)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3DOBJ) $(LDFLAGS)
 
@@ -1762,17 +1762,17 @@ copyfiles: release
 	-$(MKDIR) -p -m 0755 $(COPYDIR)/missionpack
 
 ifneq ($(BUILD_CLIENT),0)
-	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT.$(ARCH)$(BINEXT)
+	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear.$(ARCH)$(BINEXT)
 endif
 
 # Don't copy the SMP until it's working together with SDL.
 #ifneq ($(BUILD_CLIENT_SMP),0)
-#	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-smp.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-smp.$(ARCH)$(BINEXT)
+#	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT)
 #endif
 
 ifneq ($(BUILD_SERVER),0)
-	@if [ -f $(BR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT) ]; then \
-		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT); \
+	@if [ -f $(BR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT) ]; then \
+		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT); \
 	fi
 endif
 
