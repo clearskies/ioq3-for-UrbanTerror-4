@@ -103,6 +103,24 @@ typedef void *QGLContext;
 static XF86VidModeGamma origGamma;
 static Display *disp;
 static int scrNum;
+
+void SDL_XF86_SetGamma(void) {
+  float g = Cvar_VariableValue("r_gamma");
+  XF86VidModeGamma gamma;
+
+  gamma.red = g;
+  gamma.green = g;
+  gamma.blue = g;
+
+  XF86VidModeSetGamma(disp, scrNum, &gamma);
+  XF86VidModeGetGamma(disp, scrNum, &gamma);
+}
+
+void SDL_XF86_RestoreGamma(void) {
+  XF86VidModeGamma gamma;
+  XF86VidModeSetGamma(disp, scrNum, &origGamma);
+  XF86VidModeGetGamma(disp, scrNum, &gamma);
+}
 #endif
 #endif
 
@@ -325,6 +343,11 @@ static const char *XLateKey(SDL_keysym *keysym, int *key)
 
 static void install_grabs(void)
 {
+    #ifndef MACOS_X
+    #ifdef USE_ALTGAMMA
+    SDL_XF86_SetGamma();
+    #endif
+    #endif
     SDL_WM_GrabInput(SDL_GRAB_ON);
     SDL_ShowCursor(0);
 
@@ -338,6 +361,11 @@ static void install_grabs(void)
 
 static void uninstall_grabs(void)
 {
+    #ifndef MACOS_X
+    #ifdef USE_ALTGAMMA
+    SDL_XF86_RestoreGamma();
+    #endif
+    #endif
     SDL_ShowCursor(1);
     SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
@@ -580,16 +608,7 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 {
   #ifndef MACOS_X
   #ifdef USE_ALTGAMMA
-  float g = Cvar_Get("r_gamma", "1.0", 0)->value;
-  XF86VidModeGamma gamma;
-
-  gamma.red = g;
-  gamma.green = g;
-  gamma.blue = g;
-
-  XF86VidModeSetGamma(disp, scrNum, &gamma);
-  XF86VidModeGetGamma(disp, scrNum, &gamma);
-  Com_Printf("XF86VidModeSetGamma: %.3f, %.3f, %.3f.\n", gamma.red, gamma.green, gamma.blue);
+  SDL_XF86_SetGamma();
   return;
   #endif
   #endif
@@ -655,7 +674,7 @@ void GLimp_Shutdown( void )
 
   #ifndef MACOS_X
   #ifdef USE_ALTGAMMA
-  XF86VidModeSetGamma(disp, scrNum, &origGamma);
+  SDL_XF86_RestoreGamma();
   XCloseDisplay(disp);
   #endif
   #endif
@@ -1306,8 +1325,9 @@ void GLimp_EndFrame (void)
     }
 #else
     minimized = ( SDL_WM_IconifyWindow( ) != 0 );
-    if( fullscreen && minimized )
+    if( fullscreen && minimized ) {
       fullscreen_minimized = qtrue;
+    }
 
     // this shouldn't be necessary, but seems to prevent X11 mouse problems
     if( minimized )
