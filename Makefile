@@ -751,13 +751,13 @@ endif #SunOS
 TARGETS =
 
 ifneq ($(BUILD_SERVER),0)
-  TARGETS += $(B)/Quake3-UrT-Ded.$(ARCH)$(BINEXT)
+  TARGETS += $(B)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT)
 endif
 
 ifneq ($(BUILD_CLIENT),0)
-  TARGETS += $(B)/Quake3-UrT.$(ARCH)$(BINEXT)
+  TARGETS += $(B)/Quake3-UrT-Clear.$(ARCH)$(BINEXT)
   ifneq ($(BUILD_CLIENT_SMP),0)
-    TARGETS += $(B)/Quake3-UrT-smp.$(ARCH)$(BINEXT)
+    TARGETS += $(B)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT)
   endif
 endif
 
