@@ -16,10 +16,10 @@ deploy:
   api_key:
     secure: gKlSUbKXH0AcjiERxNcNY3tOQIcjvJYZdgfHbqjDG3d4T8dgF5ePeY6kxHArQ343G4e27oiqNyOW3iUzH16AiU7SDU90lt9j8WQ8VChmLVT5i006eOQxopQXL+95zDHQRp6GNNLS7V1DLeQDE42q/xdzkRFuDKr90pvOWU7GGmI=
   file:
-    - build/release-linux-x86_64/Quake3-UrT-Ded.x86_64
-    - build/release-linux-x86_64/Quake3-UrT.x86_64
-    - build/release-mingw32-x86/Quake3-UrT-Ded.x86.exe
-    - build/release-mingw32-x86/Quake3-UrT.x86.exe
+    - build/release-linux-x86_64/Quake3-UrT-Clear-Ded.x86_64
+    - build/release-linux-x86_64/Quake3-UrT-Clear.x86_64
+    - build/release-mingw32-x86/Quake3-UrT-Clear-Ded.x86.exe
+    - build/release-mingw32-x86/Quake3-UrT-Clear.x86.exe
   skip_cleanup: true
   on:
     tags: true
