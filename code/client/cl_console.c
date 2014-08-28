@@ -1202,10 +1202,11 @@ void Con_DrawSolidConsole( float frac ) {
 	darkTextColour[3] = 1;
 
 	int conPixHeight = 240;
+	if (con_height->integer >= 0 && con_height->integer <= 100) {
+		conPixHeight = con_height->integer/100.0 * SCREEN_HEIGHT;
+	}
+	
 	if (margin) {
-		if (con_height->integer >= 0 && con_height->integer <= 100) {
-			conPixHeight = con_height->integer/100.0 * SCREEN_HEIGHT;
-		}
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
 		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, lineColour);
 		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight - 1, lineColour);
