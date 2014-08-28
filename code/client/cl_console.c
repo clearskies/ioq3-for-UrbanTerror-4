@@ -1205,7 +1205,7 @@ void Con_DrawSolidConsole( float frac ) {
 	if (con_height->integer >= 0 && con_height->integer <= 100) {
 		conPixHeight = con_height->integer/100.0 * SCREEN_HEIGHT;
 	}
-	
+
 	if (margin) {
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, lineColour);
 		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, lineColour);
@@ -1291,7 +1291,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 		char *version = va("%s / %s", SVN_VERSION, Cvar_VariableString("ui_modversion"));
 
-		i = strlen(version) + 12;
+		i = strlen(version) + 16;
 
 		lineColour[3] *= opacityMult;
 		if (con_timeDisplay->integer == 1 || con_timeDisplay->integer == 3)
@@ -1300,7 +1300,7 @@ void Con_DrawSolidConsole( float frac ) {
 				va("[%02i:%02i:%02i]", now.tm_hour, now.tm_min, now.tm_sec), lineColour, qtrue);
 
 		lineColour[3] = 0.3 * opacityMult;
-		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 11) * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
+		SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 12) * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
 			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + adjustedYMargin,
 			version, lineColour, qtrue);
 		lineColour[3] = 1 * opacityMult;
