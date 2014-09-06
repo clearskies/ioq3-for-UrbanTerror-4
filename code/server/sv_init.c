@@ -116,6 +116,15 @@ void SV_SetConfigstring (int index, const char *val) {
 		val = "";
 	}
 
+	if (index >= 544 && index < (544 + sv_maxclients->integer) && svs.clients[index - 544].netchan.remoteAddress.type == NA_BOT) {
+		if (sv_botRace->integer != 2) {
+			char newInfo[MAX_INFO_STRING];
+			sprintf(newInfo, "%s", val);
+			Info_SetValueForKey(newInfo, "r", va("%i", sv_botRace->integer));
+			val = newInfo;
+		}
+	}
+
 	// don't bother broadcasting an update if no change
 	if ( !strcmp( val, sv.configstrings[ index ] ) ) {
 		return;
@@ -941,6 +950,8 @@ void SV_Init (void) {
 	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
 	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
 	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
+
+	sv_botRace = Cvar_Get("sv_botRace", "2", CVAR_ARCHIVE);
 
 	#ifdef USE_SERVER_EXTRAS
 	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);

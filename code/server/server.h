@@ -320,6 +320,8 @@ extern	cvar_t  *sv_antiblock;
 extern	cvar_t  *sv_forceGear;
 extern	cvar_t  *sv_allowVote;
 
+extern	cvar_t  *sv_botRace;
+
 #ifdef USE_SERVER_EXTRAS
 extern	cvar_t  *sv_infiniteStamina;
 extern	cvar_t  *sv_noRecoil;

@@ -102,6 +102,7 @@ Server
    + `sv_rainbowChat <0|1>` - Makes player chat rainbow-coloured
    + `sv_mapColor <0|1>` - Colours the map name in the server list
    + `sv_colorNames <0|1>` - Allows players to use colours in their names
+   + `sv_botRace <0-4>` - Changed the playermodel used by bots
 
 ### Server Commands (rcon / stdin only) ###
    + `invisible <player>` - Toggles player invisibility

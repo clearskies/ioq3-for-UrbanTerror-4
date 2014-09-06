@@ -71,6 +71,7 @@ cvar_t	*sv_antiblock;
 cvar_t	*sv_forceGear;
 cvar_t	*sv_allowVote;
 
+cvar_t	*sv_botRace;
 
 #ifdef USE_SERVER_EXTRAS
 cvar_t  *sv_infiniteStamina;
