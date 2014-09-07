@@ -119,8 +119,11 @@ void SV_SetConfigstring (int index, const char *val) {
 	if (index >= 544 && index < (544 + sv_maxclients->integer) && svs.clients[index - 544].netchan.remoteAddress.type == NA_BOT) {
 		if (sv_botRace->integer != 2) {
 			char newInfo[MAX_INFO_STRING];
+
 			sprintf(newInfo, "%s", val);
-			Info_SetValueForKey(newInfo, "r", va("%i", sv_botRace->integer));
+			Info_RemoveKey(newInfo, "r");
+			strcat(newInfo, va("\\r\\%i", sv_botRace->integer));
+
 			val = newInfo;
 		}
 	}
