@@ -116,18 +116,6 @@ void SV_SetConfigstring (int index, const char *val) {
 		val = "";
 	}
 
-	if (index >= 544 && index < (544 + sv_maxclients->integer) && svs.clients[index - 544].netchan.remoteAddress.type == NA_BOT) {
-		if (sv_botRace->integer != 2) {
-			char newInfo[MAX_INFO_STRING];
-
-			sprintf(newInfo, "%s", val);
-			Info_RemoveKey(newInfo, "r");
-			strcat(newInfo, va("\\r\\%i", sv_botRace->integer));
-
-			val = newInfo;
-		}
-	}
-
 	// don't bother broadcasting an update if no change
 	if ( !strcmp( val, sv.configstrings[ index ] ) ) {
 		return;

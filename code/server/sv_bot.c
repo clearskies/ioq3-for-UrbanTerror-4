@@ -434,6 +434,26 @@ void SV_BotFrame( int time ) {
 	//NOTE: maybe the game is already shutdown
 	if (!gvm) return;
 	VM_Call( gvm, BOTAI_START_FRAME, time );
+
+	client_t *cl;
+	int i;
+	char *temp;
+
+	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
+		if (cl->state < CS_CONNECTED || cl->netchan.remoteAddress.type != NA_BOT)
+			continue;
+
+		if (sv_botRace->integer != 2) {
+			temp = CopyString(cl->userinfo);
+
+			Info_SetValueForKey(cl->userinfo, "racered", va("%i", sv_botRace->integer));
+			Info_SetValueForKey(cl->userinfo, "raceblue", va("%i", sv_botRace->integer));
+			Info_SetValueForKey(cl->userinfo, "racefree", va("%i", sv_botRace->integer));
+
+			if (strcmp(cl->userinfo, temp))
+				VM_Call(gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients);
+		}
+	}
 }
 
 /*
