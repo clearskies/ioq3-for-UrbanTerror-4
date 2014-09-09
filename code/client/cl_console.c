@@ -1318,7 +1318,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw arrows to show the buffer is backscrolled
 		Con_RE_SetColor(lineColour);
 		for (x=0 ; x<currentCon->linewidth ; x+=3)
-			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*(SMALLCHAR_WIDTH - 1) + margin, y + margin * 2, '*' );
+			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*(SMALLCHAR_WIDTH - 1) + adjustedXMargin, y + margin * 2, '*' );
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
