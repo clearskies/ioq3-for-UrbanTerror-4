@@ -452,6 +452,8 @@ void SV_BotFrame( int time ) {
 
 			if (strcmp(cl->userinfo, temp))
 				VM_Call(gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients);
+
+			Z_Free(temp);
 		}
 	}
 }
