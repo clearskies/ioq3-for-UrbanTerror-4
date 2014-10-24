@@ -523,14 +523,14 @@ void SCR_DrawDemoRecording( void ) {
 
 	char *fmt;
 
-	if (strlen(demoName) > 20)
-		fmt = "^1[DEMO]^7 %.20s...: ^1%iKB";
+	if (strlen(demoName) > 40)
+		fmt = "^1[DEMO]^7 %.40s...: ^1%iKB";
 	else
 		fmt = "^1[DEMO]^7 %s: ^1%iKB";
 
 	sprintf( string, fmt, demoName, pos / 1024);
 
-	SCR_DrawCondensedString(320 - SCR_CondensedStringWidth(7, string) / 2, 1, 7, string, g_color_table[7], qfalse);
+	SCR_DrawFontText(320 - SCR_FontWidth(string, 0.18) / 2, 10, 0.18, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWEDLESS);
 }
 
 
@@ -555,7 +555,7 @@ void SCR_DrawClock( void ) {
 			hour = hourTo12(hour);
 
 		Com_sprintf( string, sizeof (string), "%02i:%02i:%02i", hour, myTime.tm_min, myTime.tm_sec );
-		SCR_DrawCondensedString( 320 - strlen(string) * 4, 11, 8, string, g_color_table[7], qtrue );
+		SCR_DrawFontText(320 - SCR_FontWidth(string, 0.24) / 2, 24, 0.24, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWED);
 	}
 }
 
