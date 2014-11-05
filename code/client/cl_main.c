@@ -2785,8 +2785,8 @@ void CL_InitRenderer( void ) {
 	cls.whiteShader = re.RegisterShader( "white" );
 	cls.consoleShader = re.RegisterShader( "console" );
 
-	if (FS_ReadFile("fonts/fontImage_20.dat", NULL) > 0) {
-		re.RegisterFont("fonts/fontImage_20.dat", 20, &cls.font);
+	if (FS_ReadFile("fonts/fontImage_30.dat", NULL) > 0) {
+		re.RegisterFont("fonts/fontImage_30.dat", 20, &cls.font);
 		cls.fontFont = qtrue;
 	}
 

@@ -159,6 +159,22 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 	SCR_DrawCondensedString(x, y, size, string, c, forceColor);
 }
 
+void SCR_AdjustedFontText(float x, float y, float scale, vec4_t color, const char *text, int style) {
+	vec4_t c;
+	if (color) {
+		c[0] = color[0];
+		c[1] = color[1];
+		c[2] = color[2];
+		c[3] = color[3] * opacityMult;
+	} else {
+		c[0] = 1;
+		c[1] = 1;
+		c[2] = 1;
+		c[3] = opacityMult;
+	}
+	SCR_DrawFontText(x, y, scale, c, text, style);
+}
+
 #define BOX_MARGIN 30
 
 int adjustedScreenWidth = SCREEN_WIDTH;
@@ -1225,11 +1241,11 @@ void Con_DrawSolidConsole( float frac ) {
 
 		for (i = 0; i < numConsoles; i++) {
 			if (currentCon == &consoles[i]) {
-				tabWidth = strlen(consoleNames[i]) * 7 + 14;
+				tabWidth = SCR_FontWidth(consoleNames[i], 0.24f) + 24;
 				tabHeight = 22;
 				lineColour[3] = 1;
 			} else {
-				tabWidth = strlen(consoleNames[i]) * 6 + 8;
+				tabWidth = SCR_FontWidth(consoleNames[i], 0.2f) + 14;
 				tabHeight = 18;
 				lineColour[3] = 0.3;
 			}
@@ -1262,9 +1278,9 @@ void Con_DrawSolidConsole( float frac ) {
 			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, tabHeight, lineColour);
 
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedDrawString(horizOffset + 7, vertOffset + 7, 8, consoleNames[i], g_color_table[7], qtrue);
+				SCR_AdjustedFontText(horizOffset + 12, vertOffset + 14, 0.24f, g_color_table[7], consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
 			} else {
-				SCR_AdjustedDrawString(horizOffset + 4, vertOffset + 5, 7, consoleNames[i], darkTextColour, qtrue);
+				SCR_AdjustedFontText(horizOffset + 7, vertOffset + 12, 0.2f, darkTextColour, consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
 			}
 
 			horizOffset += tabWidth;
