@@ -1241,11 +1241,11 @@ void Con_DrawSolidConsole( float frac ) {
 
 		for (i = 0; i < numConsoles; i++) {
 			if (currentCon == &consoles[i]) {
-				tabWidth = SCR_FontWidth(consoleNames[i], 0.24f) + 24;
+				tabWidth = SCR_FontWidth(consoleNames[i], 0.24f) + 30;
 				tabHeight = 22;
 				lineColour[3] = 1;
 			} else {
-				tabWidth = SCR_FontWidth(consoleNames[i], 0.2f) + 14;
+				tabWidth = SCR_FontWidth(consoleNames[i], 0.18f) + 18;
 				tabHeight = 18;
 				lineColour[3] = 0.3;
 			}
@@ -1278,9 +1278,9 @@ void Con_DrawSolidConsole( float frac ) {
 			SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, tabHeight, lineColour);
 
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedFontText(horizOffset + 12, vertOffset + 14, 0.24f, g_color_table[7], consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
+				SCR_AdjustedFontText(horizOffset + 15, vertOffset + 14, 0.24f, g_color_table[7], consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
 			} else {
-				SCR_AdjustedFontText(horizOffset + 7, vertOffset + 12, 0.2f, darkTextColour, consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
+				SCR_AdjustedFontText(horizOffset + 9, vertOffset + 12, 0.18f, darkTextColour, consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
 			}
 
 			horizOffset += tabWidth;
