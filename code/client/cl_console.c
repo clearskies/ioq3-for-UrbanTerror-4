@@ -984,6 +984,74 @@ void CL_ConsolePrint( char *txt ) {
 					break;
 				}
 			}
+		} else if (Cvar_VariableIntegerValue("cg_showbullethits") == 3) {
+			if (sscanf(txt, "%s was hit by %s for %s damage.", player1, player2, damageString) == 3) {
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player1);
+						sprintf(nplayer1, "^%i%s^7", team, player1);
+
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer1, "%s", player1);
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "%s was hit by %s for %s damage.", nplayer1, nplayer2, damageString);
+					txt = newtxt;
+				}
+			} else if (sscanf(txt, "%s hit %s for %s damage.", player1, player2, damageString) == 3) {
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					if (con_coloredHits->integer == 2) {
+						if (strcmp(player1, "You")) {
+							team = nameToTeamColour(player1);
+							sprintf(nplayer1, "^%i%s^7", team, player1);
+						} else {
+							sprintf(nplayer1, "%s", player1);
+						}
+
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer1, "%s", player1);
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "%s hit %s for %s damage.", nplayer1, nplayer2, damageString);
+					txt = newtxt;
+				}
+			} else if (sscanf(txt, "You were hit by %s for %s damage.", player2, damageString) == 2) {
+				isHit = qtrue;
+				hitNext = qtrue;
+				if (con_coloredHits && con_coloredHits->integer) {
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					if (con_coloredHits->integer == 2) {
+						team = nameToTeamColour(player2);
+						sprintf(nplayer2, "^%i%s^7", team, player2);
+					} else {
+						sprintf(nplayer2, "%s", player2);
+					}
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "You were hit by %s for %s damage.", nplayer2, damageString);
+					txt = newtxt;
+				}
+			}
 		}
 	}
 
