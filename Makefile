@@ -27,6 +27,8 @@ ifeq ($(COMPILE_PLATFORM),mingw32)
   endif
 endif
 
+WARNINGS           =0
+
 BUILD_CLIENT       =1
 BUILD_CLIENT_SMP   =0
 BUILD_SERVER       =1
@@ -229,7 +231,11 @@ ifeq ($(PLATFORM),linux)
   endif
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes -pipe
+  ifeq ($(WARNINGS),1)
+    BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes -pipe
+  else
+    BASE_CFLAGS = -fno-strict-aliasing -pipe -w
+  endif
 
   ifeq ($(USE_OPENAL),1)
     BASE_CFLAGS += -DUSE_OPENAL=1
@@ -472,7 +478,11 @@ endif
 
   ARCH=x86
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
+  ifeq ($(WARNINGS),1)
+    BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
+  else
+    BASE_CFLAGS = -fno-strict-aliasing -w
+  endif
 
   ifeq ($(USE_OPENAL),1)
     BASE_CFLAGS += -DUSE_OPENAL=1 -DUSE_OPENAL_DLOPEN=1
@@ -620,6 +630,7 @@ ifeq ($(PLATFORM),netbsd)
   THREAD_LDFLAGS=-lpthread
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
+
   DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 
   ifneq ($(ARCH),i386)
@@ -830,7 +841,7 @@ ifeq ($(USE_SVN),1)
 endif
 
 define DO_CC       
-$(echo_cmd) "CC $<"
+$(echo_cmd) -e "[\033[32mCLIENT\033[0m] $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) -o $@ -c $<
 endef
 
@@ -840,7 +851,7 @@ $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) -DSMP -o $@ -c $<
 endef
 
 define DO_BOT_CC
-$(echo_cmd) "BOT_CC $<"
+$(echo_cmd) -e "[\033[35mBOT\033[0m   ] $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(BOTCFLAGS) -DBOTLIB -o $@ -c $<
 endef
 
@@ -866,7 +877,7 @@ $(Q)$(CC) $(CFLAGS) -DELF -x assembler-with-cpp -o $@ -c $<
 endef
 
 define DO_DED_CC
-$(echo_cmd) "DED_CC $<"
+$(echo_cmd) -e "[\033[34mSERVER\033[0m] $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) -DDEDICATED $(CFLAGS) -o $@ -c $<
 endef
 
@@ -1203,7 +1214,7 @@ else
 endif
 
 $(B)/Quake3-UrT-Clear.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
-	$(echo_cmd) "LD $@"
+	$(echo_cmd) -e "[\033[33mLD\033[0m    ] $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ) $(CLIENT_LDFLAGS) \
 		$(LDFLAGS) $(LIBSDLMAIN)
 
@@ -1339,7 +1350,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
 endif
 
 $(B)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
-	$(echo_cmd) "LD $@"
+	$(echo_cmd) -e "[\033[33mLD\033[0m    ] $@"
 	$(Q)$(CC) -o $@ $(Q3DOBJ) $(LDFLAGS)
 
 
