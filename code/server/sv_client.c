@@ -186,7 +186,6 @@ void SV_DirectConnect(netadr_t from) {
 	client_t       *cl, *newcl;
 	sharedEntity_t *ent;
 	char           *password;
-	char           *ip;
 	int             clientNum;
 	int             version;
 	int             qport;
@@ -1403,7 +1402,7 @@ void SV_Mapcycle_f(client_t *cl) {
 	cycleFile = Cvar_VariableString("g_mapcycle");
 
 	s = FS_FOpenFileRead(cycleFile, &h, qtrue);
-	if (s != NULL) {
+	if (s) {
 		allMaps = Z_Malloc(s + 1);
 		if (FS_Read(allMaps, s, h)) {
 			SV_SendServerCommand(cl, "print \"Mapcycle:\"");
@@ -1713,9 +1712,10 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 		return;		// may have been kicked during the last usercmd
 	}
 
+	ps = SV_GameClientNum(cl - svs.clients);
+
 	#ifdef USE_SERVER_EXTRAS
 	if (sv_infiniteAmmo->integer) {
-		ps = SV_GameClientNum(cl - svs.clients);
 		for (i = 0; i < MAX_POWERUPS; i++) {
 			cl->powerups[i] = ps->powerups[i];
 		}

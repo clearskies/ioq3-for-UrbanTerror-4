@@ -1134,7 +1134,6 @@ static qboolean GLW_LoadOpenGL( const char *name )
 void GLimp_Init( void )
 {
   qboolean attemptedlibGL = qfalse;
-  qboolean attempted3Dfx = qfalse;
   qboolean success = qfalse;
   char  buf[1024];
   cvar_t *lastValidRenderer = ri.Cvar_Get( "r_lastValidRenderer", "(uninitialized)", CVAR_ARCHIVE );
@@ -1163,9 +1162,6 @@ void GLimp_Init( void )
     if ( !Q_stricmp( r_glDriver->string, OPENGL_DRIVER_NAME ) )
     {
       attemptedlibGL = qtrue;
-    } else if ( !Q_stricmp( r_glDriver->string, _3DFX_DRIVER_NAME ) )
-    {
-      attempted3Dfx = qtrue;
     }
 
     #if 0

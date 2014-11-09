@@ -318,24 +318,6 @@ void Con_Clear_f (void) {
 	Con_Bottom();		// go to end
 }
 
-void Con_DumpThis_f(void) {
-	if (Cmd_Argc() != 2) {
-		Com_Printf ("Usage: condump <filename>\n");
-		return;
-	}
-
-	Con_Dump(currentCon);
-}
-
-void Con_ChatDump_f(void) {
-	if (Cmd_Argc() != 2) {
-		Com_Printf ("Usage: chatdump <filename>\n");
-		return;
-	}
-
-	Con_Dump(&consoles[CONSOLE_CHAT]);
-}
-
 						
 /*
 ================
@@ -395,6 +377,24 @@ void Con_Dump (console_t *console) {
 	}
 
 	FS_FCloseFile( f );
+}
+
+void Con_DumpThis_f(void) {
+	if (Cmd_Argc() != 2) {
+		Com_Printf ("Usage: condump <filename>\n");
+		return;
+	}
+
+	Con_Dump(currentCon);
+}
+
+void Con_ChatDump_f(void) {
+	if (Cmd_Argc() != 2) {
+		Com_Printf ("Usage: chatdump <filename>\n");
+		return;
+	}
+
+	Con_Dump(&consoles[CONSOLE_CHAT]);
 }
 
 						

@@ -1226,11 +1226,8 @@ void RB_StageIteratorGeneric( void )
 void RB_StageIteratorVertexLitTexture( void )
 {
 	shaderCommands_t *input;
-	shader_t		*shader;
 
 	input = &tess;
-
-	shader = input->shader;
 
 	//
 	// compute colors

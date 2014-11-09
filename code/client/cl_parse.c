@@ -339,8 +339,6 @@ void TextDecode6Bit(unsigned char *buf, int blen, char *out, int olen)
 {
  static char val2char[] = "\x00 !#%&'()+,-.0123456789;=@[]^_`abcdefghijklmnopqrstuvwxyz{}~";
  int i;
- int sh = 0;
- int shn = 0;
  int op = -1; // encode added space at start
 
  for(i=0;i<blen;i++) {
@@ -420,7 +418,7 @@ CL_ParseCompressedPureList
 Decode, decompress and set pure file list from compressed data
 ================
 */
-void CL_ParseCompressedPureList()
+void CL_ParseCompressedPureList(void)
 {
  int i,esc,sh,shc,bl;
  static unsigned char buf[PURE_COMPRESS_BUFFER];

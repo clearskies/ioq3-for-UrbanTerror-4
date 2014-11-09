@@ -815,7 +815,7 @@ void Cvar_Restart_f( void ) {
 			}
 			// clear the var completely, since we
 			// can't remove the index from the list
-			Com_Memset( var, 0, sizeof( var ) );
+			Com_Memset( var, 0, sizeof( cvar_t ) );
 			continue;
 		}
 
@@ -988,6 +988,34 @@ void Cvar_Decrease_f(void) {
 	Cvar_SetValue(Cmd_Argv(1), oldval - decrval);
 }
 
+char *Q_stristr2(char *s, char *find) {
+  char c, sc;
+  size_t len;
+
+  if ((c = *find++) != 0)
+  {
+	if (c >= 'a' && c <= 'z')
+	{
+	  c -= ('a' - 'A');
+	}
+	len = strlen(find);
+	do
+	{
+	  do
+	  {
+		if ((sc = *s++) == 0)
+		  return NULL;
+		if (sc >= 'a' && sc <= 'z')
+		{
+		  sc -= ('a' - 'A');
+		}
+	  } while (sc != c);
+	} while (Q_stricmpn(s, find, len) != 0);
+	s--;
+  }
+  return s;
+}
+
 
 /*
 =====================
@@ -1000,12 +1028,12 @@ void Cvar_Find_f(void) {
 		return;
 	}
 	cvar_t *cvar;
-	char *sub;
+	const char *sub;
 	int subInd, i, subLen = strlen(Cmd_Argv(1));
 	char *subS = (char *)Z_Malloc(subLen + 1);
 
 	for (cvar = cvar_vars; cvar; cvar = cvar->next) {
-		sub = Q_stristr(cvar->name, Cmd_Argv(1));
+		sub = Q_stristr2(cvar->name, Cmd_Argv(1));
 		if (sub) {
 			subInd = sub - cvar->name;
 			for (i = 0; i < strlen(cvar->name); i++) {

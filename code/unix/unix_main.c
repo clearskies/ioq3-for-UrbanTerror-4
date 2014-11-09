@@ -120,7 +120,6 @@ static int hist_current = -1, hist_count = 0;
 #define MEM_THRESHOLD 96*1024*1024
 
 #define MAX_CMD 1024
-static char exit_cmdline[MAX_CMD] = "";
 void Sys_DoStartProcess( char *cmdline );
 
 /*

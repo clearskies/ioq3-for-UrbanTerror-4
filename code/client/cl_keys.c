@@ -1176,7 +1176,7 @@ void Key_KeynameCompletion( void(*callback)(const char *s) ) {
 Key_ComboBind
 ============
 */
-void Key_ComboBind_f() {
+void Key_ComboBind_f(void) {
 	if (Cmd_Argc() < 3) {
 		Com_Printf("Usage: cbind <key1> <key2> [action]\n");
 		return;
@@ -1231,13 +1231,13 @@ void Key_ComboBind_f() {
 Key_ComboUnbind
 ============
 */
-void Key_ComboUnbind_f() {
+void Key_ComboUnbind_f(void) {
 	if (Cmd_Argc() < 3) {
 		Com_Printf("Usage: cunbind <key1> <key2>\n");
 		return;
 	}
 
-	int i, bindingLength;
+	int i;
 	int k1, k2;
 	k1 = Key_StringToKeynum(Cmd_Argv(1));
 	k2 = Key_StringToKeynum(Cmd_Argv(2));
@@ -1264,7 +1264,7 @@ void Key_ComboUnbind_f() {
 Key_ComboBindList
 ============
 */
-void Key_ComboBindList_f() {
+void Key_ComboBindList_f(void) {
 	int i;
 	char k1[16], k2[16];
 	for (i = 0; i < numCbinds; i++) {
@@ -1282,7 +1282,7 @@ void Key_ComboBindList_f() {
 Key_ComboUnbindAll
 ============
 */
-void Key_ComboUnbindAll_f() {
+void Key_ComboUnbindAll_f(void) {
 	numCbinds = 0;
 }
 

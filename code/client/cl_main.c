@@ -309,9 +309,8 @@ CL_ChangeReliableCommand
 ======================
 */
 void CL_ChangeReliableCommand( void ) {
-	int r, index, l;
+	int index, l;
 
-	r = clc.reliableSequence - (random() * 5);
 	index = clc.reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
 	l = strlen(clc.reliableCommands[ index ]);
 	if ( l >= MAX_STRING_CHARS - 1 ) {
@@ -746,8 +745,7 @@ void CL_PlayDemo_f( void ) {
 	char    *arg, *ext_test;
 #ifdef USE_DEMO_FORMAT_42
 	int     r, len, v1, v2;
-	char    *s1, *s2;
-	const char  *serverInfo;
+	char    *s2;
 #else
 	int     protocol, i;
 	char    retry[MAX_OSPATH];
@@ -813,14 +811,7 @@ void CL_PlayDemo_f( void ) {
 
 	/* HOLBLIN TODO entete demo */ 
 	#ifdef USE_DEMO_FORMAT_42 
-		
 
-		
-	//@Barbatos: get the mod version from the server
-	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
-	s1 = Info_ValueForKey(serverInfo, "g_modversion");
-	
-	
 	r = FS_Read( &len, 4, clc.demofile );
 	if ( r != 4 ) {
 		CL_DemoCompleted ();
@@ -3381,7 +3372,6 @@ CL_ServerInfoPacket
 void CL_ServerInfoPacket( netadr_t from, msg_t *msg ) {
 	int   i, type;
 	char  info[MAX_INFO_STRING];
-	char* str;
 	char  *infoString;
 	int   prot;
 
@@ -3412,12 +3402,10 @@ void CL_ServerInfoPacket( netadr_t from, msg_t *msg ) {
 			{
 				case NA_BROADCAST:
 				case NA_IP:
-					str = "udp";
 					type = 1;
 					break;
 
 				default:
-					str = "???";
 					type = 0;
 					break;
 			}
@@ -3483,10 +3471,8 @@ CL_GetServerStatus
 ===================
 */
 serverStatus_t *CL_GetServerStatus( netadr_t from ) {
-	serverStatus_t *serverStatus;
 	int i, oldest, oldestTime;
 
-	serverStatus = NULL;
 	for (i = 0; i < MAX_SERVERSTATUSREQUESTS; i++) {
 		if ( NET_CompareAdr( from, cl_serverStatusList[i].address ) ) {
 			return &cl_serverStatusList[i];

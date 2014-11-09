@@ -251,12 +251,10 @@ void SV_AddServerCommand( client_t *client, const char *cmd ) {
 
 			int current = 0;
 			int len;
-			int pos;
 
 			cPos = &newCmd[cPos - cmd];
 			while (*cPos) {
 				if (!Q_IsColorString(cPos)) {
-					pos = cPos - newCmd;
 					len = strlen(cPos);
 					memmove(cPos + 2, cPos, len + 1);
 					cPos[0] = '^';

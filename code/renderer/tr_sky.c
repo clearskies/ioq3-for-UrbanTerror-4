@@ -605,11 +605,8 @@ static void FillCloudBox( const shader_t *shader, int stage )
 void R_BuildCloudData( shaderCommands_t *input )
 {
 	int			i;
-	shader_t	*shader;
 
-	shader = input->shader;
-
-	assert( shader->isSky );
+	assert( input->shader->isSky );
 
 	sky_min = 1.0 / 256.0f;		// FIXME: not correct?
 	sky_max = 255.0 / 256.0f;

@@ -30,7 +30,7 @@ qboolean Bans_AddressMatches(char *ip1, char *ip2);
 
 static int Bans_GenericCallback(void *x, int numColumns, char **columnValue, char **columnName);
 static int Bans_IPExistsCallback(void *x, int numColumns, char **columnValue, char **columnName);
-static int Bans_RangeMatchesCallback(char *ip, int numColumns, char **columnValue, char **columnName);
+static int Bans_RangeMatchesCallback(void *ipv, int numColumns, char **columnValue, char **columnName);
 
 
 
@@ -85,7 +85,6 @@ qboolean Bans_CheckIP(netadr_t addr) {
 	char ip[24], query[MAX_STRING_CHARS];
 	char *errorMessage;
 	int returnCode;
-	int ipMatches = 0;
 	int currentTime = (int)time(NULL);
 
 	sprintf(ip, "%i.%i.%i.%i", addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3]);
@@ -322,8 +321,9 @@ static int Bans_IPExistsCallback(void *x, int numColumns, char **columnValue, ch
 	return 0;
 }
 
-static int Bans_RangeMatchesCallback(char *ip, int numColumns, char **columnValue, char **columnName) {
+static int Bans_RangeMatchesCallback(void *ipv, int numColumns, char **columnValue, char **columnName) {
 	int i;
+	char *ip = (char *)ipv;
 	for (i = 0; i < numColumns; i++) {
 		if (!Q_stricmp(columnName[i], "ip") && Bans_AddressMatches(columnValue[i], ip)) {
 			matchRows = 1;
