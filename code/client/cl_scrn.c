@@ -30,7 +30,6 @@ cvar_t		*cl_debuggraph;
 cvar_t		*cl_graphheight;
 cvar_t		*cl_graphscale;
 cvar_t		*cl_graphshift;
-cvar_t		*cl_drawclock;
 
 cvar_t		*cl_drawHealth;
 cvar_t		*cl_drawKills;
@@ -533,32 +532,6 @@ void SCR_DrawDemoRecording( void ) {
 	SCR_DrawFontText(320 - SCR_FontWidth(string, 0.18) / 2, 10, 0.18, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWEDLESS);
 }
 
-
-/*
-=================
-SCR_DrawClock
-=================
-*/
-void SCR_DrawClock( void ) {
-	if (!Cvar_VariableIntegerValue("cg_draw2d") ||
-		cl_paused->integer ||
-		!cl_drawclock->integer)
-		return;
-
-	qtime_t myTime;
-	int hour;
-	char	string[16];
-	if (cl_drawclock->integer) {
-		Com_RealTime( &myTime );
-		hour = myTime.tm_hour;
-		if (cl_drawclock->integer == 2)
-			hour = hourTo12(hour);
-
-		Com_sprintf( string, sizeof (string), "%02i:%02i:%02i", hour, myTime.tm_min, myTime.tm_sec );
-		SCR_DrawFontText(320 - SCR_FontWidth(string, 0.24) / 2, 24, 0.24, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWED);
-	}
-}
-
 /*
 =================
 SCR_DrawHealth
@@ -729,7 +702,6 @@ void SCR_Init( void ) {
 	cl_graphheight = Cvar_Get ("graphheight", "32", CVAR_CHEAT);
 	cl_graphscale = Cvar_Get ("graphscale", "1", CVAR_CHEAT);
 	cl_graphshift = Cvar_Get ("graphshift", "0", CVAR_CHEAT);
-	cl_drawclock = Cvar_Get ("cl_drawclock", "0", CVAR_ARCHIVE);
 
 	cl_drawHealth = Cvar_Get("cl_drawHealth", "0", CVAR_ARCHIVE);
 	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
@@ -802,7 +774,6 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 		case CA_ACTIVE:
 			CL_CGameRendering( stereoFrame );
 			SCR_DrawDemoRecording();
-			SCR_DrawClock();
 			SCR_DrawHealth();
 			SCR_DrawKills();
 			break;
