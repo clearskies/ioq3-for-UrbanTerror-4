@@ -1072,6 +1072,8 @@ extern	cvar_t	*r_vertexLight;					// vertex lighting mode for better performance
 extern	cvar_t	*r_uiFullScreen;				// ui is running fullscreen
 
 extern	cvar_t	*r_logFile;						// number of frames to emit GL logs
+extern	cvar_t	*r_celshadalgo;					// Cell shading, chooses method: 0 = disabled, 1 = kuwahara, 2 = whiteTexture
+extern	cvar_t	*r_celoutline;						//. cel outline. 1 on, 0 off. (maybe other options later)
 extern	cvar_t	*r_showtris;					// enables wireframe rendering of the world
 extern	cvar_t	*r_showsky;						// forces sky in front of all surfaces
 extern	cvar_t	*r_shownormals;					// draws wireframe normals

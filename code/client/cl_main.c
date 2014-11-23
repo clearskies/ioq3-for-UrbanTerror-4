@@ -2693,6 +2693,7 @@ void CL_Frame ( int msec ) {
 			int threshold = cl_autoKevlarDrop->integer;
 			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold && cl.snap.ps.stats[0]) {
 				Cbuf_AddText("ut_itemdrop kevlar\n");
+				Cbuf_AddText("ut_itemdrop medkit\n");
 			}
 		}
 		cl.lastHealth = cl.snap.ps.stats[0];
