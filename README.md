@@ -1,6 +1,6 @@
 Clearskies' ioquake3 for Urban Terror
 =====================================
-### Version 4.2.019 ###
+### Version 4.2.022 ###
 
 This is the official ioquake3 for Urban Terror with my various client and server additions.
 
