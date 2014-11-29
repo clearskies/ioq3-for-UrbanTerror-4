@@ -3207,8 +3207,9 @@ void CL_Init( void ) {
 
 	// Master servers
 	cl_masterServers[0] = Cvar_Get ("cl_master", MASTER_SERVER_NAME, CVAR_ARCHIVE );
-	cl_masterServers[1] = Cvar_Get ("cl_master2", MASTER2_SERVER_NAME, CVAR_ARCHIVE );
-	cl_masterServers[2] = Cvar_Get ("cl_master3", MASTER3_SERVER_NAME, CVAR_ARCHIVE );
+	cl_masterServers[1] = Cvar_Get ("cl_master1", MASTER_SERVER_NAME, CVAR_ARCHIVE );
+	cl_masterServers[2] = Cvar_Get ("cl_master2", MASTER2_SERVER_NAME, CVAR_ARCHIVE );
+	cl_masterServers[3] = Cvar_Get ("cl_master3", MASTER3_SERVER_NAME, CVAR_ARCHIVE );
 
 	//
 	// register our commands
@@ -3731,7 +3732,7 @@ void CL_GlobalServers_f( void ) {
 			continue;
 		}
 
-		if ( cl_masterServers[adrNum]->modified ) {
+		if ( cl_masterServers[adrNum]->modified || !adr[adrNum].ip) {
 			cl_masterServers[adrNum]->modified = qfalse;
 	
 			Com_Printf( "Resolving %s\n", cl_masterServers[adrNum]->string );
@@ -3743,14 +3744,16 @@ void CL_GlobalServers_f( void ) {
 				cl_masterServers[adrNum]->modified = qfalse;
 				continue;
 			}
-			if ( !strchr( cl_masterServers[adrNum]->string, ':' ) ) {
-				adr[adrNum].type = NA_IP;
-				adr[adrNum].port = BigShort(PORT_MASTER);
-			}
-			Com_Printf( "%s resolved to %i.%i.%i.%i:%i\n", cl_masterServers[adrNum]->string,
-				adr[adrNum].ip[0], adr[adrNum].ip[1], adr[adrNum].ip[2], adr[adrNum].ip[3],
-				BigShort( adr[adrNum].port ) );
 		}
+		adr[adrNum].type = NA_IP;
+		if ( !strchr( cl_masterServers[adrNum]->string, ':' ) ) {
+			adr[adrNum].port = BigShort(PORT_MASTER);
+		}
+		Com_Printf( "%s resolved to %i.%i.%i.%i:%i\n", cl_masterServers[adrNum]->string,
+			adr[adrNum].ip[0], adr[adrNum].ip[1], adr[adrNum].ip[2], adr[adrNum].ip[3],
+			BigShort( adr[adrNum].port ) );
+
+		break;
 	}
 
 	// reset the list, waiting for response
