@@ -422,6 +422,8 @@ extern	cvar_t	*cl_noAmmo;
 extern	cvar_t	*cl_dropKevlarOnFlag;
 #endif
 
+#define CL_MAX_MASTER_SERVERS 3
+extern	cvar_t	*cl_masterServers[CL_MAX_MASTER_SERVERS];
 
 //=================================================
 
