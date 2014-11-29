@@ -310,10 +310,6 @@ FILE*		missingFiles = NULL;
 
 #include "skull.h"
 
-#include "fontImage_0_30.h"
-#include "fontImage_1_30.h"
-#include "fontImage_30.h"
-
 struct newAsset {
 	char *path;
 	const long int *size;
@@ -322,9 +318,6 @@ struct newAsset {
 
 struct newAsset replacementAssets[] = {
 	{"skull.tga", &skull_tga_size, skull_tga},
-	{"fonts/fontImage_30.dat", &fontImage_30_dat_size, fontImage_30_dat},
-	{"fonts/fontImage_0_30.tga", &fontImage_0_30_tga_size, fontImage_0_30_tga},
-	{"fonts/fontImage_1_30.tga", &fontImage_1_30_tga_size, fontImage_1_30_tga},
 	{NULL, NULL, NULL}
 };
 
