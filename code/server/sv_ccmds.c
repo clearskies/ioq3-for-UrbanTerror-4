@@ -1832,6 +1832,36 @@ static void SV_CallVoteAs_f(void) {
 }
 
 /*
+==================
+SV_SayAs
+==================
+*/
+static void SV_SayAs_f(void) {
+	client_t *cl;
+	char sayCommand[MAX_STRING_CHARS];
+
+	if (!com_sv_running->integer) {
+		Com_Printf("Server is not running\n");
+		return;
+	}
+
+	if (Cmd_Argc() < 3) {
+		Com_Printf("Usage: sayas <player> <text>\n");
+		return;
+	}
+
+	cl = SV_GetPlayerByHandle();
+	if (!cl) {
+		return;
+	}
+
+	Com_sprintf(sayCommand, MAX_STRING_CHARS, "say %s", Cmd_ArgsFrom(2));
+	Cmd_TokenizeString(sayCommand);
+
+	VM_Call(gvm, GAME_CLIENT_COMMAND, (int)(cl - svs.clients));
+}
+
+/*
 ======================
 SV_SendReliableCommand
 ======================
@@ -2014,6 +2044,7 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("backwards", SV_Backwards_f);
 
 	Cmd_AddCommand ("src", SV_SendReliableCommand_f);
+	Cmd_AddCommand ("sayas", SV_SayAs_f);
 	#endif
 
 #ifndef PRE_RELEASE_DEMO
