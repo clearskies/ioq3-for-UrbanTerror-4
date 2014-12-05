@@ -101,7 +101,6 @@ cvar_t  *cl_autoKevlarDrop;
 cvar_t  *cl_dropKevlarOnFlag;
 #endif
 
-cvar_t  *cl_consoleCommand;
 cvar_t  *cl_lastServerAddress;
 
 void CL_RandomRGB_f(void);
@@ -3130,7 +3129,6 @@ void CL_Init( void ) {
 	cl_dropKevlarOnFlag = Cvar_Get( "cl_dropKevlarOnFlag", "0", CVAR_ARCHIVE );
 	#endif
 
-	cl_consoleCommand = Cvar_Get( "cl_consoleCommand", "say", CVAR_ARCHIVE );
 	cl_lastServerAddress = Cvar_Get("cl_lastServerAddress", "", CVAR_ROM | CVAR_ARCHIVE);
 
 	// offset for the power function (for style 1, ignored otherwise)

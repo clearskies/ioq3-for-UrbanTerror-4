@@ -415,8 +415,6 @@ extern  cvar_t  *cl_teamchatIndicator;
 extern	cvar_t	*cl_deadText;
 extern	cvar_t	*cl_chatArrow;
 
-extern	cvar_t	*cl_consoleCommand;
-
 #ifdef USE_AUTOMATION
 extern	cvar_t	*cl_noAmmo;
 extern	cvar_t	*cl_dropKevlarOnFlag;
