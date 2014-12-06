@@ -590,11 +590,11 @@ void SCR_DrawKills( void ) {
 		return;
 
 	char killStr[12];
-	int x = 56;
-	int y = 437;
+	int x = 53;
+	int y = 458;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 427;
+		y = 448;
 	}
 
 	if (cl_drawKills->integer == 1 || cl_drawKills->integer == 3) {
