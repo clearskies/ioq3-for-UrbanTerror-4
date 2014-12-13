@@ -210,18 +210,14 @@ not have future usercmd_t executed before it is executed
 void CL_AddReliableCommand( const char *cmd ) {
 	int   index;
 	char *s, *serverInfo;
-	char *redTeam, *blueTeam;
-	char *teamName, *oTeamName;
 	char *pName;
 	char *locName;
 	int lastHitByNum;
 	char *lastHitBy;
 	char health[4];
+	char realCommand[MAX_STRING_CHARS];
 
 	s = CopyString(cmd);
-
-	Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-	s = replaceStr(s, "$hp", health);
 
 	pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
 	s = replaceStr(s, "$p", pName);
@@ -237,33 +233,6 @@ void CL_AddReliableCommand( const char *cmd ) {
 		lastHitBy = "World";
 
 	s = replaceStr(s, "$lasthitby", lastHitBy);
-
-	oTeamName = "Everyone";
-	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
-	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED || cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-		redTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnamered"));
-		if (!redTeam || !*redTeam)
-			redTeam = "Red Dragons";
-
-		blueTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnameblue"));
-		if (!blueTeam || !*blueTeam)
-		 blueTeam = "SWAT";
-
-		if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-			teamName = redTeam;
-			oTeamName = blueTeam;
-		} else {
-			teamName = blueTeam;
-			oTeamName = redTeam;
-		}
-	} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
-		teamName = "Free!";
-		
-	} else {
-		teamName = "Spectator";
-	}
-	s = replaceStr(s, "$team", teamName);
-	s = replaceStr(s, "$oteam", oTeamName);
 
 	cmd = s;
 
@@ -294,6 +263,22 @@ void CL_AddReliableCommand( const char *cmd ) {
 		}
 	}
 
+	Cmd_TokenizeString(cmd);
+	Q_strncpyz(realCommand, cmd, sizeof(realCommand));
+	if (!Q_stricmp(Cmd_Argv(0), "say") ||
+		!Q_stricmp(Cmd_Argv(0), "say_team") ||
+		!Q_stricmp(Cmd_Argv(0), "ut_radio") ||
+		!Q_stricmp(Cmd_Argv(0), "tell") ||
+		!Q_stricmp(Cmd_Argv(0), "tell_target") ||
+		!Q_stricmp(Cmd_Argv(0), "tell_attacker")) {
+		int i;
+		for (i = 0; i < strlen(realCommand); i++) {
+			if (realCommand[i] == '%') {
+				realCommand[i] = 31;
+			}
+		}
+	}
+
 	// if we would be losing an old command that hasn't been acknowledged,
 	// we must drop the connection
 	if ( clc.reliableSequence - clc.reliableAcknowledge > MAX_RELIABLE_COMMANDS ) {
@@ -301,7 +286,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 	}
 	clc.reliableSequence++;
 	index = clc.reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
-	Q_strncpyz( clc.reliableCommands[ index ], cmd, sizeof( clc.reliableCommands[ index ] ) );
+	Q_strncpyz( clc.reliableCommands[ index ], realCommand, sizeof( clc.reliableCommands[ index ] ) );
 }
 
 /*
