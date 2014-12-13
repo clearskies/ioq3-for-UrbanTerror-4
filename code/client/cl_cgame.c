@@ -278,7 +278,7 @@ int skinToChatColour(int team, int skin) {
 		4, // SWAT
 		6, // Purple Haze
 		8, // Fugitives
-		1, // Oilers -> dark green
+		9, // Oilers -> dark green
 		7, // Ice Dragons
 		0, // Black Ice
 		3, // Desert
