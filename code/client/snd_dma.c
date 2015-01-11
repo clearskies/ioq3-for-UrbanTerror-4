@@ -92,6 +92,7 @@ cvar_t		*s_dev;
 cvar_t		*s_show;
 cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
+cvar_t      *s_alttabmute;
 
 #ifdef USE_SOUNDHAX
 cvar_t		*s_soundhax;
@@ -1538,6 +1539,7 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_show = Cvar_Get ("s_show", "0", CVAR_CHEAT);
 	s_testsound = Cvar_Get ("s_testsound", "0", CVAR_CHEAT);
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
+    s_alttabmute = Cvar_Get ("s_alttabmute", "1", CVAR_ARCHIVE);
 
 	#ifdef USE_SOUNDHAX
 	s_soundhax = Cvar_Get ("s_soundhax", "0", CVAR_ARCHIVE);
