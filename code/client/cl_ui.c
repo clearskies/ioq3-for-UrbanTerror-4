@@ -1210,6 +1210,8 @@ void CL_InitUI( void ) {
 	// reset any CVAR_CHEAT cvars registered by ui
 	if ( !clc.demoplaying && !cl_connectedToCheatServer ) 
 		Cvar_SetCheatState();
+
+	CL_cURL_GetNews();
 }
 
 qboolean UI_usesUniqueCDKey( void ) {

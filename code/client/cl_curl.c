@@ -246,6 +246,76 @@ static int CL_cURL_CallbackWrite(void *buffer, size_t size, size_t nmemb,
 	return size*nmemb;
 }
 
+
+#define NEWS_URL "clearsks.com/news.txt"
+void CL_cURL_GetNews(void)
+{
+	char localName[] = "q3ut4/news.txt";
+
+	CL_cURL_Init();
+
+	clc.cURLUsed = qtrue;
+	Com_Printf("URL: %s\n", NEWS_URL);
+	Com_DPrintf("***** CL_cURL_BeginDownload *****\n"
+		"Localname: %s\n"
+		"RemoteURL: %s\n"
+		"****************************\n", localName, NEWS_URL);
+	CL_cURL_Cleanup();
+	Q_strncpyz(clc.downloadURL, NEWS_URL, sizeof(clc.downloadURL));
+	Q_strncpyz(clc.downloadName, localName, sizeof(clc.downloadName));
+	Com_sprintf(clc.downloadTempName, sizeof(clc.downloadTempName),
+		"%s.tmp", localName);
+
+	// Set so UI gets access to it
+	Cvar_Set("cl_downloadName", localName);
+	Cvar_Set("cl_downloadSize", "0");
+	Cvar_Set("cl_downloadCount", "0");
+	Cvar_SetValue("cl_downloadTime", cls.realtime);
+
+	clc.downloadBlock = 0; // Starting new file
+	clc.downloadCount = 0;
+
+	clc.downloadCURL = qcurl_easy_init();
+	if(!clc.downloadCURL) {
+		Com_Error(ERR_DROP, "CL_cURL_BeginDownload: qcurl_easy_init() "
+			"failed\n");
+		return;
+	}
+	clc.download = FS_SV_FOpenFileWrite(clc.downloadTempName);
+	if(!clc.download) {
+		Com_Error(ERR_DROP, "CL_cURL_BeginDownload: failed to open "
+			"%s for writing\n", clc.downloadTempName);
+		return;
+	}
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_WRITEDATA, clc.download);
+	if(com_developer->integer)
+		qcurl_easy_setopt(clc.downloadCURL, CURLOPT_VERBOSE, 1);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_URL, clc.downloadURL);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_TRANSFERTEXT, 0);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_USERAGENT, va("%s %s",
+		Q3_VERSION, qcurl_version()));
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_WRITEFUNCTION,
+		CL_cURL_CallbackWrite);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_WRITEDATA, &clc.download);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_NOPROGRESS, 0);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_PROGRESSFUNCTION,
+		CL_cURL_CallbackProgress);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_PROGRESSDATA, NULL);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_FAILONERROR, 1);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_FOLLOWLOCATION, 1);
+	qcurl_easy_setopt(clc.downloadCURL, CURLOPT_MAXREDIRS, 5);
+	clc.downloadCURLM = qcurl_multi_init();	
+	if(!clc.downloadCURLM) {
+		qcurl_easy_cleanup(clc.downloadCURL);
+		clc.downloadCURL = NULL;
+		Com_Error(ERR_DROP, "CL_cURL_BeginDownload: qcurl_multi_init() "
+			"failed\n");
+		return;
+	}
+	qcurl_multi_add_handle(clc.downloadCURLM, clc.downloadCURL);
+}
+
+
 void CL_cURL_BeginDownload( const char *baseLocalName, const char *remoteURL )
 {
 	char localName[MAX_STRING_CHARS];
@@ -358,6 +428,11 @@ void CL_cURL_PerformDownload(void)
 	}
 	*clc.downloadTempName = *clc.downloadName = 0;
 	Cvar_Set( "cl_downloadName", "" );
-	CL_NextDownload();
+
+	if (Q_stricmp(clc.downloadURL, NEWS_URL)) {
+		CL_NextDownload();
+	} else {
+		CL_ParseNews();
+	}
 }
 #endif /* USE_CURL */

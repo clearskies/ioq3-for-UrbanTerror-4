@@ -3188,6 +3188,16 @@ void CL_Init( void ) {
 	// cgame might not be initialized before menu is used
 	Cvar_Get ("cg_viewsize", "100", CVAR_ARCHIVE );
 
+	Cvar_Get("cl_newsHead1", "", 0);
+	Cvar_Get("cl_newsHead2", "", 0);
+	Cvar_Get("cl_newsHead3", "", 0);
+	Cvar_Get("cl_newsHead4", "", 0);
+
+	Cvar_Get("cl_newsExcerpt1", "", 0);
+	Cvar_Get("cl_newsExcerpt2", "", 0);
+	Cvar_Get("cl_newsExcerpt3", "", 0);
+	Cvar_Get("cl_newsExcerpt4", "", 0);
+
 	// Master servers
 	cl_masterServers[0] = Cvar_Get ("cl_master", MASTER_SERVER_NAME, CVAR_ARCHIVE );
 	cl_masterServers[1] = Cvar_Get ("cl_master1", MASTER_SERVER_NAME, CVAR_ARCHIVE );
@@ -4239,3 +4249,25 @@ void CL_Maplist_f(void) {
 	Com_Printf("-----------------------\nEnd of current maplist\n");
 }
 
+
+CL_ParseNews(void) {
+	char snews[MAX_STRING_CHARS];
+	char *news;
+	char *p;
+	int len, i = 1;
+
+	len = FS_ReadFile("news.txt", (void **)&news);
+	Q_strncpyz(snews, news, sizeof(snews));
+
+	p = strtok(snews, "\n");
+	while (p) {
+		Cvar_Set(va("cl_newsHead%i", i), p);
+
+		// Assume there's a valid excerpt after the headline :<
+		p = strtok(NULL, "\n");
+		Cvar_Set(va("cl_newsExcerpt%i", i), p);
+
+		i++;
+		p = strtok(NULL, "\n");
+	}
+}
