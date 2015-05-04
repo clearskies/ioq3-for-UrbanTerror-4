@@ -4256,6 +4256,8 @@ CL_ParseNews(void) {
 	char *p;
 	int len, i = 1;
 
+	return;
+
 	len = FS_ReadFile("news.txt", (void **)&news);
 	Q_strncpyz(snews, news, sizeof(snews));
 
@@ -4263,7 +4265,10 @@ CL_ParseNews(void) {
 	while (p) {
 		Cvar_Set(va("cl_newsHead%i", i), p);
 
-		// Assume there's a valid excerpt after the headline :<
+		// Assume there's a valid date excerpt after the headline :<
+		p = strtok(NULL, "\n");
+		Cvar_Set(va("cl_newsDate%i", i), p);
+
 		p = strtok(NULL, "\n");
 		Cvar_Set(va("cl_newsExcerpt%i", i), p);
 
