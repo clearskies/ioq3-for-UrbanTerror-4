@@ -113,10 +113,6 @@ cvar_t	*r_singleShader;
 cvar_t	*r_roundImagesDown;
 cvar_t	*r_colorMipLevels;
 cvar_t	*r_picmip;
-// Next one added for cell shading algorithm selection
-cvar_t	*r_celshadalgo;
-//. next one for enable/disable cel bordering all together.
-cvar_t	*r_celoutline;
 cvar_t	*r_showtris;
 cvar_t	*r_showsky;
 cvar_t	*r_shownormals;
@@ -1054,10 +1050,6 @@ void R_Register( void )
 	r_debugSurface = ri.Cvar_Get ("r_debugSurface", "0", CVAR_CHEAT);
 	r_nobind = ri.Cvar_Get ("r_nobind", "0", CVAR_CHEAT);
 	r_showtris = ri.Cvar_Get ("r_showtris", "0", CVAR_CHEAT);
-	// for cell shading algorithm selection
-	r_celshadalgo = ri.Cvar_Get ("r_celshadalgo", "1", CVAR_ARCHIVE | CVAR_LATCH);
-	// cel outline option
-	r_celoutline = ri.Cvar_Get("r_celoutline","1", CVAR_ARCHIVE);
 	r_showsky = ri.Cvar_Get ("r_showsky", "0", CVAR_CHEAT);
 	r_shownormals = ri.Cvar_Get ("r_shownormals", "0", CVAR_CHEAT);
 	r_clear = ri.Cvar_Get ("r_clear", "0", CVAR_CHEAT);
