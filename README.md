@@ -1,9 +1,9 @@
 Clearskies' ioquake3 for Urban Terror
 =====================================
-### Version 4.2.022 ###
-
-This is the official ioquake3 for Urban Terror with my various client and server additions.
-
+### Version 4.2.023 ###
+**********
+#Important, please read!
+This is *not* the official ioquake3 Urban Terror client. This is my own personal client, and nothing in it is at all representative of the direction Frozen Sand wishes to take with Urban Terror. This client is not endorsed by Frozen Sand in any way, and any use is at your own discretion. By using it you understand that whatever happens is your responsibility.
 **********
 
 Client
