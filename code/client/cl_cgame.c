@@ -154,7 +154,7 @@ qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	}
 	snapshot->numEntities = count;
 	for ( i = 0 ; i < count ; i++ ) {
-		snapshot->entities[i] = 
+		snapshot->entities[i] =
 			cl.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
 	}
 
@@ -223,7 +223,7 @@ void CL_ConfigstringModified( void ) {
 
 	// leave the first 0 for uninitialized strings
 	cl.gameState.dataCount = 1;
-		
+
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
 		if ( i == index ) {
 			dup = s;
@@ -372,11 +372,11 @@ qboolean CL_HandleServerCommand(char *s) {
 	}
 
 	if (!strcmp(cmd, "scoresd")) {
-		if (atoi(Cmd_Argv(12)) == clc.clientNum) {
+		if (atoi(Cmd_Argv(14)) == clc.clientNum) {
 			if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED || cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
 				int victimNum = atoi(Cmd_Argv(1));
 				int victimTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + victimNum], "t"));
-				
+
 				if (victimTeam == cl.snap.ps.persistant[PERS_TEAM])
 					cl.currentKills--;
 			}
@@ -395,7 +395,7 @@ qboolean CL_HandleServerCommand(char *s) {
 				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 			else
 				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
-			
+
 
 			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
 				colour = 7;
@@ -427,7 +427,7 @@ qboolean CL_HandleServerCommand(char *s) {
 			colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 		} else {
 			myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
-			
+
 			if (team == myTeam)
 				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
 			else
@@ -550,7 +550,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_MILLISECONDS:
 		return Sys_Milliseconds();
 	case CG_CVAR_REGISTER:
-		Cvar_Register( VMA(1), VMA(2), VMA(3), args[4] ); 
+		Cvar_Register( VMA(1), VMA(2), VMA(3), args[4] );
 		return 0;
 	case CG_CVAR_UPDATE:
 		Cvar_Update( VMA(1) );
@@ -662,7 +662,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return 0;
 	case CG_R_LOADWORLDMAP:
 		re.LoadWorld( VMA(1) );
-		return 0; 
+		return 0;
 	case CG_R_REGISTERMODEL:
 		return re.RegisterModel( VMA(1) );
 	case CG_R_REGISTERSKIN:
@@ -1031,7 +1031,7 @@ void CL_FirstSnapshot( void ) {
 		Cbuf_AddText( cl_activeAction->string );
 		Cvar_Set( "activeAction", "" );
 	}
-	
+
 	Sys_BeginProfiling();
 }
 
@@ -1062,7 +1062,7 @@ void CL_SetCGameTime( void ) {
 		if ( cls.state != CA_ACTIVE ) {
 			return;
 		}
-	}	
+	}
 
 	// if we have gotten to this point, cl.snap is guaranteed to be valid
 	if ( !cl.snap.valid ) {
@@ -1088,10 +1088,10 @@ void CL_SetCGameTime( void ) {
 
 	} else {
 		// cl_timeNudge is a user adjustable cvar that allows more
-		// or less latency to be added in the interest of better 
+		// or less latency to be added in the interest of better
 		// smoothness or better responsiveness.
 		int tn;
-		
+
 		tn = cl_timeNudge->integer;
 		if (tn<-30) {
 			tn = -30;
