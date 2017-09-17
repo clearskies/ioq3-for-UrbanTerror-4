@@ -2,7 +2,7 @@
 # Quake3 Unix Makefile
 #
 # Nov '98 by Zoid <zoid@idsoftware.com>
-#
+# My God this Code is OLD -rjc
 # Loki Hacking by Bernd Kreimeier
 #  and a little more by Ryan C. Gordon.
 #  and a little more by Rafael Barrero
@@ -27,40 +27,31 @@ ifeq ($(COMPILE_PLATFORM),mingw32)
   endif
 endif
 
-BUILD_CLIENT       =1
-BUILD_CLIENT_SMP   =0
-BUILD_SERVER       =1
-BUILD_GAME_SO      =0
-BUILD_GAME_QVM     =0
-OPTIMIZE           =0
-USE_SDL            =1
-USE_OPENAL         =0
-USE_CURL           =1
-USE_CODEC_VORBIS   =0
 
-# Server
-USE_SQLITE_BANS    =1
-USE_SERVER_EXTRAS  =1
+BUILD_CLIENT     =1
+BUILD_CLIENT_SMP =0
+BUILD_SERVER     =1
+BUILD_GAME_SO    =0
+BUILD_GAME_QVM   =0
+OPTIMIZE         =1
+USE_SDL          =1
+USE_OPENAL       =0
+USE_CURL         =1
+USE_CODEC_VORBIS =0
 
-
-USE_SOUNDHAX	   =0
-USE_AUTOMATION	   =0
-
-# Clearskies - X11-based gamma for Linux
-USE_ALTGAMMA	   =1
-
-# Use SSE/SSE2 optimized code
-USE_SSE          =1
-
-# Clearskies - X11-based gamma for Linux
-USE_ALTGAMMA     =1
+ifneq ($(PLATFORM),mingw32)
+  URT_NOSSE =0
+endif
+ifeq ($(URT_NOSSE),1)
+  BUILD_SERVER   =0
+endif
 
 # Barbatos - Urban Terror 4.2 auth system
 # You're not forced to use it.
-USE_AUTH         =1
+USE_AUTH		=1
 
 # Holblin - Urban Terror 4.2 file demo system
-USE_DEMO_FORMAT_42 =1
+USE_DEMO_FORMAT_42	=1
 
 ifeq ($(V),1)
 echo_cmd=@:
@@ -159,7 +150,7 @@ USE_LOCAL_HEADERS=1
 endif
 
 ifeq ($(PLATFORM),darwin)
-  BUILD_MACOSX_UB=x86_64
+  BUILD_MACOSX_UB=i386
 endif
 
 #############################################################################
@@ -173,11 +164,6 @@ CMDIR=$(MOUNT_DIR)/qcommon
 UDIR=$(MOUNT_DIR)/unix
 W32DIR=$(MOUNT_DIR)/win32
 SYSDIR=$(MOUNT_DIR)/sys
-
-ifeq ($(USE_SQLITE_BANS),1)
-  SQLITEDIR=$(MOUNT_DIR)/sqlite3
-endif
-
 GDIR=$(MOUNT_DIR)/game
 CGDIR=$(MOUNT_DIR)/cgame
 BLIBDIR=$(MOUNT_DIR)/botlib
@@ -235,7 +221,7 @@ ifeq ($(PLATFORM),linux)
   endif
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes -pipe
+  BASE_CFLAGS = -Wall -Wimplicit -Wstrict-prototypes -pipe
 
   ifeq ($(USE_OPENAL),1)
     BASE_CFLAGS += -DUSE_OPENAL=1
@@ -260,24 +246,19 @@ ifeq ($(PLATFORM),linux)
   else
     BASE_CFLAGS += -I/usr/X11R6/include
   endif
-
-  ifeq ($(USE_ALTGAMMA), 1)
-  	BASE_CFLAGS += -DUSE_ALTGAMMA=1
-  endif
-
-  OPTIMIZE = -O3 -funroll-loops -fomit-frame-pointer
-
-  ifeq ($(ARCH),x86_64)
-    OPTIMIZE = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+ #Anything more then -O2 and *mmx *msse/2/ causes hitching with urbanterror\
+#also -march is illrelavent unless you know your target cpu
+  OPTIMIZE = -O2 -mmmx -msse -msse2 -msse3
+#having x86_x64 implys having full SSE support up to SSE3 so we will use it,\
+#for old cpus we don't care because anything pre Pentium 4/Althlon 1600+ won't run UrbanTerror 
+  ifeq ($(ARCH),x86_64) 
+    OPTIMIZE = -O2 -msse -msse2 -msse3
     # experimental x86_64 jit compiler! you need GNU as
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),i386)
-    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer \
-      -funroll-loops -falign-loops=2 -falign-jumps=2 \
-      -falign-functions=2 -fstrength-reduce
+    OPTIMIZE = -O2 -mmmx 
+
     HAVE_VM_COMPILED=true
   else
   ifeq ($(ARCH),ppc)
@@ -291,7 +272,7 @@ ifeq ($(PLATFORM),linux)
     BASE_CFLAGS += -DNO_VM_COMPILED
   endif
 
-  DEBUG_CFLAGS = $(BASE_CFLAGS) -g -O0
+  DEBUG_CFLAGS = $(BASE_CFLAGS) -g -O0 -Wall
 
   RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG $(OPTIMIZE)
 
@@ -300,13 +281,10 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LDFLAGS=-lpthread
-  LDFLAGS=-ldl -lm -pthread
+  LDFLAGS=-ldl -lm
 
   ifeq ($(USE_SDL),1)
     CLIENT_LDFLAGS=$(shell sdl-config --libs)
-    ifeq ($(USE_ALTGAMMA), 1)
-      CLIENT_LDFLAGS += -lX11 -lXxf86vm
-    endif
   else
     CLIENT_LDFLAGS=-L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
@@ -316,7 +294,7 @@ ifeq ($(PLATFORM),linux)
       CLIENT_LDFLAGS += -lopenal
     endif
   endif
-
+ 
   ifeq ($(USE_CURL),1)
     ifneq ($(USE_CURL_DLOPEN),1)
       CLIENT_LDFLAGS += -lcurl
@@ -344,7 +322,7 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS=
   CLIENT_LDFLAGS=
   LDFLAGS=
-  OPTIMIZE=
+  OPTIMIZE= -O2 
   ifeq ($(BUILD_MACOSX_UB),ppc)
     CC=gcc-3.3
     BASE_CFLAGS += -arch ppc -DSMP \
@@ -370,19 +348,19 @@ ifeq ($(PLATFORM),darwin)
     # the -m linker flag, but you can't shut up the warnings
     USE_OPENAL_DLOPEN=1
   else
-  ifeq ($(BUILD_MACOSX_UB),x86_64)
+  ifeq ($(BUILD_MACOSX_UB),i386)
     CC=/Developer/usr/bin/gcc-4.2 # i686-apple-darwin10-gcc-4.2.1 (GCC) 4.2.1 (Apple Inc. build 5666) (dot 3) - from XCode 3.2.6, hacked install on a 10.7.4 OSX
-    BASE_CFLAGS += -arch x86_64 -DSMP \
+    BASE_CFLAGS += -arch i386 -DSMP \
       -mmacosx-version-min=10.5 -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 \
       -nostdinc \
       -F/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks \
       -I/Developer/SDKs/MacOSX10.5.sdk/usr/lib/gcc/i686-apple-darwin10/4.2.1/include \
       -isystem /Developer/SDKs/MacOSX10.5.sdk/usr/include
-    LDFLAGS = -arch x86_64 -mmacosx-version-min=10.5 \
-      -L/Developer/SDKs/MacOSX10.5.sdk/usr/lib/gcc/i686-apple-darwin10/4.2.1/x86_64 \
+    LDFLAGS = -arch i386 -mmacosx-version-min=10.5 \
+      -L/Developer/SDKs/MacOSX10.5.sdk/usr/lib/gcc/i686-apple-darwin10/4.2.1 \
       -F/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks \
       -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk
-    ARCH=x86_64
+    ARCH=i386
     BUILD_SERVER=0
   else
     # for whatever reason using the headers in the MacOSX SDKs tend to throw
@@ -392,14 +370,16 @@ ifeq ($(PLATFORM),darwin)
     BASE_CFLAGS += -Wall -Wimplicit -Wstrict-prototypes
   endif
   endif
-
+#sse2 should be safe to use on mac so long as the target machine supports sse2\
+#(anything capable of running urt will have sse2 support so the point is null)
   ifeq ($(ARCH),ppc)
-    OPTIMIZE += -faltivec -O3
+    OPTIMIZE += -faltivec -O2
   endif
-
-  ifeq ($(ARCH),x86_64)
-    OPTIMIZE += -O2 -march=core2 -fomit-frame-pointer -ffast-math -funroll-loops \
-      -falign-loops=2 -falign-jumps=2 -falign-functions=2
+  ifeq ($(ARCH),i386)
+    OPTIMIZE += -O2 -msse -mfpmath=sse
+    # x86 vm will crash without -mstackrealign since MMX instructions will be
+    # used no matter what and they corrupt the frame pointer in VM calls
+    BASE_CFLAGS += -mstackrealign
   endif
 
   BASE_CFLAGS += -fno-strict-aliasing -DMACOS_X -fno-common -pipe
@@ -444,6 +424,8 @@ ifeq ($(PLATFORM),darwin)
     #CLIENT_LDFLAGS += -L/usr/X11R6/$(LIB) -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
+  OPTIMIZE += -O2 -msse -msse2
+
   ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
   endif
@@ -474,9 +456,9 @@ WINDRES=windres
 endif
 
   ARCH=x86
-
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes -DWINVER=0x0501
-
+#warnings are slow and ioquake 3 1.35 throws a tonn of them >>disabled unless are are compiling for debug
+  BASE_CFLAGS = -W
+#eventully lose the static libs please they cause all manner of evil
   ifeq ($(USE_OPENAL),1)
     BASE_CFLAGS += -DUSE_OPENAL=1 -DUSE_OPENAL_DLOPEN=1
   endif
@@ -491,17 +473,18 @@ endif
   ifeq ($(USE_CODEC_VORBIS),1)
     BASE_CFLAGS += -DUSE_CODEC_VORBIS=1
   endif
-
-  OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -falign-loops=2 \
-    -funroll-loops -falign-jumps=2 -falign-functions=2 -fstrength-reduce
-
-  ifeq ($(USE_SSE),1)
-    OPTIMIZE += -msse -msse2 -mfpmath=sse
+  
+  ifeq ($(URT_NOSSE),1)
+    #Optimizations for NON-SSE/SSE2 CPUs
+    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -ffast-math -falign-loops=2 \
+      -funroll-loops -falign-jumps=2 -falign-functions=2 -fstrength-reduce
+  else
+    #Optimizations for SSE/SSE2 CPUs
+    OPTIMIZE = -O2  -mmmx -msse -msse2 
   endif
-
   HAVE_VM_COMPILED = true
 
-  DEBUG_CFLAGS=$(BASE_CFLAGS) -g -O0
+  DEBUG_CFLAGS=$(BASE_CFLAGS) -g -O0 -Wall
 
   RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG $(OPTIMIZE)
 
@@ -538,182 +521,68 @@ else # ifeq mingw32
 
 ifeq ($(PLATFORM),freebsd)
 
-   ifeq ($(shell which pkg-config > /dev/null; echo $$?),0)
-     CURL_CFLAGS=$(shell pkg-config --cflags libcurl)
-     CURL_LIBS=$(shell pkg-config --libs libcurl)
-     OPENAL_CFLAGS=$(shell pkg-config --cflags openal)
-     OPENAL_LIBS=$(shell pkg-config --libs openal)
-     SDL_CFLAGS=$(shell pkg-config --cflags sdl|sed 's/-Dmain=SDL_main//')
-     SDL_LIBS=$(shell pkg-config --libs sdl)
-     VORBIS_CFLAGS=$(shell pkg-config --silence-errors --cflags vorbis vorbisfile)
-     VORBIS_LIBS=$(shell pkg-config --silence-errors --libs vorbis vorbisfile)
-   endif
+  ifneq (,$(findstring alpha,$(shell uname -m)))
+    ARCH=axp
+  else #default to i386
+    ARCH=i386
+  endif #alpha test
 
-   USE_SDL = 1
 
-   ifndef HOMEPATH
-     HOMEPATH = /.ioUrbanTerror
-   endif
+  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
+                -I/usr/X11R6/include
 
-   ifndef DEFAULT_LIBDIR
-     DEFAULT_LIBDIR = /usr/local/lib/iourbanterror
-   endif
-
-  # flags
-  BASE_CFLAGS = \
-    -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
-    -DHOMEPATH=\\\"$(HOMEPATH)\\\" \
-    -DDEFAULT_LIBDIR=\\\"$(DEFAULT_LIBDIR)\\\" \
-    -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
-  CLIENT_CFLAGS += $(SDL_CFLAGS)
-  HAVE_VM_COMPILED = true
-
-  OPTIMIZEVM =
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-
-  SHLIBEXT=so
-  SHLIBCFLAGS=-fPIC
-  SHLIBLDFLAGS=-shared $(LDFLAGS)
-
-  THREAD_LDFLAGS=-lpthread
-  LDFLAGS=-lm
-
-  CLIENT_LDFLAGS = $(SDL_LIBS) -lX11  -lXxf86dga -lXxf86vm
-
-  # optional features/libraries
-  ifeq ($(USE_OPENAL),1)
-    CLIENT_LDFLAGS += $(THREAD_LIBS) $(OPENAL_LIBS)
-    CLIENT_CFLAGS += -DUSE_OPENAL
-    ifneq ($(USE_LOCAL_HEADERS),1)
-      CLIENT_CFLAGS += $(OPENAL_CFLAGS)
-    endif
-  endif
-
-  ifeq ($(USE_CURL),1)
-    CLIENT_LDFLAGS += $(CURL_LIBS)
-    CLIENT_CFLAGS += -DUSE_CURL
-    ifneq ($(USE_LOCAL_HEADERS),1)
-      CLIENT_CFLAGS += $(CURL_CFLAGS)
-    endif
-  endif
-
-  ifeq ($(USE_CODEC_VORBIS),1)
-    CLIENT_LDFLAGS += $(VORBIS_LIBS)
-    CLIENT_CFLAGS += -DUSE_CODEC_VORBIS
-    ifneq ($(USE_LOCAL_HEADERS),1)
-      CLIENT_CFLAGS += $(VORBIS_CFLAGS)
-    endif
-  endif
-
-  ifeq ($(BUILD_CLIENT),1)
-    BASE_CFLAGS += $(CLIENT_CFLAGS)
-  endif
-
-  # cross-compiling tweaks
-  ifeq ($(ARCH),i386)
-    ifeq ($(CROSS_COMPILING),1)
-      BASE_CFLAGS += -m32
-    endif
-  endif
-  ifeq ($(ARCH),amd64)
-    ifeq ($(CROSS_COMPILING),1)
-      BASE_CFLAGS += -m64
-    endif
-  endif
-
-  RELEASE_CFLAGS = $(BASE_CFLAGS)
-  DEBUG_CFLAGS = $(BASE_CFLAGS) -g
-
-else # ifeq freebsd
-
-#############################################################################
-# SETUP AND BUILD -- OPENBSD
-#############################################################################
-
-ifeq ($(PLATFORM),openbsd)
-
-  # Get the machine type
-  ARCH=$(shell uname -m)
-
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
+  DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 
   ifeq ($(USE_OPENAL),1)
-    BASE_CFLAGS += -DUSE_OPENAL
+    BASE_CFLAGS += -DUSE_OPENAL=1
     ifeq ($(USE_OPENAL_DLOPEN),1)
-      BASE_CFLAGS += -DUSE_OPENAL_DLOPEN
-    endif
-  endif
-
-  ifeq ($(USE_CURL),1)
-    BASE_CFLAGS += -DUSE_CURL=1
-    ifeq ($(USE_CURL_DLOPEN),1)
-      BASE_CFLAGS += -DUSE_CURL_DLOPEN=1
+      BASE_CFLAGS += -DUSE_OPENAL_DLOPEN=1
     endif
   endif
 
   ifeq ($(USE_CODEC_VORBIS),1)
-    BASE_CFLAGS += -DUSE_CODEC_VORBIS
+    BASE_CFLAGS += -DUSE_CODEC_VORBIS=1
   endif
 
   ifeq ($(USE_SDL),1)
-    BASE_CFLAGS += -DUSE_SDL_VIDEO=1 -DUSE_SDL_SOUND=1 \
-	$(shell pkg-config sdl --cflags)
-  else
-    BASE_CFLAGS += -I/usr/X11R6/include
+    BASE_CFLAGS += $(shell sdl-config --cflags) -DUSE_SDL_VIDEO=1 -DUSE_SDL_SOUND=1
   endif
 
-  ifeq ($(USE_ALTGAMMA), 1)
-        BASE_CFLAGS += -DUSE_ALTGAMMA=1
-  endif
-
-  OPTIMIZE = -O2 -ffast-math -funroll-loops -fomit-frame-pointer
-
-  ifeq ($(ARCH),amd64)
-    HAVE_VM_COMPILED = true
+  ifeq ($(ARCH),axp)
+    BASE_CFLAGS += -DNO_VM_COMPILED
+    RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O3 -ffast-math -funroll-loops \
+      -fomit-frame-pointer -fexpensive-optimizations
   else
   ifeq ($(ARCH),i386)
+    RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O3 -mtune=pentiumpro \
+      -march=pentium -fomit-frame-pointer -pipe -ffast-math \
+      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
+      -funroll-loops -fstrength-reduce
     HAVE_VM_COMPILED=true
   else
-  ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -maltivec
-    HAVE_VM_COMPILED=false
-  endif
-  endif
-  endif
-
-  ifneq ($(HAVE_VM_COMPILED),true)
     BASE_CFLAGS += -DNO_VM_COMPILED
   endif
-
-  DEBUG_CFLAGS=$(BASE_CFLAGS) -g -O0
-
-  RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG $(OPTIMIZE)
+  endif
 
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LDFLAGS=-lpthread
+  # don't need -ldl (FreeBSD)
   LDFLAGS=-lm
 
+  CLIENT_LDFLAGS =
+
   ifeq ($(USE_SDL),1)
-    CLIENT_LDFLAGS=$(shell pkg-config sdl --libs)
-    ifeq ($(USE_ALTGAMMA), 1)
-      CLIENT_LDFLAGS += -lX11 -lXxf86vm
-    endif
+    CLIENT_LDFLAGS += $(shell sdl-config --libs)
   else
-    CLIENT_LDFLAGS=-L/usr/X11R6/lib -lX11 -lXext -lXxf86dga -lXxf86vm
+    CLIENT_LDFLAGS += -L/usr/X11R6/$(LIB) -lGL -lX11 -lXext -lXxf86dga -lXxf86vm
   endif
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
-      CLIENT_LDFLAGS += $(shell pkg-config openal --libs)
-    endif
-  endif
-
-  ifeq ($(USE_CURL),1)
-    ifneq ($(USE_CURL_DLOPEN),1)
-      CLIENT_LDFLAGS += -lcurl
+      CLIENT_LDFLAGS += $(THREAD_LDFLAGS) -lopenal
     endif
   endif
 
@@ -721,7 +590,8 @@ ifeq ($(PLATFORM),openbsd)
     CLIENT_LDFLAGS += -lvorbisfile -lvorbis -logg
   endif
 
-else # ifeq openbsd
+
+else # ifeq freebsd
 
 #############################################################################
 # SETUP AND BUILD -- NETBSD
@@ -740,7 +610,6 @@ ifeq ($(PLATFORM),netbsd)
   THREAD_LDFLAGS=-lpthread
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
-
   DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 
   ifneq ($(ARCH),i386)
@@ -806,16 +675,16 @@ ifeq ($(PLATFORM),sunos)
     BASE_CFLAGS += -I/usr/openwin/include
   endif
 
-  OPTIMIZE = -O3 -funroll-loops
+  OPTIMIZE = -O3 -ffast-math -funroll-loops
 
   ifeq ($(ARCH),sparc)
-    OPTIMIZE = -O3 -falign-loops=2 \
+    OPTIMIZE = -O3 -ffast-math -falign-loops=2 \
       -falign-jumps=2 -falign-functions=2 -fstrength-reduce \
       -mtune=ultrasparc -mv8plus -mno-faster-structs \
       -funroll-loops
   else
   ifeq ($(ARCH),i386)
-    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer \
+    OPTIMIZE = -O3 -march=i586 -fomit-frame-pointer -ffast-math \
       -funroll-loops -falign-loops=2 -falign-jumps=2 \
       -falign-functions=2 -fstrength-reduce
     HAVE_VM_COMPILED=true
@@ -865,7 +734,6 @@ endif #Linux
 endif #darwin
 endif #mingw32
 endif #FreeBSD
-endif #OpenBSD
 endif #NetBSD
 endif #IRIX
 endif #SunOS
@@ -873,13 +741,17 @@ endif #SunOS
 TARGETS =
 
 ifneq ($(BUILD_SERVER),0)
-  TARGETS += $(B)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT)
+  TARGETS += $(B)/Quake3-UrT-Ded.$(ARCH)$(BINEXT)
 endif
 
 ifneq ($(BUILD_CLIENT),0)
-  TARGETS += $(B)/Quake3-UrT-Clear.$(ARCH)$(BINEXT)
+  ifeq ($(URT_NOSSE),1)
+    TARGETS += $(B)/Quake3-UrT-no-SSE2.$(ARCH)$(BINEXT)
+  else
+    TARGETS += $(B)/Quake3-UrT.$(ARCH)$(BINEXT)
+  endif
   ifneq ($(BUILD_CLIENT_SMP),0)
-    TARGETS += $(B)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT)
+    TARGETS += $(B)/Quake3-UrT-smp.$(ARCH)$(BINEXT)
   endif
 endif
 
@@ -909,22 +781,6 @@ ifeq ($(USE_CCACHE),1)
   CC := ccache $(CC)
 endif
 
-ifeq ($(USE_SOUNDHAX),1)
-  BASE_CFLAGS += -DUSE_SOUNDHAX=1
-endif
-
-ifeq ($(USE_AUTOMATION),1)
-  BASE_CFLAGS += -DUSE_AUTOMATION=1
-endif
-
-ifeq ($(USE_SQLITE_BANS),1)
-  BASE_CFLAGS += -DUSE_SQLITE_BANS=1
-endif
-
-ifeq ($(USE_SERVER_EXTRAS),1)
-  BASE_CFLAGS += -DUSE_SERVER_EXTRAS=1
-endif
-
 #Barbatos
 ifeq ($(USE_AUTH),1)
   BASE_CFLAGS += -DUSE_AUTH=1
@@ -951,8 +807,8 @@ ifeq ($(USE_SVN),1)
   BASE_CFLAGS += -DSVN_VERSION=\\\"$(SVN_VERSION)\\\"
 endif
 
-define DO_CC
-$(echo_cmd) -e "[\033[32mCLIENT\033[0m] $<"
+define DO_CC       
+$(echo_cmd) "CC $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) -o $@ -c $<
 endef
 
@@ -962,7 +818,7 @@ $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) -DSMP -o $@ -c $<
 endef
 
 define DO_BOT_CC
-$(echo_cmd) -e "[\033[35mBOT\033[0m   ] $<"
+$(echo_cmd) "BOT_CC $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(BOTCFLAGS) -DBOTLIB -o $@ -c $<
 endef
 
@@ -983,17 +839,17 @@ $(Q)$(DO_QVM_DEP)
 endef
 
 define DO_AS
-$(echo_cmd) -e "[\036[AS\033[0m    ] $<"
+$(echo_cmd) "AS $<"
 $(Q)$(CC) $(CFLAGS) -DELF -x assembler-with-cpp -o $@ -c $<
 endef
 
 define DO_DED_CC
-$(echo_cmd) -e "[\033[34mSERVER\033[0m] $<"
+$(echo_cmd) "DED_CC $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) -DDEDICATED $(CFLAGS) -o $@ -c $<
 endef
 
 define DO_WINDRES
-$(echo_cmd) "[\033[33mWINRES\033[0m] $<"
+$(echo_cmd) "WINDRES $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
 
@@ -1019,7 +875,7 @@ endif
 # an informational message, then start building
 targets: makedirs tools
 	@echo ""
-	@echo "Building Quake3-UrT-Clear in $(B):"
+	@echo "Building Quake3-UrT in $(B):"
 	@echo "  PLATFORM: $(PLATFORM)"
 	@echo "  ARCH: $(ARCH)"
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
@@ -1044,31 +900,24 @@ else
 	@echo "no targets!"
 endif
 
-
 makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
 	@if [ ! -d $(B) ];then $(MKDIR) $(B);fi
 	@if [ ! -d $(B)/client ];then $(MKDIR) $(B)/client;fi
 	@if [ ! -d $(B)/clientsmp ];then $(MKDIR) $(B)/clientsmp;fi
 	@if [ ! -d $(B)/ded ];then $(MKDIR) $(B)/ded;fi
-
-ifneq ($(BUILD_GAME_SO),0)
 	@if [ ! -d $(B)/baseq3 ];then $(MKDIR) $(B)/baseq3;fi
 	@if [ ! -d $(B)/baseq3/cgame ];then $(MKDIR) $(B)/baseq3/cgame;fi
 	@if [ ! -d $(B)/baseq3/game ];then $(MKDIR) $(B)/baseq3/game;fi
 	@if [ ! -d $(B)/baseq3/ui ];then $(MKDIR) $(B)/baseq3/ui;fi
 	@if [ ! -d $(B)/baseq3/qcommon ];then $(MKDIR) $(B)/baseq3/qcommon;fi
+	@if [ ! -d $(B)/baseq3/vm ];then $(MKDIR) $(B)/baseq3/vm;fi
 	@if [ ! -d $(B)/missionpack ];then $(MKDIR) $(B)/missionpack;fi
 	@if [ ! -d $(B)/missionpack/cgame ];then $(MKDIR) $(B)/missionpack/cgame;fi
 	@if [ ! -d $(B)/missionpack/game ];then $(MKDIR) $(B)/missionpack/game;fi
 	@if [ ! -d $(B)/missionpack/ui ];then $(MKDIR) $(B)/missionpack/ui;fi
 	@if [ ! -d $(B)/missionpack/qcommon ];then $(MKDIR) $(B)/missionpack/qcommon;fi
-endif
-
-ifneq ($(BUILD_GAME_QVM),0)
-	@if [ ! -d $(B)/baseq3/vm ];then $(MKDIR) $(B)/baseq3/vm;fi
 	@if [ ! -d $(B)/missionpack/vm ];then $(MKDIR) $(B)/missionpack/vm;fi
-endif
 
 #############################################################################
 # QVM BUILD TOOLS
@@ -1258,23 +1107,15 @@ ifeq ($(ARCH),i386)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
     $(B)/client/matha.o \
-    $(B)/client/ftola.o
-ifeq ($(USE_SSE),1)
-  Q3OBJ += $(B)/client/snapvector_sse.o
-else
-  Q3OBJ += $(B)/client/snapvectora.o
-endif
+    $(B)/client/ftola.o \
+    $(B)/client/snapvectora.o
 endif
 ifeq ($(ARCH),x86)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
     $(B)/client/matha.o \
-    $(B)/client/ftola.o
-ifeq ($(USE_SSE),1)
-  Q3OBJ += $(B)/client/snapvector_sse.o
-else
-  Q3OBJ += $(B)/client/snapvectora.o
-endif
+    $(B)/client/ftola.o \
+    $(B)/client/snapvectora.o
 endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
@@ -1285,9 +1126,6 @@ ifeq ($(HAVE_VM_COMPILED),true)
     Q3OBJ += $(B)/client/vm_x86.o
   endif
   ifeq ($(ARCH),x86_64)
-    Q3OBJ += $(B)/client/vm_x86_64.o $(B)/client/vm_x86_64_assembler.o
-  endif
-  ifeq ($(ARCH),amd64)
     Q3OBJ += $(B)/client/vm_x86_64.o $(B)/client/vm_x86_64_assembler.o
   endif
   ifeq ($(ARCH),ppc)
@@ -1326,24 +1164,28 @@ else
     endif
   endif
 
-  ifneq ($(PLATFORM),openbsd)
-    Q3POBJ += \
-      $(B)/clientsmp/linux_glimp.o
-  endif
-
-  Q3POBJ += \
+  Q3POBJ = \
+    $(B)/client/linux_glimp.o \
     $(B)/client/sdl_glimp.o
 
   Q3POBJ_SMP = \
+    $(B)/clientsmp/linux_glimp.o \
     $(B)/clientsmp/sdl_glimp.o
 endif
 
-$(B)/Quake3-UrT-Clear.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
-	$(echo_cmd) -e "[\033[31mLINK\033[0m  ] $@"
+ifeq ($(URT_NOSSE),1)
+$(B)/Quake3-UrT-no-SSE2.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
+	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ) $(CLIENT_LDFLAGS) \
 		$(LDFLAGS) $(LIBSDLMAIN)
+else
+$(B)/Quake3-UrT.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
+	$(echo_cmd) "LD $@"
+	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ) $(CLIENT_LDFLAGS) \
+		$(LDFLAGS) $(LIBSDLMAIN)
+endif
 
-$(B)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ_SMP) $(LIBSDLMAIN)
+$(B)/Quake3-UrT-smp.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ_SMP) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ_SMP) $(CLIENT_LDFLAGS) \
 		$(THREAD_LDFLAGS) $(LDFLAGS) $(LIBSDLMAIN)
@@ -1428,17 +1270,11 @@ Q3DOBJ = \
   $(B)/ded/null_input.o \
   $(B)/ded/null_snddma.o \
 
-ifeq ($(USE_SQLITE_BANS),1)
-  Q3DOBJ += \
-    $(B)/ded/sqlite3.o \
-    $(B)/ded/sv_bans.o
-endif
-
 ifeq ($(PLATFORM),mingw32)
   Q3DOBJ += \
     $(B)/ded/win_shared.o \
     $(B)/ded/win_syscon.o \
-    $(B)/ded/win_main.o
+    $(B)/ded/win_main.o 
 else
   Q3DOBJ += \
     $(B)/ded/linux_signals.o \
@@ -1449,22 +1285,14 @@ endif
 ifeq ($(ARCH),i386)
   Q3DOBJ += \
       $(B)/ded/ftola.o \
+      $(B)/ded/snapvectora.o \
       $(B)/ded/matha.o
-ifeq ($(USE_SSE),1)
-  Q3DOBJ += $(B)/ded/snapvector_sse.o
-else
-  Q3DOBJ += $(B)/ded/snapvectora.o
-endif
 endif
 ifeq ($(ARCH),x86)
   Q3DOBJ += \
       $(B)/ded/ftola.o \
+      $(B)/ded/snapvectora.o \
       $(B)/ded/matha.o
-ifeq ($(USE_SSE),1)
-  Q3DOBJ += $(B)/ded/snapvector_sse.o
-else
-  Q3DOBJ += $(B)/ded/snapvectora.o
-endif
 endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
@@ -1475,18 +1303,15 @@ ifeq ($(HAVE_VM_COMPILED),true)
     Q3DOBJ += $(B)/ded/vm_x86.o
   endif
   ifeq ($(ARCH),x86_64)
-    Q3DOBJ += $(B)/ded/vm_x86_64.o $(B)/ded/vm_x86_64_assembler.o
-  endif
-  ifeq ($(ARCH),amd64)
-    Q3DOBJ += $(B)/ded/vm_x86_64.o $(B)/ded/vm_x86_64_assembler.o
+    Q3DOBJ += $(B)/ded/vm_x86_64.o $(B)/client/vm_x86_64_assembler.o
   endif
   ifeq ($(ARCH),ppc)
     Q3DOBJ += $(B)/ded/vm_ppc.o
   endif
 endif
 
-$(B)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
-	$(echo_cmd) -e "[\033[31mLINK\033[0m  ] $@"
+$(B)/Quake3-UrT-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
+	$(echo_cmd) "LD $@"
 	$(Q)$(CC) -o $@ $(Q3DOBJ) $(LDFLAGS)
 
 
@@ -1830,11 +1655,6 @@ $(B)/ded/%.o: $(W32DIR)/%.c
 $(B)/ded/%.o: $(SYSDIR)/%.c
 	$(DO_DED_CC)
 
-ifeq ($(USE_SQLITE_BANS),1)
-$(B)/ded/%.o: $(SQLITEDIR)/%.c
-	$(DO_DED_CC)
-endif
-
 # Extra dependencies to ensure the SVN version is incorporated
 ifeq ($(USE_SVN),1)
   $(B)/client/cl_console.o : .svn/entries
@@ -1909,17 +1729,21 @@ copyfiles: release
 	-$(MKDIR) -p -m 0755 $(COPYDIR)/missionpack
 
 ifneq ($(BUILD_CLIENT),0)
-	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear.$(ARCH)$(BINEXT)
+	ifeq ($(URT_NOSSE),1)
+		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-no-SSE2.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-no-SSE2.$(ARCH)$(BINEXT)
+	else
+		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT.$(ARCH)$(BINEXT)
+	endif
 endif
 
 # Don't copy the SMP until it's working together with SDL.
 #ifneq ($(BUILD_CLIENT_SMP),0)
-#	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear-smp.$(ARCH)$(BINEXT)
+#	$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-smp.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-smp.$(ARCH)$(BINEXT)
 #endif
 
 ifneq ($(BUILD_SERVER),0)
-	@if [ -f $(BR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT) ]; then \
-		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Clear-Ded.$(ARCH)$(BINEXT); \
+	@if [ -f $(BR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT) ]; then \
+		$(INSTALL) -s -m 0755 $(BR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT) $(COPYDIR)/Quake3-UrT-Ded.$(ARCH)$(BINEXT); \
 	fi
 endif
 

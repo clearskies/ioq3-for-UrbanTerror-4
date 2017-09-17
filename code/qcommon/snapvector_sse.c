@@ -15,24 +15,37 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Quake III Arena source code; if not, write to the Free Software
+along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
-#if !( defined __linux__ || defined __FreeBSD__ || defined __OpenBSD__ || defined __sun || defined MACOS_X )
-#error You should include this file only on Linux/FreeBSD/OpenBSD/Solaris platforms
-#endif
 
-#ifndef __GLW_LINUX_H__
-#define __GLW_LINUX_H__
+/*
+* GNU inline asm version of qsnapvector - SSE version
+*/
 
-typedef struct
+static unsigned char ssemask[16] __attribute__((aligned(16))) =
 {
-	void *OpenGLLib; // instance of OpenGL library
+        "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x00\x00\x00\x00"
+};
 
-	FILE *log_fp;
-} glwstate_t;
 
-extern glwstate_t glw_state;
+void Sys_SnapVector( float *vec )
+{
+       __asm__ volatile
+        (
+                "movaps (%0), %%xmm1\n"
+                "movups (%1), %%xmm0\n"
+                "movaps %%xmm0, %%xmm2\n"
+                "andps %%xmm1, %%xmm0\n"
+                "andnps %%xmm2, %%xmm1\n"
+                "cvtps2dq %%xmm0, %%xmm0\n"
+                "cvtdq2ps %%xmm0, %%xmm0\n"
+                "orps %%xmm1, %%xmm0\n"
+                "movups %%xmm0, (%1)\n"
+                :
+                : "r" (ssemask), "r" (vec)
+                : "memory", "%xmm0", "%xmm1", "%xmm2"
+        );
 
-#endif
+}

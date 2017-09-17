@@ -59,9 +59,9 @@ typedef enum {
 #define TRY_PFD_FAIL_HARD	2
 
 static void		GLW_InitExtensions( void );
-static rserr_t	GLW_SetMode( const char *drivername, 
-							 int mode, 
-							 int colorbits, 
+static rserr_t	GLW_SetMode( const char *drivername,
+							 int mode,
+							 int colorbits,
 							 qboolean cdsFullscreen );
 
 static qboolean s_classRegistered = qfalse;
@@ -87,8 +87,8 @@ cvar_t	*r_maskMinidriver;		// allow a different dll name to be treated as if it 
 /*
 ** GLW_StartDriverAndSetMode
 */
-static qboolean GLW_StartDriverAndSetMode( const char *drivername, 
-										   int mode, 
+static qboolean GLW_StartDriverAndSetMode( const char *drivername,
+										   int mode,
 										   int colorbits,
 										   qboolean cdsFullscreen )
 {
@@ -124,7 +124,7 @@ qboolean GLW_ResetFullScreenMode( void )
 	if( !glw_fs_dm.dmSize )
 		return qfalse;
 
-	// restore the last working fullscreen DEVMODE 
+	// restore the last working fullscreen DEVMODE
 	ChangeDisplaySettings( &glw_fs_dm, CDS_FULLSCREEN );
 
 	R_SetColorMappings();
@@ -183,7 +183,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 		//
 		// make sure this has hardware acceleration
 		//
-		if ( ( pfds[i].dwFlags & PFD_GENERIC_FORMAT ) != 0 ) 
+		if ( ( pfds[i].dwFlags & PFD_GENERIC_FORMAT ) != 0 )
 		{
 			if ( !r_allowSoftwareGL->integer )
 			{
@@ -206,7 +206,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 		}
 
 		// verify proper flags
-		if ( ( ( pfds[i].dwFlags & pPFD->dwFlags ) & pPFD->dwFlags ) != pPFD->dwFlags ) 
+		if ( ( ( pfds[i].dwFlags & pPFD->dwFlags ) & pPFD->dwFlags ) != pPFD->dwFlags )
 		{
 			if ( r_verbose->integer )
 			{
@@ -227,7 +227,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 
 		//
 		// selection criteria (in order of priority):
-		// 
+		//
 		//  PFD_STEREO
 		//  colorBits
 		//  depthBits
@@ -241,7 +241,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 				bestMatch = i;
 				continue;
 			}
-			
+
 			if ( !( pfds[i].dwFlags & PFD_STEREO ) && ( pfds[bestMatch].dwFlags & PFD_STEREO ) && ( pPFD->dwFlags & PFD_STEREO ) )
 			{
 				bestMatch = i;
@@ -292,7 +292,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 					continue;
 				}
 				// otherwise if this PFD has more bits than our best, use it
-				else if ( ( pfds[i].cStencilBits > pfds[bestMatch].cStencilBits ) && 
+				else if ( ( pfds[i].cStencilBits > pfds[bestMatch].cStencilBits ) &&
 					 ( pPFD->cStencilBits > 0 ) )
 				{
 					bestMatch = i;
@@ -305,7 +305,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 			bestMatch = i;
 		}
 	}
-	
+
 	if ( !bestMatch )
 		return 0;
 
@@ -342,7 +342,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD )
 */
 static void GLW_CreatePFD( PIXELFORMATDESCRIPTOR *pPFD, int colorbits, int depthbits, int stencilbits, qboolean stereo )
 {
-    PIXELFORMATDESCRIPTOR src = 
+    PIXELFORMATDESCRIPTOR src =
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
 		1,								// version number
@@ -356,7 +356,7 @@ static void GLW_CreatePFD( PIXELFORMATDESCRIPTOR *pPFD, int colorbits, int depth
 		0,								// shift bit ignored
 		0,								// no accumulation buffer
 		0, 0, 0, 0, 					// accum bits ignored
-		24,								// 24-bit z-buffer	
+		24,								// 24-bit z-buffer
 		8,								// 8-bit stencil buffer
 		0,								// no auxiliary buffer
 		PFD_MAIN_PLANE,					// main layer
@@ -572,7 +572,7 @@ static qboolean GLW_InitDriver( const char *drivername, int colorbits )
 		/*
 		** report if stereo is desired but unavailable
 		*/
-		if ( !( pfd.dwFlags & PFD_STEREO ) && ( r_stereo->integer != 0 ) ) 
+		if ( !( pfd.dwFlags & PFD_STEREO ) && ( r_stereo->integer != 0 ) )
 		{
 			ri.Printf( PRINT_ALL, "...failed to select stereo pixel format\n" );
 			glConfig.stereoEnabled = qfalse;
@@ -580,7 +580,7 @@ static qboolean GLW_InitDriver( const char *drivername, int colorbits )
 	}
 
 	/*
-	** store PFD specifics 
+	** store PFD specifics
 	*/
 	glConfig.colorBits = ( int ) pfd.cColorBits;
 	glConfig.depthBits = ( int ) pfd.cDepthBits;
@@ -603,7 +603,7 @@ static qboolean GLW_CreateWindow( const char *drivername, int width, int height,
 	int				x, y, w, h;
 	int				exstyle;
 
-	// fullscreen DEVMODE for use with win_allowAltTab 
+	// fullscreen DEVMODE for use with win_allowAltTab
 	memset( &glw_fs_dm, 0, sizeof( glw_fs_dm ) );
 
 	//
@@ -655,11 +655,7 @@ static qboolean GLW_CreateWindow( const char *drivername, int width, int height,
 		else
 		{
 			exstyle = 0;
-			stylebits = WINDOW_STYLE|WS_SYSMENU|WS_MINIMIZEBOX;
-
-			if (r_noBorder->integer)
-				stylebits = WS_POPUP|WS_VISIBLE|WS_SYSMENU;
-			
+			stylebits = (r_noborder->integer == 1 && !cdsFullscreen) ? WS_EX_TOPMOST|WS_POPUP|WS_VISIBLE : WINDOW_STYLE|WS_SYSMENU|WS_MINIMIZEBOX;
 			AdjustWindowRect (&r, stylebits, FALSE);
 		}
 
@@ -673,30 +669,39 @@ static qboolean GLW_CreateWindow( const char *drivername, int width, int height,
 		}
 		else
 		{
-			vid_xpos = ri.Cvar_Get ("vid_xpos", "", 0);
-			vid_ypos = ri.Cvar_Get ("vid_ypos", "", 0);
-			x = vid_xpos->integer;
-			y = vid_ypos->integer;
-
-			// adjust window coordinates if necessary 
-			// so that the window is completely on screen
-			if ( x < 0 )
-				x = 0;
-			if ( y < 0 )
-				y = 0;
-
-			if ( w < glw_state.desktopWidth &&
-				 h < glw_state.desktopHeight )
+			if (r_noborder->integer == 1 && r_centerWindow->integer == 1)
 			{
-				if ( x + w > glw_state.desktopWidth )
-					x = ( glw_state.desktopWidth - w );
-				if ( y + h > glw_state.desktopHeight )
-					y = ( glw_state.desktopHeight - h );
+				x = (glw_state.desktopWidth - r.right) / 2;
+				y = (glw_state.desktopHeight - r.bottom) / 2;
+			}
+			else
+			{
+				vid_xpos = ri.Cvar_Get ("vid_xpos", "", 0);
+				vid_ypos = ri.Cvar_Get ("vid_ypos", "", 0);
+
+				x = vid_xpos->integer;
+				y = vid_ypos->integer;
+
+				// adjust window coordinates if necessary
+				// so that the window is completely on screen
+				if ( x < 0 )
+					x = 0;
+				if ( y < 0 )
+					y = 0;
+
+				if ( w < glw_state.desktopWidth &&
+					 h < glw_state.desktopHeight )
+				{
+					if ( x + w > glw_state.desktopWidth )
+						x = ( glw_state.desktopWidth - w );
+					if ( y + h > glw_state.desktopHeight )
+						y = ( glw_state.desktopHeight - h );
+				}
 			}
 		}
 
 		g_wv.hWnd = CreateWindowEx (
-			 exstyle, 
+			 exstyle,
 			 CLIENT_WINDOW_TITLE,
 			 CLIENT_WINDOW_TITLE,
 			 stylebits,
@@ -710,7 +715,7 @@ static qboolean GLW_CreateWindow( const char *drivername, int width, int height,
 		{
 			ri.Error (ERR_FATAL, "GLW_CreateWindow() - Couldn't create window");
 		}
-	
+
 		ShowWindow( g_wv.hWnd, SW_SHOW );
 		UpdateWindow( g_wv.hWnd );
 		ri.Printf( PRINT_ALL, "...created window@%d,%d (%dx%d)\n", x, y, w, h );
@@ -766,16 +771,16 @@ static void PrintCDSError( int value )
 /*
 ** GLW_SetMode
 */
-static rserr_t GLW_SetMode( const char *drivername, 
-						    int mode, 
-							int colorbits, 
+static rserr_t GLW_SetMode( const char *drivername,
+						    int mode,
+							int colorbits,
 							qboolean cdsFullscreen )
 {
 	HDC hDC;
 	const char *win_fs[] = { "W", "FS" };
 	int		cdsRet;
 	DEVMODE dm;
-		
+
 	//
 	// print out informational messages
 	//
@@ -826,9 +831,9 @@ static rserr_t GLW_SetMode( const char *drivername,
 	if ( cdsFullscreen )
 	{
 		memset( &dm, 0, sizeof( dm ) );
-		
+
 		dm.dmSize = sizeof( dm );
-		
+
 		dm.dmPelsWidth  = glConfig.vidWidth;
 		dm.dmPelsHeight = glConfig.vidHeight;
 		dm.dmFields     = DM_PELSWIDTH | DM_PELSHEIGHT;
@@ -838,7 +843,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 			dm.dmDisplayFrequency = r_displayRefresh->integer;
 			dm.dmFields |= DM_DISPLAYFREQUENCY;
 		}
-		
+
 		// try to change color depth if possible
 		if ( colorbits != 0 )
 		{
@@ -878,7 +883,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 		else
 		{
 			ri.Printf( PRINT_ALL, "...calling CDS: " );
-			
+
 			// try setting the exact mode requested, because some drivers don't report
 			// the low res modes in EnumDisplaySettings, but still work
 			if ( ( cdsRet = ChangeDisplaySettings( &dm, CDS_FULLSCREEN ) ) == DISP_CHANGE_SUCCESSFUL )
@@ -891,7 +896,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 					ChangeDisplaySettings( 0, 0 );
 					return RSERR_INVALID_MODE;
 				}
-				
+
 				glw_state.cdsFullscreen = qtrue;
 			}
 			else
@@ -903,11 +908,11 @@ static rserr_t GLW_SetMode( const char *drivername,
 				int			modeNum;
 
 				ri.Printf( PRINT_ALL, "failed, " );
-				
+
 				PrintCDSError( cdsRet );
-			
+
 				ri.Printf( PRINT_ALL, "...trying next higher resolution:" );
-				
+
 				// we could do a better matching job here...
 				for ( modeNum = 0 ; ; modeNum++ ) {
 					if ( !EnumDisplaySettings( NULL, modeNum, &devmode ) ) {
@@ -930,15 +935,15 @@ static rserr_t GLW_SetMode( const char *drivername,
 						ChangeDisplaySettings( 0, 0 );
 						return RSERR_INVALID_MODE;
 					}
-					
+
 					glw_state.cdsFullscreen = qtrue;
 				}
 				else
 				{
 					ri.Printf( PRINT_ALL, " failed, " );
-					
+
 					PrintCDSError( cdsRet );
-					
+
 					//@Barbatos - try initializing default 800x600 mode instead of crashing
 					ri.Printf( PRINT_ALL, "... trying to fallback to r_mode 4 (800x600)\n");
 					ri.Cvar_Set( "r_mode", "4" );
@@ -960,7 +965,7 @@ static rserr_t GLW_SetMode( const char *drivername,
 					else {
 						Cbuf_AddText( "vid_restart" );
 					}
-					
+
 				}
 			}
 		}
@@ -1230,7 +1235,7 @@ static qboolean GLW_CheckOSVersion( void )
 /*
 ** GLW_LoadOpenGL
 **
-** GLimp_win.c internal function that attempts to load and use 
+** GLimp_win.c internal function that attempts to load and use
 ** a specific OpenGL DLL.
 */
 static qboolean GLW_LoadOpenGL( const char *drivername )
@@ -1265,8 +1270,8 @@ static qboolean GLW_LoadOpenGL( const char *drivername )
 
 	//
 	// load the driver and bind our function pointers to it
-	// 
-	if ( QGL_Init( buffer ) ) 
+	//
+	if ( QGL_Init( buffer ) )
 	{
 		cdsFullscreen = r_fullscreen->integer;
 
@@ -1494,7 +1499,7 @@ void GLimp_Init( void )
 			}
 		}
 	}
-	
+
 	//
 	// this is where hardware specific workarounds that should be
 	// detected/initialized every startup should go.
@@ -1616,7 +1621,7 @@ void GLimp_Shutdown( void )
 /*
 ** GLimp_LogComment
 */
-void GLimp_LogComment( char *comment ) 
+void GLimp_LogComment( char *comment )
 {
 	if ( glw_state.log_fp ) {
 		fprintf( glw_state.log_fp, "%s", comment );

@@ -389,7 +389,9 @@ void AAS_Accelerate(vec3_t velocity, float frametime, vec3_t wishdir, float wish
 //===========================================================================
 void AAS_AirControl(vec3_t start, vec3_t end, vec3_t velocity, vec3_t cmdmove)
 {
-	return;
+	//vec3_t dir;
+
+	//VectorSubtract(end, start, dir);
 } //end of the function AAS_AirControl
 //===========================================================================
 // applies ground friction to the given velocity
@@ -572,6 +574,7 @@ int AAS_ClientMovementPrediction(struct aas_clientmove_s *move,
 		//apply command movement
 		if (n < cmdframes)
 		{
+			//ax = 0;
 			maxvel = phys_maxwalkvelocity;
 			accelerate = phys_airaccelerate;
 			VectorCopy(cmdmove, wishdir);
@@ -595,11 +598,13 @@ int AAS_ClientMovementPrediction(struct aas_clientmove_s *move,
 				{
 					accelerate = phys_walkaccelerate;
 				} //end else
+				//ax = 2;
 			} //end if
 			if (swimming)
 			{
 				maxvel = phys_maxswimvelocity;
 				accelerate = phys_swimaccelerate;
+				//ax = 3;
 			} //end if
 			else
 			{
@@ -611,6 +616,19 @@ int AAS_ClientMovementPrediction(struct aas_clientmove_s *move,
 			VectorScale(frame_test_vel, 1/frametime, frame_test_vel);
 			AAS_Accelerate(frame_test_vel, frametime, wishdir, wishspeed, accelerate);
 			VectorScale(frame_test_vel, frametime, frame_test_vel);
+			/*
+			for (i = 0; i < ax; i++)
+			{
+				velchange = (cmdmove[i] * frametime) - frame_test_vel[i];
+				if (velchange > phys_maxacceleration) velchange = phys_maxacceleration;
+				else if (velchange < -phys_maxacceleration) velchange = -phys_maxacceleration;
+				newvel = frame_test_vel[i] + velchange;
+				//
+				if (frame_test_vel[i] <= maxvel && newvel > maxvel) frame_test_vel[i] = maxvel;
+				else if (frame_test_vel[i] >= -maxvel && newvel < -maxvel) frame_test_vel[i] = -maxvel;
+				else frame_test_vel[i] = newvel;
+			} //end for
+			*/
 		} //end if
 		if (crouch)
 		{

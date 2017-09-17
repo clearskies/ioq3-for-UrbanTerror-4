@@ -105,6 +105,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <limits.h>
 
+// vsnprintf is ISO/IEC 9899:1999
+// abstracting this to make it portable
+#ifdef _WIN32
+  #define Q_vsnprintf _vsnprintf
+  #define Q_snprintf _snprintf
+#else
+  #define Q_vsnprintf vsnprintf
+  #define Q_snprintf snprintf
+#endif
+
 #endif
 
 #include "q_platform.h"
@@ -115,20 +125,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    typedef int intptr_t;
 #else
   #ifndef _MSC_VER
-	#include <stdint.h>
-	#define Q_vsnprintf vsnprintf
+    #include <stdint.h>
   #else
-	#include <io.h>
-	typedef __int64 int64_t;
-	typedef __int32 int32_t;
-	typedef __int16 int16_t;
-	typedef __int8 int8_t;
-	typedef unsigned __int64 uint64_t;
-	typedef unsigned __int32 uint32_t;
-	typedef unsigned __int16 uint16_t;
-	typedef unsigned __int8 uint8_t;
-
-	int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
+    #include <io.h>
+    typedef __int64 int64_t;
+    typedef __int32 int32_t;
+    typedef __int16 int16_t;
+    typedef __int8 int8_t;
+    typedef unsigned __int64 uint64_t;
+    typedef unsigned __int32 uint32_t;
+    typedef unsigned __int16 uint16_t;
+    typedef unsigned __int8 uint8_t;
   #endif
 #endif
 
@@ -392,7 +399,7 @@ extern	vec3_t	axisDefault[3];
 static ID_INLINE float Q_rsqrt( float number ) {
 		float x = 0.5f * number;
 				float y;
-#ifdef __GNUC__            
+#ifdef __GNUC__
 				asm("frsqrte %0,%1" : "=f" (y) : "f" (number));
 #else
 		y = __frsqrte( number );
@@ -400,10 +407,10 @@ static ID_INLINE float Q_rsqrt( float number ) {
 		return y * (1.5f - (x * y * y));
 	}
 
-#ifdef __GNUC__            
+#ifdef __GNUC__
 static ID_INLINE float Q_fabs(float x) {
 	float abs_x;
-	
+
 	asm("fabs %0,%1" : "=f" (abs_x) : "f" (x));
 	return abs_x;
 }
@@ -483,7 +490,7 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs );
 static ID_INLINE int VectorCompare( const vec3_t v1, const vec3_t v2 ) {
 	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2]) {
 		return 0;
-	}			
+	}
 	return 1;
 }
 
@@ -977,7 +984,7 @@ typedef struct {
 #define	MAX_STATS				16
 #define	MAX_PERSISTANT			16
 #define	MAX_POWERUPS			16
-#define	MAX_WEAPONS				16		
+#define	MAX_WEAPONS				16
 
 #define	MAX_PS_EVENTS			2
 
@@ -1097,7 +1104,7 @@ typedef struct usercmd_s {
 	int				serverTime;
 	int				angles[3];
 	int 			buttons;
-	byte			weapon;           // weapon 
+	byte			weapon;           // weapon
 	signed char	forwardmove, rightmove, upmove;
 } usercmd_t;
 
@@ -1177,7 +1184,7 @@ typedef struct entityState_s {
 typedef enum {
 	CA_UNINITIALIZED,
 	CA_DISCONNECTED, 	// not talking to a server
-	CA_AUTHORIZING,		// not used any more, was checking cd key 
+	CA_AUTHORIZING,		// not used any more, was checking cd key
 	CA_CONNECTING,		// sending request packets to the server
 	CA_CHALLENGING,		// sending challenge packets to the server
 	CA_CONNECTED,		// netchan_t established, getting gamestate
@@ -1187,7 +1194,7 @@ typedef enum {
 	CA_CINEMATIC		// playing a cinematic or a static pic, not connected to a server
 } connstate_t;
 
-// font support 
+// font support
 
 #define GLYPH_START 0
 #define GLYPH_END 255

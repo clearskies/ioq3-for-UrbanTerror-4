@@ -81,7 +81,7 @@ typedef struct {
 
 // the parseEntities array must be large enough to hold PACKET_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
-// it can be un-deltad from the original 
+// it can be un-deltad from the original
 #define	MAX_PARSE_ENTITIES	2048
 
 extern int g_console_field_width;
@@ -517,7 +517,6 @@ qboolean CL_UpdateVisiblePings_f( int source );
 extern	cvar_t	*con_prompt;
 extern	cvar_t	*con_promptColour;
 extern	cvar_t	*con_timeDisplay;
-extern	cvar_t	*con_tabs;
 void Con_DrawCharacter (int cx, int line, int num);
 
 void Con_Init (void);
@@ -552,7 +551,7 @@ void	SCR_DebugGraph (float value, int color);
 int		SCR_GetBigStringWidth( const char *str );	// returns in virtual 640x480 coordinates
 
 void	SCR_AdjustFrom640( float *x, float *y, float *w, float *h );
-void	SCR_FillRect( float x, float y, float width, float height, 
+void	SCR_FillRect( float x, float y, float width, float height,
 					 const float *color );
 void	SCR_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
 void	SCR_DrawNamedPic( float x, float y, float width, float height, const char *picname );
@@ -584,6 +583,9 @@ void CIN_SetExtents (int handle, int x, int y, int w, int h);
 void CIN_SetLooping (int handle, qboolean loop);
 void CIN_UploadCinematic(int handle);
 void CIN_CloseAllVideos(void);
+
+int     SCR_FontWidth(const char *text, float scale);
+void    SCR_DrawFontText(float x, float y, float scale, vec4_t color, const char *text, int style);
 
 //
 // cl_cgame.c

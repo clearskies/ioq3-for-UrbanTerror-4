@@ -106,7 +106,7 @@ void AAS_RoutingInfo(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-ID_INLINE int AAS_ClusterAreaNum(int cluster, int areanum)
+static ID_INLINE int AAS_ClusterAreaNum(int cluster, int areanum)
 {
 	int side, areacluster;
 
@@ -166,7 +166,7 @@ void AAS_InitTravelFlagFromType(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-ID_INLINE int AAS_TravelFlagForType_inline(int traveltype)
+static ID_INLINE int AAS_TravelFlagForType_inline(int traveltype)
 {
 	int tfl;
 
@@ -339,7 +339,7 @@ int AAS_EnableRoutingArea(int areanum, int enable)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-ID_INLINE float AAS_RoutingTime(void)
+static ID_INLINE float AAS_RoutingTime(void)
 {
 	return AAS_Time();
 } //end of the function AAS_RoutingTime
@@ -379,7 +379,7 @@ int AAS_GetAreaContentsTravelFlags(int areanum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-ID_INLINE int AAS_AreaContentsTravelFlags_inline(int areanum)
+static ID_INLINE int AAS_AreaContentsTravelFlags_inline(int areanum)
 {
 	return aasworld.areacontentstravelflags[areanum];
 } //end of the function AAS_AreaContentsTravelFlags
@@ -506,6 +506,12 @@ void AAS_CalculateAreaTravelTimes(void)
 	aas_reversedlink_t *revlink;
 	aas_reachability_t *reach;
 	aas_areasettings_t *settings;
+
+#ifdef DEBUG
+	int starttime;
+
+	starttime = Sys_MilliSeconds();
+#endif
 
 	//if there are still area travel times, free the memory
 	if (aasworld.areatraveltimes) FreeMemory(aasworld.areatraveltimes);
@@ -896,6 +902,7 @@ void AAS_CreateAllRoutingCache(void)
 		{
 			if (i == j) continue;
 			if (!AAS_AreaReachability(j)) continue;
+			AAS_AreaTravelTimeToGoalArea(i, aasworld.areas[i].center, j, TFL_DEFAULT);
 			//Log_Write("traveltime from %d to %d is %d", i, j, t);
 		} //end for
 	} //end for

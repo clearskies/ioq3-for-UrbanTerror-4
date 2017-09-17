@@ -151,8 +151,8 @@ static void SCR_DrawChar( int x, int y, float size, int ch ) {
 	size = 0.0625;
 
 	re.DrawStretchPic( ax, ay, aw, ah,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
+					   fcol, frow,
+					   fcol + size, frow + size,
 					   cls.charSetShader );
 }
 
@@ -183,8 +183,8 @@ void SCR_DrawSmallChar( int x, int y, int ch ) {
 	size = 0.0625;
 
 	re.DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
+					   fcol, frow,
+					   fcol + size, frow + size,
 					   cls.charSetShader );
 }
 
@@ -364,7 +364,7 @@ static int SCR_Strlen( const char *str ) {
 
 /*
 ** SCR_GetBigStringWidth
-*/ 
+*/
 int	SCR_GetBigStringWidth( const char *str ) {
 	return SCR_Strlen( str ) * 16;
 }
@@ -421,7 +421,7 @@ void SCR_DrawFontChar(float x, float y, float width, float height, float scale, 
 void SCR_DrawFontText(float x, float y, float scale, vec4_t color, const char *text, int style) {
 	if (!cls.fontFont)
 		return;
-	
+
 	int 	 len, count;
 	vec4_t		 newColor;
 	vec4_t		 black = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -557,7 +557,7 @@ void SCR_DrawHealth( void ) {
 		y = 439;
 	}
 
-	
+
 	if (health >= 60) {
 		healthCol = 2;
 	} else if (health >= 35) {
@@ -672,7 +672,7 @@ void SCR_DrawDebugGraph (void)
 	x = 0;
 	y = cls.glconfig.vidHeight;
 	re.SetColor( g_color_table[0] );
-	re.DrawStretchPic(x, y - cl_graphheight->integer, 
+	re.DrawStretchPic(x, y - cl_graphheight->integer,
 		w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader );
 	re.SetColor( NULL );
 
@@ -681,7 +681,7 @@ void SCR_DrawDebugGraph (void)
 		i = (current-1-a+1024) & 1023;
 		v = values[i].value;
 		v = v * cl_graphscale->integer + cl_graphshift->integer;
-		
+
 		if (v < 0)
 			v += cl_graphheight->integer * (1+(int)(-v / cl_graphheight->integer));
 		h = (int)v % cl_graphheight->integer;

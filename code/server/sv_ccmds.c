@@ -97,7 +97,7 @@ client_t *SV_BetterGetPlayerByHandle(const char *handle) {
 	else
 		return match;
 
-	
+
 }
 
 /*
@@ -128,67 +128,67 @@ static client_t *SV_GetPlayerByHandle(void) {
 
 	s = Cmd_Argv(1);
 
-	// check whether this is a numeric player handle
-	for (i = 0; s[i] >= '0' && s[i] <= '9'; i++);
+    // check whether this is a numeric player handle
+    for (i = 0; s[i] >= '0' && s[i] <= '9'; i++);
 
-	if (!s[i]) {
+    if (!s[i]) {
 
-		// numeric player handle given as input
-		idnum = atoi(s);
-		if ((idnum < 0) || (idnum >= sv_maxclients->integer)) {
-			Com_Printf("Bad client slot: %i\n", idnum);
-			return NULL;
-		}
+        // numeric player handle given as input
+        idnum = atoi(s);
+        if ((idnum < 0) || (idnum >= sv_maxclients->integer)) {
+            Com_Printf("Bad client slot: %i\n", idnum);
+            return NULL;
+        }
 
 		cl = &svs.clients[idnum];
 
-		if (!cl->state) {
-			Com_Printf("Client in slot %i is not connected\n", idnum);
-			return NULL;
-		}
+        if (!cl->state) {
+            Com_Printf("Client in slot %i is not connected\n", idnum);
+            return NULL;
+        }
 
 		return cl;
 
 	} else {
 
-		// full/partial player name given as input
-		for (i = 0; i < sv_maxclients->integer ; i++) {
+        // full/partial player name given as input
+        for (i = 0; i < sv_maxclients->integer ; i++) {
 
 			cl = &svs.clients[i];
 
-			// client is not connected
-			if (!cl->state) {
-				continue;
-			}
+            // client is not connected
+            if (!cl->state) {
+                continue;
+            }
 
-			strcpy(name, cl->name);
-			Q_CleanStr(name);
+            strcpy(name, cl->name);
+            Q_CleanStr(name);
 
-			// check for exact match
-			if (!Q_stricmp(name,s)) {
-				matches[0] = &svs.clients[i];
-				count = 1;
-				break;
-			}
+            // check for exact match
+            if (!Q_stricmp(name,s)) {
+                matches[0] = &svs.clients[i];
+                count = 1;
+                break;
+            }
 
-			// check for substring match
-			if (Q_strisub(name, s)) {
-				matches[count] = &svs.clients[i];
-				count++;
-			}
+            // check for substring match
+            if (Q_strisub(name, s)) {
+                matches[count] = &svs.clients[i];
+                count++;
+            }
 
 		}
 
 		if (count == 0) {
 
-			// no match found for the given input string
-			Com_Printf("No client found matching %s\n", s);
-			return NULL;
+            // no match found for the given input string
+            Com_Printf("No client found matching %s\n", s);
+            return NULL;
 
 		} else if (count > 1) {
 
-			// multiple matches found for the given string
-			Com_Printf("Multiple clients found matching %s:\n", s);
+            // multiple matches found for the given string
+            Com_Printf("Multiple clients found matching %s:\n", s);
 
 			for (i = 0; i < count; i++) {
 				cl = matches[i];
@@ -199,8 +199,8 @@ static client_t *SV_GetPlayerByHandle(void) {
 			return NULL;
 		}
 
-		// found just 1 match
-		return matches[0];
+        // found just 1 match
+        return matches[0];
 
 	}
 
@@ -245,11 +245,11 @@ static client_t *SV_GetPlayerByNum(void) {
 		return NULL;
 	}
 
-	cl = &svs.clients[idnum];
-	if (!cl->state) {
-		Com_Printf("Client in slot %i is not connected\n", idnum);
-		return NULL;
-	}
+    cl = &svs.clients[idnum];
+    if (!cl->state) {
+        Com_Printf("Client in slot %i is not connected\n", idnum);
+        return NULL;
+    }
 
 	return cl;
 
@@ -283,7 +283,7 @@ static int SV_Argc_to_idnum( int arg_num ) {
 	}
 
 	search = Cmd_Argv( arg_num );
-	
+
 	if(strlen( search ) < 3 )
 	{
 		for (i = 0; search[i]; i++) {
@@ -327,29 +327,29 @@ static int SV_Argc_to_idnum( int arg_num ) {
 									f++;
 								}
 							}
-							if (f==slen) { 
-								count++; 
-								idnum = i; 
-								break; 
+							if (f==slen) {
+								count++;
+								idnum = i;
+								break;
 							}
 						}
 					}
 				}
 			}
 		}
-		if( count == 1 ) { 
+		if( count == 1 ) {
 			return idnum;
 		}
-		if( count > 0 ) { 
+		if( count > 0 ) {
 			Com_Printf( "Too many players found for \"%s\".\n", search );
 			return -1;
 		}
-		if( count == 0 ) { 
+		if( count == 0 ) {
 			Com_Printf( "No player found for \"%s\".\n", search );
 			return -1;
 		}
 	}
-	
+
 	return -1;
 }*/
 #endif
@@ -383,74 +383,71 @@ static int QDECL SV_SortMaps(const void *a, const void *b) {
 // Description : Retrieve a full map name given a substring of it
 // Author      : Fenix, p5yc0runn3r
 /////////////////////////////////////////////////////////////////////
-static char *SV_GetMapSoundingLike(const char *s) 
+static char *SV_GetMapSoundingLike(const char *s)
 {
-	int  i, mapcount;
-	int  len = 0, count = 0;
-	char *matches[MAX_MAPLIST_SIZE];
-	char *searchmap;
-	static char maplist[MAX_MAPLIST_STRING];
+    int  i, mapcount;
+    int  len = 0, count = 0;
+    char *matches[MAX_MAPLIST_SIZE];
+    char *searchmap;
+    static char maplist[MAX_MAPLIST_STRING];
 
-	// [BUGFIX]: instead of iterating through all the maps matching both full and
-	// partial name, search just for the exact map name and return it if the match is found
-	Com_sprintf(maplist, sizeof(maplist), "maps/%s.bsp", s);
-	if (FS_ReadFile(maplist, NULL) > 0) 
-	{
-		Com_sprintf(maplist, sizeof(maplist), "%s", s);
-		return maplist; // @p5yc0runn3r: Return static string
-	}
+    // [BUGFIX]: instead of iterating through all the maps matching both full and
+    // partial name, search just for the exact map name and return it if the match is found
+    Com_sprintf(maplist, sizeof(maplist), "maps/%s.bsp", s);
+    if (FS_ReadFile(maplist, NULL) > 0)
+    {
+        Com_sprintf(maplist, sizeof(maplist), "%s", s);
+        return maplist; // @p5yc0runn3r: Return static string
+    }
 
-	// We didn't found an exact name match. Keep iterating through all the
-	// available maps matching partial substrings
-	if (!(mapcount = FS_GetFileList("maps", ".bsp", maplist, sizeof(maplist)))) 
-	{
-		Com_Printf("Unable to retrieve map list\n");
-		return NULL;
-	}
+    // We didn't found an exact name match. Keep iterating through all the
+    // available maps matching partial substrings
+    if (!(mapcount = FS_GetFileList("maps", ".bsp", maplist, sizeof(maplist))))
+    {
+        Com_Printf("Unable to retrieve map list\n");
+        return NULL;
+    }
 
-	for (searchmap = maplist, i = 0; i < mapcount && count < MAX_MAPLIST_SIZE; i++, searchmap += len + 1) 
-	{
-		len = strlen(searchmap);
-		SV_StripExtension(searchmap, searchmap);
+    for (searchmap = maplist, i = 0; i < mapcount && count < MAX_MAPLIST_SIZE; i++, searchmap += len + 1)
+    {
+        len = strlen(searchmap);
+        SV_StripExtension(searchmap, searchmap);
 
-		// Check for substring match
-		if (Q_strisub(searchmap, s)) 
-		{
-			matches[count] = searchmap;
-			count++;
-		}
-	}
+        // Check for substring match
+        if (Q_strisub(searchmap, s))
+        {
+            matches[count] = searchmap;
+            count++;
+        }
+    }
 
-	// One match = one map, found match.
-	if (count == 1) return matches[0]; // @p5yc0runn3r: matches points to static string, safe to return.
+    // One match = one map, found match.
+    if (count == 1) return matches[0]; // @p5yc0runn3r: matches points to static string, safe to return.
 
-	if (count > 1) 
-	{
-		// Multiple matches found for the given map name
-		Com_Printf("Multiple maps found matching '%s':\n", s);
+    if (count > 1)
+    {
+        // Multiple matches found for the given map name
+        Com_Printf("Multiple maps found matching '%s':\n", s);
 
-		// Sorting the short map list alphabetically
-		qsort(matches, count, sizeof(char *), SV_SortMaps);
+        for (i = 0; i < count; i++)
+        {
+            // Printing a short map list so the user can retry with a more specific name
+            Com_Printf(" %2d: [%s]\n", i + 1, matches[i]);
+        }
 
-		for (i = 0; i < count; i++) 
-		{
-			// Printing a short map list so the user can retry with a more specific name
-			Com_Printf(" %2d: [%s]\n", i + 1, matches[i]);
-		}
+        if (count >= MAX_MAPLIST_SIZE)
+        {
+            // Tell the user that there are actually more
+            // maps matching the given substring, although
+            // we are not displaying them....
+            Com_Printf("...and more\n");
+        }
+        return NULL;
+    }
 
-		if (count >= MAX_MAPLIST_SIZE) 
-		{
-			// Tell the user that there are actually more
-			// maps matching the given substring, although
-			// we are not displaying them....
-			Com_Printf("...and more\n");
-		}
-		return NULL;
-	}
-
-	// No match found for the given map name input
-	Com_Printf("No map found matching '%s'\n", s);
-	return NULL;
+    // No match found for the given map name input
+    Com_Printf("No map found matching '%s'\n", s);
+    return NULL;
 }
 
 //=========================================================
@@ -585,7 +582,7 @@ static void SV_MapRestart_f( void ) {
 	// map_restart has happened
 	svs.snapFlagServerBit ^= SNAPFLAG_SERVERCOUNT;
 
-	// generate a new serverid	
+	// generate a new serverid
 	// TTimo - don't update restartedserverId there, otherwise we won't deal correctly with multiple map_restart
 	sv.serverId = com_frameTime;
 	Cvar_Set( "sv_serverid", va("%i", sv.serverId ) );
@@ -656,7 +653,7 @@ static void SV_MapRestart_f( void ) {
 			// which is wrong obviously.
 			SV_ClientEnterWorld(client, NULL);
 		}
-	}	
+	}
 
 	// run another frame to allow things to look at all the players
 	VM_Call (gvm, GAME_RUN_FRAME, sv.time);
@@ -1576,7 +1573,7 @@ static void SV_Invisible_f(void) {
 		Com_Printf("Server is not running\n");
 		return;
 	}
-	
+
 	if (Cmd_Argc() < 2) {
 		Com_Printf("Usage: invisible <player>\n");
 		return;
@@ -1690,7 +1687,7 @@ static void SV_Invulnerable_f(void) {
 	}
 
 	e = SV_GentityNum(cl - svs.clients);
-	e->r.contents = 0;              
+	e->r.contents = 0;
 }
 
 /*
@@ -1900,111 +1897,6 @@ static void SV_CompleteMapName( char *args, int argNum ) {
 	}
 }*/
 
-#ifdef USE_AUTH
-/*
-==================
-SV_Auth_Whois_f
-
-Get user infos
-==================
-*/
-static void SV_Auth_Whois_f(void) {
-
-	int         i;
-	client_t    *cl;
-
-	// make sure server is running
-	if (!com_sv_running->integer) {
-		Com_Printf("Server is not running\n");
-		return;
-	}
-
-	if (Cmd_Argc() < 2) {
-		Com_Printf("Usage: auth-whois <client-or-all>\n");
-		return;
-	}
-
-	if (Cvar_VariableValue("auth") == 0) {
-		Com_Printf("Auth services are disabled\n");
-		return;
-	}
-
-	if (!Q_stricmp(Cmd_Argv(1), "all")) {
-
-		for (i = 0; i < sv_maxclients->integer; i++) {
-
-			cl = &svs.clients[i];
-
-			if (cl->state != CS_ACTIVE) {
-				continue;
-			}
-
-			VM_Call(gvm, GAME_AUTH_WHOIS, (int)(cl - svs.clients));
-		}
-
-	} else {
-
-		cl = SV_GetPlayerByHandle();
-
-		if (!cl) {
-			return;
-		}
-
-		VM_Call(gvm, GAME_AUTH_WHOIS, (int)(cl - svs.clients));
-
-	}
-
-}
-
-/*
-==================
-SV_Auth_Ban_f
-
-Ban a user from the server 
-and the group
-==================
-*/
-static void SV_Auth_Ban_f(void) {
-
-	client_t    *cl;
-	char        *d, *h, *m;
-
-	if (!com_sv_running->integer) {
-		Com_Printf("Server is not running.\n");
-		return;
-	}
-
-	if (Cvar_VariableValue("auth") == 0) {
-		Com_Printf("Auth services are disabled\n");
-		return;
-	}
-
-	if (Cmd_Argc() < 5) {
-		Com_Printf ("Usage: auth-ban <client> <days> <hours> <mins>\n");
-		return;
-	}
-
-	cl = SV_GetPlayerByHandle();
-
-	if (!cl) {
-		return;
-	}
-
-	if (cl->netchan.remoteAddress.type == NA_LOOPBACK) {
-		SV_SendServerCommand(NULL, "print \"%s\"", "Cannot ban host client\n");
-		return;
-	}
-
-	d = Cmd_Argv(2);
-	h = Cmd_Argv(3);
-	m = Cmd_Argv(4);
-
-	VM_Call(gvm, GAME_AUTH_BAN, (int)(cl - svs.clients), atoi(d), atoi(h), atoi(m));
-
-}
-
-#endif
-
 /*
 ==================
 SV_AddOperatorCommands
@@ -2052,19 +1944,13 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("spmap", SV_Map_f);
 	Cmd_AddCommand ("spdevmap", SV_Map_f);
 #endif
-	Cmd_AddCommand ("killserver", SV_KillServer_f);
-	if( com_dedicated->integer ) {
-		Cmd_AddCommand ("say", SV_ConSay_f);
-		Cmd_AddCommand ("tell", SV_ConTell_f);
-		Cmd_AddCommand("startserverdemo", SV_StartServerDemo_f);
-		Cmd_AddCommand("stopserverdemo", SV_StopServerDemo_f);
-
-		//@Barbatos: auth system commands
-		#ifdef USE_AUTH
-		Cmd_AddCommand ("auth-whois", SV_Auth_Whois_f);
-		Cmd_AddCommand ("auth-ban", SV_Auth_Ban_f);
-		#endif
-	}
+    Cmd_AddCommand ("killserver", SV_KillServer_f);
+    if( com_dedicated->integer ) {
+        Cmd_AddCommand ("say", SV_ConSay_f);
+        Cmd_AddCommand ("tell", SV_ConTell_f);
+        Cmd_AddCommand("startserverdemo", SV_StartServerDemo_f);
+        Cmd_AddCommand("stopserverdemo", SV_StopServerDemo_f);
+    }
 }
 
 /*

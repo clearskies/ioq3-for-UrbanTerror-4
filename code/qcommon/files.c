@@ -194,6 +194,9 @@ static const unsigned pak_checksums[] = {
 static int pak_purechecksums[1];
 
 
+int foreignQVMsFound;
+char foreignQVMNames[MAX_ZPATH][MAX_SEARCH_PATHS];
+
 // if this is defined, the executable positively won't work with any paks other
 // than the demo pak, even if productid is present.  This is only used for our
 // last demo release to prevent the mac and linux users from using the demo
@@ -245,6 +248,7 @@ static  cvar_t          *fs_apppath;
 
 
 static	cvar_t		*fs_basepath;
+static	cvar_t		*fs_libpath;
 static	cvar_t		*fs_basegame;
 static	cvar_t		*fs_gamedirvar;
 static	searchpath_t	*fs_searchpaths;
@@ -2788,6 +2792,7 @@ static void FS_Startup( const char *gameName )
 	fs_debug = Cvar_Get( "fs_debug", "0", 0 );
 	fs_basepath = Cvar_Get ("fs_basepath", Sys_DefaultInstallPath(), CVAR_INIT );
 	fs_basegame = Cvar_Get ("fs_basegame", "", CVAR_INIT );
+	fs_libpath = Cvar_Get ("fs_libpath", Sys_DefaultLibPath(), CVAR_INIT );
 	
 	fs_use_defaultHomePath = Cvar_Get ("use_defaultHomePath", "1", CVAR_INIT|CVAR_SYSTEMINFO );
 	if ( fs_use_defaultHomePath->integer ) {

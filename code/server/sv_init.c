@@ -457,7 +457,7 @@ SV_MakeCompressedPureList
 Fills the last N configstrings with compressed pure list
 ================
 */
-int SV_MakeCompressedPureList(void)
+int SV_MakeCompressedPureList( void )
 {
  unsigned char buf[PURE_COMPRESS_BUFFER];
  char tmp[1025];
@@ -528,32 +528,32 @@ int SV_MakeCompressedPureList(void)
    shl-=7;
    int v = (sh>>shl)&127;
    if (v==0 || v=='"' || v=='%' || v=='@') {
-	tmp[ol++] = '@';
+    tmp[ol++] = '@';
 //    Com_Printf("OUT:%02X\n",tmp[ol-1]);
-	if (ol==sizeof(tmp)-1) {
-	 tmp[ol]=0;
-	 if (csnr==PURE_COMPRESS_NUMCS) {
-	  Com_Printf(err_chunk);
-	  return 1;
-	 }
-	 SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-	 csnr++;
-	 ol=0;
-	}
-	tmp[ol++] = v+1;
+    if (ol==sizeof(tmp)-1) {
+     tmp[ol]=0;
+     if (csnr==PURE_COMPRESS_NUMCS) {
+      Com_Printf(err_chunk);
+      return 1;
+     }
+     SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+     csnr++;
+     ol=0;
+    }
+    tmp[ol++] = v+1;
    } else {
-	tmp[ol++] = v;
+    tmp[ol++] = v;
    }
 //   Com_Printf("OUT:%02X\n",tmp[ol-1]);
    if (ol==sizeof(tmp)-1) {
-	tmp[ol]=0;
-	if (csnr==PURE_COMPRESS_NUMCS) {
-	 Com_Printf(err_chunk);
-	 return 1;
-	}
-	SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-	csnr++;
-	ol=0;
+    tmp[ol]=0;
+    if (csnr==PURE_COMPRESS_NUMCS) {
+     Com_Printf(err_chunk);
+     return 1;
+    }
+    SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+    csnr++;
+    ol=0;
    }
   }
  }
@@ -565,14 +565,14 @@ int SV_MakeCompressedPureList(void)
   if (v==0 || v=='"' || v=='%' || v=='@') {
    tmp[ol++] = '@';
    if (ol==sizeof(tmp)-1) {
-	tmp[ol]=0;
-	if (csnr==PURE_COMPRESS_NUMCS) {
-	 Com_Printf(err_chunk);
-	 return 1;
-	}
-	SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
-	csnr++;
-	ol=0;
+    tmp[ol]=0;
+    if (csnr==PURE_COMPRESS_NUMCS) {
+     Com_Printf(err_chunk);
+     return 1;
+    }
+    SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+csnr, tmp);
+    csnr++;
+    ol=0;
    }
    tmp[ol++] = v+1;
   } else {
@@ -719,7 +719,8 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	SV_CreateBaseline ();
 	
 	// stop server-side demo (if any)
-	Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
+	if (com_dedicated->integer)
+		Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
 
 	for (i=0 ; i<sv_maxclients->integer ; i++) {
 		// send the new gamestate to all connected clients
@@ -777,29 +778,29 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	if ( sv_pure->integer ) {
 		// the server sends these to the clients so they will only
 		// load pk3s also loaded at the server
-		if (sv_newpurelist->integer) {
-			if (SV_MakeCompressedPureList()) {
-				int i;
-				// Do cleanup
-				for(i=0;i<PURE_COMPRESS_NUMCS;i++) SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+i,"");
-				// No clients will be able to connect...
-				Cvar_Set( "sv_paks", "TooManyFiles" );
-				Cvar_Set( "sv_pakNames", "TooManyFiles" );
-				// ... so use RCON to fix it
-				Com_Printf( "----------------------------------\nToo many PK3 files to fit into pure file list. Remove some PK3s and reload server.\n----------------------------------\n" );
-			} else {
-				Cvar_Set( "sv_paks", "*" );
-				Cvar_Set( "sv_pakNames", "*" );
-			}
-		} else {
-			p = FS_LoadedPakChecksums();
-			Cvar_Set( "sv_paks", p );
-			if (!p[0]) {
-				Com_Printf( "WARNING: sv_pure set but no PK3 files loaded\n" );
-			}
-			p = FS_LoadedPakNames();
-			Cvar_Set( "sv_pakNames", p );
-		}
+        if (sv_newpurelist->integer) {
+            if (SV_MakeCompressedPureList()) {
+                int i;
+                // Do cleanup
+                for(i=0;i<PURE_COMPRESS_NUMCS;i++) SV_SetConfigstring( MAX_CONFIGSTRINGS-PURE_COMPRESS_NUMCS+i,"");
+                // No clients will be able to connect...
+                Cvar_Set( "sv_paks", "TooManyFiles" );
+                Cvar_Set( "sv_pakNames", "TooManyFiles" );
+                // ... so use RCON to fix it
+                Com_Printf( "----------------------------------\nToo many PK3 files to fit into pure file list. Remove some PK3s and reload server.\n----------------------------------\n" );
+            } else {
+                Cvar_Set( "sv_paks", "*" );
+                Cvar_Set( "sv_pakNames", "*" );
+            }
+        } else {
+            p = FS_LoadedPakChecksums();
+            Cvar_Set( "sv_paks", p );
+            if (!p[0]) {
+                Com_Printf( "WARNING: sv_pure set but no PK3 files loaded\n" );
+            }
+            p = FS_LoadedPakNames();
+            Cvar_Set( "sv_pakNames", p );
+        }
 
 		// if a dedicated pure server we need to touch the cgame because it could be in a
 		// seperate pk3 file and the client will need to load the latest cgame.qvm
@@ -821,27 +822,27 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// save systeminfo and serverinfo strings
 	Q_strncpyz( systemInfo, Cvar_InfoString_Big( CVAR_SYSTEMINFO ), sizeof( systemInfo ) );
 
-	{
-	 const char *t,*tt;
-	 int l,l2;
+    {
+     const char *t,*tt;
+     int l,l2;
 
-	 t = Info_ValueForKey( systemInfo, "sv_paks" );
-	 l = 0;
-	 if (t) {
-	  tt = t;
-	  while(*tt) { if (*tt==' ') l++; tt++; }
-	 }
+     t = Info_ValueForKey( systemInfo, "sv_paks" );
+     l = 0;
+     if (t) {
+      tt = t;
+      while(*tt) { if (*tt==' ') l++; tt++; }
+     }
 
-	 t = Info_ValueForKey( systemInfo, "sv_pakNames" );
-	 l2 = 0;
-	 if (t) {
-	  tt = t;
-	  while(*tt) { if (*tt==' ') l2++; tt++; }
-	 }
-	 if (abs(l-l2)>1) { // seems pakNames may have one extra item without checksum at the end
-	  Com_Printf( "WARNING: Pure pak file list inconsistency (%d checksums, %d file names). Players may not be able to connect to server.\n",l,l2 );
-	 }
-	}
+     t = Info_ValueForKey( systemInfo, "sv_pakNames" );
+     l2 = 0;
+     if (t) {
+      tt = t;
+      while(*tt) { if (*tt==' ') l2++; tt++; }
+     }
+     if (abs(l-l2)>1) { // seems pakNames may have one extra item without checksum at the end
+      Com_Printf( "WARNING: Pure pak file list inconsistency (%d checksums, %d file names). Players may not be able to connect to server.\n",l,l2 );
+     }
+    }
 
 	cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
 	SV_SetConfigstring( CS_SYSTEMINFO, systemInfo );
@@ -890,9 +891,9 @@ void SV_Init (void) {
 	sv_maxRate = Cvar_Get ("sv_maxRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_minPing = Cvar_Get ("sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_maxPing = Cvar_Get ("sv_maxPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
-	sv_floodProtect = Cvar_Get ("sv_floodProtect", "1", CVAR_ARCHIVE | CVAR_SERVERINFO );
+	sv_floodProtect = Cvar_Get ("sv_floodProtect", "2", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_newpurelist = Cvar_Get ("sv_newpurelist", "0", CVAR_ARCHIVE );
-	sv_clientsPerIp = Cvar_Get ("sv_clientsPerIp", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
+	sv_clientsPerIp = Cvar_Get ("sv_clientsPerIp", "3", CVAR_ARCHIVE | CVAR_SERVERINFO );
 
 	// systeminfo
 	Cvar_Get ("sv_cheats", "1", CVAR_SYSTEMINFO | CVAR_ROM );
@@ -933,30 +934,7 @@ void SV_Init (void) {
 	sv_sayprefix = Cvar_Get ("sv_sayprefix", "console: ", CVAR_ARCHIVE );	
 	sv_tellprefix = Cvar_Get ("sv_tellprefix", "console_tell: ", CVAR_ARCHIVE );
 	sv_demofolder = Cvar_Get ("sv_demofolder", "serverdemos", CVAR_ARCHIVE );
-
-	sv_allowSuicide = Cvar_Get ("sv_allowSuicide", "1", CVAR_ARCHIVE );
-	sv_allowItemdrop = Cvar_Get ("sv_allowItemdrop", "1", CVAR_ARCHIVE );
-	sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
-	sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
-	sv_removeKnife = Cvar_Get ("sv_removeKnife", "0", CVAR_ARCHIVE);
-	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
-	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
-	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
-
-	sv_botRace = Cvar_Get("sv_botRace", "2", CVAR_ARCHIVE);
-
-	#ifdef USE_SERVER_EXTRAS
-	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
-	sv_rainbowChat = Cvar_Get("sv_rainbowChat", "0", CVAR_ARCHIVE);
-	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);
-	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
-	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
-	sv_infiniteWalljumps = Cvar_Get("sv_infiniteWalljumps", "0", CVAR_ARCHIVE);
-	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
-	sv_mapColor = Cvar_Get("sv_mapColor", "7", CVAR_ARCHIVE);
-	sv_colourName = Cvar_Get("sv_colorNames", "0", CVAR_ARCHIVE);
-	#endif
-  
+	
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);
 	sv_auth_engine = Cvar_Get("sv_auth_engine", "1", CVAR_ROM);
@@ -967,14 +945,6 @@ void SV_Init (void) {
 
 	// init the botlib here because we need the pre-compiler in the UI
 	SV_BotInitBotLib();
-
-	#ifdef USE_SQLITE_BANS
-	#ifdef DEDICATED
-	SV_BansInit();
-	Cmd_AddCommand("addip", Bans_AddIP);
-	Cmd_AddCommand("removeip", Bans_RemoveIP);
-	#endif
-	#endif
 }
 
 
@@ -1026,7 +996,8 @@ void SV_Shutdown( char *finalmsg ) {
 	Com_Printf( "----- Server Shutdown (%s) -----\n", finalmsg );
 
 	// stop server-side demos (if any)
-	Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
+	if (com_dedicated->integer)
+		Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
 	
 	if ( svs.clients && !com_errorEntered ) {
 		SV_FinalMessage( finalmsg );
@@ -1038,12 +1009,6 @@ void SV_Shutdown( char *finalmsg ) {
 
 	// free current level
 	SV_ClearServer();
-
-	#ifdef USE_SQLITE_BANS
-	#ifdef DEDICATED
-	SV_BansShutdown();
-	#endif
-	#endif
 
 	// free server static data
 	if ( svs.clients ) {

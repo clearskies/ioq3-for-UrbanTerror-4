@@ -196,7 +196,7 @@ typedef struct {
 
 	// incoming fragment assembly buffer
 	int			fragmentSequence;
-	int			fragmentLength;	
+	int			fragmentLength;
 	byte		fragmentBuffer[MAX_MSGLEN];
 
 	// outgoing fragment buffer
@@ -284,7 +284,7 @@ enum svc_ops_e {
 //
 enum clc_ops_e {
 	clc_bad,
-	clc_nop, 		
+	clc_nop,
 	clc_move,				// [[usercmd_t]
 	clc_moveNoDelta,		// [[usercmd_t]
 	clc_clientCommand,		// [string] message
@@ -542,8 +542,8 @@ issues.
 #define	MAX_SEARCH_PATHS	4096
 #define MAX_FILEHASH_SIZE	1024
 
-int foreignQVMsFound;
-char foreignQVMNames[MAX_ZPATH][MAX_SEARCH_PATHS];
+extern int foreignQVMsFound;
+extern char foreignQVMNames[MAX_ZPATH][MAX_SEARCH_PATHS];
 
 // referenced flags
 // these are in loop specific order so don't change the order
@@ -908,6 +908,8 @@ void CL_PacketEvent( netadr_t from, msg_t *msg );
 void CL_ConsolePrint( char *text );
 void CL_DevConsolePrint(char *text);
 
+void CL_DevConsolePrint( char *text );
+
 void CL_MapLoading( void );
 // do a screen update before starting to load a map
 // when the server is going to load a new map, the entire hunk
@@ -1068,6 +1070,10 @@ void	Sys_SetDefaultCDPath(const char *path);
 char	*Sys_DefaultCDPath(void);
 void	Sys_SetDefaultInstallPath(const char *path);
 char	*Sys_DefaultInstallPath(void);
+
+void	Sys_SetDefaultLibPath(const char *path);
+char	*Sys_DefaultLibPath(void);
+
 void  Sys_SetDefaultHomePath(const char *path);
 char	*Sys_DefaultHomePath(void);
 
@@ -1083,6 +1089,8 @@ unsigned int Sys_ProcessorCount( void );
 int Sys_MonkeyShouldBeSpanked( void );
 
 qboolean Sys_DetectAltivec( void );
+
+void Sys_SetEnv(const char *name, const char *value);
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
  * Compression book.  The ranks are not actually stored, but implicitly defined

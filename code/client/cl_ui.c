@@ -39,12 +39,12 @@ static void GetClientState( uiClientState_t *state ) {
 	Q_strncpyz( state->servername, cls.servername, sizeof( state->servername ) );
 	Q_strncpyz( state->updateInfoString, cls.updateInfoString, sizeof( state->updateInfoString ) );
 	Q_strncpyz( state->messageString, clc.serverMessage, sizeof( state->messageString ) );
-	
+
 	//@Barbatos
 	#ifdef USE_AUTH
 	Q_strncpyz( state->serverAddress, NET_AdrToString(clc.serverAddress), sizeof( state->serverAddress ) );
 	#endif
-	
+
 	state->clientNum = cl.snap.ps.clientNum;
 }
 
@@ -750,7 +750,7 @@ static int GetConfigString(int index, char *buf, int size)
 	}
 
 	Q_strncpyz( buf, cl.gameState.stringData+offset, size);
- 
+
 	return qtrue;
 }
 
@@ -788,7 +788,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return Sys_Milliseconds();
 
 	case UI_CVAR_REGISTER:
-		Cvar_Register( VMA(1), VMA(2), VMA(3), args[4] ); 
+		Cvar_Register( VMA(1), VMA(2), VMA(3), args[4] );
 		return 0;
 
 	case UI_CVAR_UPDATE:
@@ -853,7 +853,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 
 	case UI_FS_SEEK:
 		return FS_Seek( args[1], args[2], args[3] );
-	
+
 	case UI_R_REGISTERMODEL:
 		return re.RegisterModel( VMA(1) );
 
@@ -949,7 +949,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 
 	case UI_GETCLIENTSTATE:
 		GetClientState( VMA(1) );
-		return 0;		
+		return 0;
 
 	case UI_GETGLCONFIG:
 		CL_GetGlconfig( VMA(1) );
@@ -1032,9 +1032,9 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 	case UI_SET_CDKEY:
 		CLUI_SetCDKey( VMA(1) );
 		return 0;
-	
+
 	case UI_SET_PBCLSTATUS:
-		return 0;	
+		return 0;
 
 	case UI_R_REGISTERFONT:
 		re.RegisterFont( VMA(1), args[2], VMA(3));
@@ -1120,29 +1120,30 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 	#ifdef USE_AUTH
 	case UI_NET_STRINGTOADR:
 		return NET_StringToAdr( VMA(1), VMA(2));
-		
+
 	case UI_Q_VSNPRINTF:
-		return Q_vsnprintf( VMA(1), *(int *)VMA(2), VMA(3), VMA(4));
-		
+		return Q_vsnprintf( VMA(1), *((size_t *)VMA(2)), VMA(3), VMA(4));
+
 	case UI_NET_SENDPACKET:
 		{
 			netadr_t addr;
-			const char * destination = VMA(4);     
-			
-			NET_StringToAdr( destination, &addr );                                                                                                                                                                                                                                   
-			NET_SendPacket( args[1], args[2], VMA(3), addr ); 
+			const char * destination = VMA(4);
+
+			NET_StringToAdr( destination, &addr );
+			NET_SendPacket( args[1], args[2], VMA(3), addr );
 		}
 		return 0;
-		
+
 	case UI_COPYSTRING:
-		return (intptr_t)CopyString(VMA(1));
+		CopyString(VMA(1));
+		return 0;
 
 	//case UI_SYS_STARTPROCESS:
 	//	Sys_StartProcess( VMA(1), VMA(2) );
 	//	return 0;
-		
+
 	#endif
-	
+
 	default:
 		Com_Error( ERR_DROP, "Bad UI system trap: %ld", (long int) args[0] );
 
@@ -1208,7 +1209,7 @@ void CL_InitUI( void ) {
 	}
 
 	// reset any CVAR_CHEAT cvars registered by ui
-	if ( !clc.demoplaying && !cl_connectedToCheatServer ) 
+	if ( !clc.demoplaying && !cl_connectedToCheatServer )
 		Cvar_SetCheatState();
 }
 

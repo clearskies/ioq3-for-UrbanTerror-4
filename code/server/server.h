@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 typedef struct svEntity_s {
 	struct worldSector_s *worldSector;
 	struct svEntity_s *nextEntityInWorldSector;
-	
+
 	entityState_t	baseline;		// for delta compression of initial sighting
 	int			numClusters;		// if -1, use headnode instead
 	int			clusternums[MAX_ENT_CLUSTERS];
@@ -59,7 +59,7 @@ typedef struct {
 	int				checksumFeed;		// the feed key that we use to compute the pure checksum strings
 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=475
 	// the serverId associated with the current checksumFeed (always <= serverId)
-	int       checksumFeedServerId;	
+	int       checksumFeedServerId;
 	int				snapshotCounter;	// incremented for each snapshot built
 	int				timeResidual;		// <= 1000 / sv_frame->value
 	int				nextFrameTime;		// when time > nextFrameTime, process world
@@ -174,9 +174,9 @@ typedef struct client_s {
 	qboolean	demo_waiting;	// are we still waiting for the first non-delta frame?
 	int		demo_backoff;	// how many packets (-1 actually) between non-delta frames?
 	int		demo_deltas;	// how many delta frames did we let through so far?
-	
+
 	int				oldServerTime;
-	qboolean			csUpdated[MAX_CONFIGSTRINGS+1];	
+	qboolean			csUpdated[MAX_CONFIGSTRINGS+1];
 	int             numcmds;    // number of client commands so far (in this time period), for sv_floodprotect
 
 	short frozen;

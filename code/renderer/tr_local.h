@@ -146,8 +146,8 @@ typedef enum {
 	GF_SIN,
 	GF_SQUARE,
 	GF_TRIANGLE,
-	GF_SAWTOOTH, 
-	GF_INVERSE_SAWTOOTH, 
+	GF_SAWTOOTH,
+	GF_INVERSE_SAWTOOTH,
 
 	GF_NOISE
 
@@ -302,7 +302,7 @@ typedef struct {
 
 typedef struct {
 	qboolean		active;
-	
+
 	textureBundle_t	bundle[NUM_TEXTURE_BUNDLES];
 
 	waveForm_t		rgbWave;
@@ -381,7 +381,7 @@ typedef struct shader_s {
 	int			multitextureEnv;		// 0, GL_MODULATE, GL_ADD (FIXME: put in stage)
 
 	cullType_t	cullType;				// CT_FRONT_SIDED, CT_BACK_SIDED, or CT_TWO_SIDED
-	qboolean	polygonOffset;			// set for decals and other items that must be offset 
+	qboolean	polygonOffset;			// set for decals and other items that must be offset
 	qboolean	noMipMaps;				// for console fonts, 2D elements, etc.
 	qboolean	noPicMip;				// for images that must always be full resolution
 
@@ -396,7 +396,7 @@ typedef struct shader_s {
 	deformStage_t	deforms[MAX_SHADER_DEFORMS];
 
 	int			numUnfoggedPasses;
-	shaderStage_t	*stages[MAX_SHADER_STAGES];		
+	shaderStage_t	*stages[MAX_SHADER_STAGES];
 
 	void		(*optimalStageIteratorFunc)( void );
 
@@ -674,7 +674,7 @@ typedef struct mnode_s {
 
 	// node specific
 	cplane_t	*plane;
-	struct mnode_s	*children[2];	
+	struct mnode_s	*children[2];
 
 	// leaf specific
 	int			cluster;
@@ -764,7 +764,7 @@ typedef struct model_s {
 
 void		R_ModelInit (void);
 model_t		*R_GetModelByHandle( qhandle_t hModel );
-int			R_LerpTag( orientation_t *tag, qhandle_t handle, int startFrame, int endFrame, 
+int			R_LerpTag( orientation_t *tag, qhandle_t handle, int startFrame, int endFrame,
 					 float frac, const char *tagName );
 void		R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs );
 
@@ -840,7 +840,7 @@ typedef struct {
 typedef struct {
 	int		c_surfaces, c_shaders, c_vertexes, c_indexes, c_totalIndexes;
 	float	c_overDraw;
-	
+
 	int		c_dlightVertexes;
 	int		c_dlightIndexes;
 
@@ -870,7 +870,7 @@ typedef struct {
 } backEndState_t;
 
 /*
-** trGlobals_t 
+** trGlobals_t
 **
 ** Most renderer globals are defined here.
 ** backend functions should never modify any of these fields,
@@ -975,7 +975,7 @@ extern glstate_t	glState;		// outside of TR since it shouldn't be cleared during
 // the glconfig_t struct.
 extern qboolean		textureFilterAnisotropic;
 extern int		maxAnisotropy;
-                
+
 
 //
 // cvars
@@ -1039,8 +1039,6 @@ extern cvar_t	*r_minimize;
 extern cvar_t	*r_gamma;
 extern cvar_t	*r_displayRefresh;		// optional display refresh option
 extern cvar_t	*r_ignorehwgamma;		// overrides hardware gamma capabilities
-
-extern cvar_t	*r_noBorder;
 
 extern cvar_t	*r_allowExtensions;				// global enable/disable of OpenGL extensions
 extern cvar_t	*r_ext_compressed_textures;		// these control use of specific extensions
@@ -1109,6 +1107,8 @@ extern	cvar_t	*r_saveFontData;
 extern	cvar_t	*r_GLlibCoolDownMsec;
 
 extern	cvar_t	*r_drawLegs;
+extern 	cvar_t 	*r_noborder;
+extern 	cvar_t 	*r_centerWindow;
 
 //====================================================================
 
@@ -1127,7 +1127,7 @@ void R_AddLightningBoltSurfaces( trRefEntity_t *e );
 
 void R_AddPolygonSurfaces( void );
 
-void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader, 
+void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader,
 					 int *fogNum, int *dlightMap );
 
 void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader, int fogIndex, int dlightMap );
@@ -1271,7 +1271,7 @@ void		GLimp_LogComment( char *comment );
 
 // NOTE TTimo linux works with float gamma value, not the gamma table
 //   the params won't be used, getting the r_gamma cvar directly
-void		GLimp_SetGamma( unsigned char red[256], 
+void		GLimp_SetGamma( unsigned char red[256],
 						    unsigned char green[256],
 							unsigned char blue[256] );
 
@@ -1292,7 +1292,7 @@ typedef struct stageVars
 } stageVars_t;
 
 
-typedef struct shaderCommands_s 
+typedef struct shaderCommands_s
 {
 	glIndex_t	indexes[SHADER_MAX_INDEXES] ALIGN(16);
 	vec4_t		xyz[SHADER_MAX_VERTEXES] ALIGN(16);
@@ -1660,9 +1660,9 @@ void R_SyncRenderThread( void );
 void R_AddDrawSurfCmd( drawSurf_t *drawSurfs, int numDrawSurfs );
 
 void RE_SetColor( const float *rgba );
-void RE_StretchPic ( float x, float y, float w, float h, 
+void RE_StretchPic ( float x, float y, float w, float h,
 					  float s1, float t1, float s2, float t2, qhandle_t hShader );
-void RE_RotatedPic ( float x, float y, float w, float h, 
+void RE_RotatedPic ( float x, float y, float w, float h,
 					  float s1, float t1, float s2, float t2, qhandle_t hShader, float angle );
 void RE_BeginFrame( stereoFrame_t stereoFrame );
 void RE_EndFrame( int *frontEndMsec, int *backEndMsec );

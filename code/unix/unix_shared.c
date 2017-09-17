@@ -40,6 +40,8 @@ static char cdPath[MAX_OSPATH];
 // Used to determine local installation path
 static char installPath[MAX_OSPATH];
 
+static char libPath[ MAX_OSPATH ] = { 0 };
+
 // Used to determine where to store user-specific files
 static char homePath[MAX_OSPATH];
 
@@ -77,7 +79,7 @@ int Sys_Milliseconds(void)
 	return curtime;
 }
 
-#if (defined(__linux__) || defined(__FreeBSD__) || defined(__sun)) && !defined(DEDICATED)
+#if (defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)) && !defined(DEDICATED)
 /*
 ================
 Sys_XTimeToSysTime
@@ -390,6 +392,29 @@ char *Sys_DefaultInstallPath(void)
 		return Sys_Cwd();
 }
 
+/*
+=================
+Sys_SetDefaultLibPath
+=================
+*/
+void Sys_SetDefaultLibPath(const char *path)
+{
+	Q_strncpyz(libPath, path, sizeof(libPath));
+}
+
+/*
+=================
+Sys_DefaultLibPath
+=================
+*/
+char *Sys_DefaultLibPath(void)
+{
+	if (*libPath)
+		return libPath;
+	else
+		return Sys_Cwd();
+}
+
 void Sys_SetDefaultHomePath(const char *path)
 {
 	Q_strncpyz(homePath, path, sizeof(homePath));
@@ -404,7 +429,9 @@ char *Sys_DefaultHomePath(void)
             
 	if ((p = getenv("HOME")) != NULL) {
 		Q_strncpyz(homePath, p, sizeof(homePath));
-#ifdef MACOS_X
+#ifdef HOMEPATH
+		Q_strcat(homePath, sizeof(homePath), HOMEPATH);
+#elif defined MACOS_X
 		Q_strcat(homePath, sizeof(homePath), "/Library/Application Support/Quake3");
 #else
 		Q_strcat(homePath, sizeof(homePath), "/.q3a");
@@ -439,7 +466,7 @@ char *Sys_GetCurrentUser( void )
 	return p->pw_name;
 }
 
-#if defined(__linux__) || defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__)
 // TTimo 
 // sysconf() in libc, POSIX.1 compliant
 unsigned int Sys_ProcessorCount(void)
