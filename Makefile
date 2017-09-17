@@ -42,7 +42,6 @@ USE_CODEC_VORBIS   =0
 USE_SQLITE_BANS    =1
 USE_SERVER_EXTRAS  =1
 
-
 USE_SOUNDHAX	   =0
 USE_AUTOMATION	   =0
 
@@ -51,9 +50,6 @@ USE_ALTGAMMA	   =1
 
 # Use SSE/SSE2 optimized code
 USE_SSE          =1
-
-# Clearskies - X11-based gamma for Linux
-USE_ALTGAMMA     =1
 
 # Barbatos - Urban Terror 4.2 auth system
 # You're not forced to use it.

@@ -209,12 +209,11 @@ not have future usercmd_t executed before it is executed
 */
 void CL_AddReliableCommand( const char *cmd ) {
 	int   index;
-	char *s, *serverInfo;
+	char *s;
 	char *pName;
 	char *locName;
 	int lastHitByNum;
 	char *lastHitBy;
-	char health[4];
 	char realCommand[MAX_STRING_CHARS];
 
 	s = CopyString(cmd);
@@ -3698,7 +3697,6 @@ CL_GlobalServers_f
 ==================
 */
 void CL_GlobalServers_f( void ) {
-	netadr_t  to;
 	int     i, adrNum = 0;
 	int     count;
 	char    *buffptr;
@@ -4135,7 +4133,7 @@ bool CL_CDKeyValidate
 qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 	char  ch;
 	byte  sum;
-	char  chs[3];
+	char  chs[9];
 	int i, len;
 
 	len = strlen(key);

@@ -429,6 +429,9 @@ static char *SV_GetMapSoundingLike(const char *s)
         // Multiple matches found for the given map name
         Com_Printf("Multiple maps found matching '%s':\n", s);
 
+        // Sorting the short map list alphabetically
+        qsort(matches, count, sizeof(char *), SV_SortMaps);
+
         for (i = 0; i < count; i++)
         {
             // Printing a short map list so the user can retry with a more specific name
