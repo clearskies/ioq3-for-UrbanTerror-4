@@ -3139,7 +3139,7 @@ static void Field_CompleteCommand( char *cmd,
 			completionField->cursor++;
 		}
 
-		completionField->buffer[ 0 ] = '\\';
+		completionField->buffer[ 0 ] = '/';
 	}
 #endif
 

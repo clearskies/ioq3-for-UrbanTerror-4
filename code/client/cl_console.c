@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // console.c
 
 #include "client.h"
-#include "killLog.h"
 #include "hitLog.h"
 
 
@@ -83,7 +82,6 @@ void Con_SpecificBottom(console_t *console);
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
-cvar_t		*con_coloredKills;
 cvar_t		*con_coloredHits;
 
 cvar_t		*con_bgAlpha;
@@ -498,7 +496,6 @@ void Con_Init (void) {
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
 	con_conspeed = Cvar_Get ("scr_conspeed", "3", CVAR_ARCHIVE);
 
-	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
 
 	con_bgAlpha = Cvar_Get("con_bgAlpha", "90", CVAR_ARCHIVE);
@@ -560,25 +557,6 @@ void Con_Linefeed (console_t *console, qboolean skipnotify)
 	console->current++;
 	for(i=0; i<console->linewidth; i++)
 		console->text[(console->current%console->totallines)*console->linewidth+i] = (ColorIndex(COLOR_WHITE)<<8) | ' ';
-}
-
-int nameToTeamColour(char *name) {
-	int i, team = 2, myteam;
-	char *cs;
-	for (i = 0; i < MAX_CLIENTS; i++) {
-		cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + i];
-		if (!Q_stricmp(Info_ValueForKey(cs, "n"), name)) {
-			team = atoi(Info_ValueForKey(cs, "t"));
-			myteam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
-
-			if (team == myteam)
-				return skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
-			else
-				return skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
-		}
-	}
-
-	return team;
 }
 
 int damageToColour(int damage) {
@@ -714,16 +692,12 @@ If no console is visible, the text will appear at the top of the game window
 ================
 */
 void CL_ConsolePrint( char *txt ) {
-	int team;
 	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
-	char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
 	char newtxt[MAX_STRING_CHARS + 1];
 	char damageString[12];
 	int damage, damageCol;
-	char **search;
 	char *playerhad;
-	int found = 0;
-	int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
+	qboolean found = qfalse;
 	int i;
 
 	qboolean skipnotify = qfalse; // NERVE - SMF
@@ -804,220 +778,97 @@ void CL_ConsolePrint( char *txt ) {
 			txt = newtxt;
 		}
 
-		if (killLogNum == 1) {
-			search = killLog1;
-		} else if (killLogNum == 2) {
-			search = killLog2;
-		} else if (killLogNum > 2) {
-			search = killLog3;
-		}
-
 		playerhad = "%s had %s health.";
 		if (sscanf(txt, playerhad, player2, damageString) == 2) {
 			damage = atoi(damageString);
 			damageCol = healthToColour(damage);
-			team = nameToTeamColour(player2);
-			sprintf(nplayer2, "^%i%s^7", team, player2);
 			sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-			sprintf(newtxt, playerhad, nplayer2, damageString);
+			sprintf(newtxt, playerhad, player2, damageString);
 			txt = newtxt;
 		}
 
-		if (killLogNum > 0 && killLogNum < 6) {
-			int temp;
-			for (i = 0; ; i++) {
-				if (!search[i])
-					break;
-
-				if (sscanf(txt, search[i], player1, player2) == 2) {
-					found = 1;
-					if (con_coloredKills && con_coloredKills->integer) {
-						temp = strlen(search[i]);
-						if (!strcmp(&search[i][temp - 3], "%s.")) {
-							player2[strlen(player2) - 1] = 0;
-						} else if (Q_strsub(search[i], "%s's")) {
-							player2[strlen(player2) - 2] = 0;
-						}
-
-						team = nameToTeamColour(player1);
-						sprintf(nplayer1, "^%i%s^7", team, player1);
-
-						team = nameToTeamColour(player2);
-						sprintf(nplayer2, "^%i%s^7", team, player2);
-
-						sprintf(newtxt, search[i], nplayer1, nplayer2);
-						txt = newtxt;
-
-					}
-					break;
-				}
-			}
-
-			if (!found) {
+		if (con_coloredHits && con_coloredHits->integer) {
+			if (Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
 				for (i = 0; ; i++) {
-					if (!killLogSingle[i]) {
-						break;
-					}
-
-					if (sscanf(txt, killLogSingle[i], player1, player2) == 2) {
-						if (con_coloredKills && con_coloredKills->integer) {
-							team = nameToTeamColour(player1);
-							sprintf(nplayer1, "^%i%s^7", team, player1);
-
-							sprintf(newtxt, killLogSingle[i], nplayer1, player2);
-							txt = newtxt;
-						}
-						break;
-					}
-				}
-			}
-		}
-
-		if (Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
-			for (i = 0; ; i++) {
-				if (!hitLog1[i])
+					if (!hitLog1[i])
 						break;
 
-				if (sscanf(txt, hitLog1[i], player1, player2, damageString) == 3) {
-					if (con_coloredHits && con_coloredHits->integer) {
+					if (sscanf(txt, hitLog1[i], player1, player2, damageString) == 3) {
+						found = qtrue;
 						damage = atoi(damageString);
 						damageCol = damageToColour(damage);
 
-						if (con_coloredHits->integer == 2) {
-							team = nameToTeamColour(player1);
-							sprintf(nplayer1, "^%i%s^7", team, player1);
-
-							team = nameToTeamColour(player2);
-							sprintf(nplayer2, "^%i%s^7", team, player2);
-						} else {
-							sprintf(nplayer1, "%s", player1);
-							sprintf(nplayer2, "%s", player2);
-						}
-
 						sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-						sprintf(newtxt, hitLog1[i], nplayer1, nplayer2, damageString);
+						sprintf(newtxt, hitLog1[i], player1, player2, damageString);
 						txt = newtxt;
-					}
-					break;
-				}
-			}
 
-			for (i = 0; ; i++) {
-				if (!hitLog2[i])
+						break;
+					}
+				}
+
+				for (i = 0; ; i++) {
+					if (!hitLog2[i])
 						break;
 
-				if (sscanf(txt, hitLog2[i], player1, player2, damageString) == 3) {
-					if (con_coloredHits && con_coloredHits->integer) {
+					if (sscanf(txt, hitLog2[i], player1, player2, damageString) == 3) {
+						found = qtrue;
 						damage = atoi(damageString);
 						damageCol = damageToColour(damage);
 
-						if (con_coloredHits->integer == 2) {
-							if (strcmp(player1, "You")) {
-								team = nameToTeamColour(player1);
-								sprintf(nplayer1, "^%i%s^7", team, player1);
-							} else {
-								sprintf(nplayer1, "%s", player1);
-							}
-
-							team = nameToTeamColour(player2);
-							sprintf(nplayer2, "^%i%s^7", team, player2);
-						} else {
-							sprintf(nplayer1, "%s", player1);
-							sprintf(nplayer2, "%s", player2);
-						}
-
 						sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-						sprintf(newtxt, hitLog2[i], nplayer1, nplayer2, damageString);
+						sprintf(newtxt, hitLog2[i], player1, player2, damageString);
 						txt = newtxt;
-					}
-					break;
-				}
-			}
 
-			for (i = 0; ; i++) {
-				if (!hitLog3[i])
+						break;
+					}
+				}
+
+				for (i = 0; ; i++) {
+					if (!hitLog3[i])
 						break;
 
-				if (sscanf(txt, hitLog3[i], player2, damageString) == 2) {
-					if (con_coloredHits && con_coloredHits->integer) {
+					if (sscanf(txt, hitLog3[i], player2, damageString) == 2) {
+						found = qtrue;
 						damage = atoi(damageString);
 						damageCol = damageToColour(damage);
 
-						if (con_coloredHits->integer == 2) {
-							team = nameToTeamColour(player2);
-							sprintf(nplayer2, "^%i%s^7", team, player2);
-						} else {
-							sprintf(nplayer2, "%s", player2);
-						}
-
 						sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-						sprintf(newtxt, hitLog3[i], nplayer2, damageString);
+						sprintf(newtxt, hitLog3[i], player2, damageString);
 						txt = newtxt;
+
+						break;
 					}
-					break;
+				}
+			} else if (Cvar_VariableIntegerValue("cg_showbullethits") == 3) {
+				if (sscanf(txt, "%s was hit by %s for %s damage.", player1, player2, damageString) == 3) {
+					found = qtrue;
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "%s was hit by %s for %s damage.", player1, player2, damageString);
+					txt = newtxt;
+				} else if (sscanf(txt, "%s hit %s for %s damage.", player1, player2, damageString) == 3) {
+					found = qtrue;
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "%s hit %s for %s damage.", player1, player2, damageString);
+					txt = newtxt;
+				} else if (sscanf(txt, "You were hit by %s for %s damage.", player2, damageString) == 2) {
+					found = qtrue;
+					damage = atoi(damageString);
+					damageCol = damageToColour(damage);
+
+					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+					sprintf(newtxt, "You were hit by %s for %s damage.", player2, damageString);
+					txt = newtxt;
 				}
 			}
-		} else if (Cvar_VariableIntegerValue("cg_showbullethits") == 3) {
-			if (sscanf(txt, "%s was hit by %s for %s damage.", player1, player2, damageString) == 3) {
-				if (con_coloredHits && con_coloredHits->integer) {
-					damage = atoi(damageString);
-					damageCol = damageToColour(damage);
 
-					if (con_coloredHits->integer == 2) {
-						team = nameToTeamColour(player1);
-						sprintf(nplayer1, "^%i%s^7", team, player1);
-
-						team = nameToTeamColour(player2);
-						sprintf(nplayer2, "^%i%s^7", team, player2);
-					} else {
-						sprintf(nplayer1, "%s", player1);
-						sprintf(nplayer2, "%s", player2);
-					}
-
-					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-					sprintf(newtxt, "%s was hit by %s for %s damage.", nplayer1, nplayer2, damageString);
-					txt = newtxt;
-				}
-			} else if (sscanf(txt, "%s hit %s for %s damage.", player1, player2, damageString) == 3) {
-				if (con_coloredHits && con_coloredHits->integer) {
-					damage = atoi(damageString);
-					damageCol = damageToColour(damage);
-
-					if (con_coloredHits->integer == 2) {
-						if (strcmp(player1, "You")) {
-							team = nameToTeamColour(player1);
-							sprintf(nplayer1, "^%i%s^7", team, player1);
-						} else {
-							sprintf(nplayer1, "%s", player1);
-						}
-
-						team = nameToTeamColour(player2);
-						sprintf(nplayer2, "^%i%s^7", team, player2);
-					} else {
-						sprintf(nplayer1, "%s", player1);
-						sprintf(nplayer2, "%s", player2);
-					}
-
-					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-					sprintf(newtxt, "%s hit %s for %s damage.", nplayer1, nplayer2, damageString);
-					txt = newtxt;
-				}
-			} else if (sscanf(txt, "You were hit by %s for %s damage.", player2, damageString) == 2) {
-				if (con_coloredHits && con_coloredHits->integer) {
-					damage = atoi(damageString);
-					damageCol = damageToColour(damage);
-
-					if (con_coloredHits->integer == 2) {
-						team = nameToTeamColour(player2);
-						sprintf(nplayer2, "^%i%s^7", team, player2);
-					} else {
-						sprintf(nplayer2, "%s", player2);
-					}
-
-					sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-					sprintf(newtxt, "You were hit by %s for %s damage.", nplayer2, damageString);
-					txt = newtxt;
-				}
+			if (found == qtrue && txt[strlen(txt) - 1] != '\n') {
+				sprintf(txt, "%s\n", txt);
 			}
 		}
 	}
