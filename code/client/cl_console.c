@@ -478,7 +478,6 @@ void Con_PrevTab() {
 	if (currentConsoleNum < 0)
 		currentConsoleNum = numConsoles - 1;
 	currentCon = &consoles[currentConsoleNum];
-	Com_Printf("PREV TAB: %d\n", currentConsoleNum);
 }
 
 void Con_NextTab() {
@@ -486,7 +485,6 @@ void Con_NextTab() {
 	if (currentConsoleNum == numConsoles)
 		currentConsoleNum = CONSOLE_ALL;
 	currentCon = &consoles[currentConsoleNum];
-	Com_Printf("NEXT TAB: %d\n", currentConsoleNum);
 }
 
 /*
@@ -633,7 +631,6 @@ void writeTextToConsole(console_t *console, char *txt, qboolean skipnotify) {
 		// word wrap
 		if (l != console->linewidth && (console->x + l >= console->linewidth) ) {
 			Con_Linefeed(console, skipnotify);
-
 		}
 
 		txt++;
@@ -1277,7 +1274,7 @@ void Con_DrawSolidConsole( float frac ) {
 	float old;
 
 	for (i = 0; i < numConsoles; i++) {
-		if (currentCon == &consoles[i]) {
+		if (i == currentConsoleNum) {
 			tabWidth = SCR_FontWidth(consoleNames[i], 0.24f) + 30;
 			tabHeight = 22;
 			lineColour[3] = 1;
@@ -1294,7 +1291,7 @@ void Con_DrawSolidConsole( float frac ) {
 			SCR_AdjustedFillRect(horizOffset, vertOffset, tabWidth, tabHeight, bgColour);
 		}
 
-		if (currentCon != &consoles[i]) {
+		if (i != currentConsoleNum) {
 			old = lineColour[3];
 			lineColour[3] = 1;
 
@@ -1307,14 +1304,14 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_AdjustedFillRect(horizOffset, vertOffset + tabHeight - 1, tabWidth, 1, lineColour);
 
 		// left border
-		if ((!i && margin) || (i && currentCon == &consoles[i])) {
+		if ((!i && margin) || (i && i == currentConsoleNum)) {
 			SCR_AdjustedFillRect(horizOffset, vertOffset, 1, tabHeight, lineColour);
 		}
 
 		// right border
 		SCR_AdjustedFillRect(horizOffset + tabWidth, vertOffset, 1, tabHeight, lineColour);
 
-		if (currentCon == &consoles[i]) {
+		if (i == currentConsoleNum) {
 			SCR_AdjustedFontText(horizOffset + 15, vertOffset + 14, 0.24f, g_color_table[7], consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
 		} else {
 			SCR_AdjustedFontText(horizOffset + 9, vertOffset + 12, 0.18f, darkTextColour, consoleNames[i], ITEM_TEXTSTYLE_SHADOWED);
