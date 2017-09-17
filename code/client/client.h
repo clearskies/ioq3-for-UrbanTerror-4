@@ -463,6 +463,8 @@ qboolean CL_CheckPaused(void);
 
 char *replaceStr(char *string, char *find, char *replace);
 
+void CL_ParseNews(void);
+
 //
 // cl_input
 //
