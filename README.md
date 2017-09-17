@@ -15,7 +15,6 @@ This is **not** the official ioquake3 Urban Terror client. This is my own person
    + `s_debug <0|1>` - Enables output of sounds being played. Default is `0`
    + `com_nosplash <0|1>` - Disables the FrozenSand animation. Default is `0`
    + `s_chatsound <0|1>` - Enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM. Default is `1`
-   + `cl_drawHealth <0|1>` - Enables health percentage display on the HUD. Default is `0`
    + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command. Default is `90`
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
    + `cl_teamchatIndicator ""` - Enables a customizable indicatpr to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `""`

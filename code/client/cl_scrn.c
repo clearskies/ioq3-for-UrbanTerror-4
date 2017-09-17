@@ -31,7 +31,6 @@ cvar_t		*cl_graphheight;
 cvar_t		*cl_graphscale;
 cvar_t		*cl_graphshift;
 
-cvar_t		*cl_drawHealth;
 cvar_t		*cl_drawKills;
 
 /*
@@ -534,49 +533,6 @@ void SCR_DrawDemoRecording( void ) {
 
 /*
 =================
-SCR_DrawHealth
-=================
-*/
-void SCR_DrawHealth( void ) {
-	int health = cl.snap.ps.stats[0];
-
-	if (!health ||
-		cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
-		cl.snap.ps.pm_type > 4 ||
-		cl_paused->value ||
-		!cl_drawHealth->integer ||
-		!Cvar_VariableIntegerValue("cg_draw2d"))
-		return;
-
-	char healthStr[12];
-	int healthCol;
-	int x = 54;
-	int y = 449;
-
-	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 439;
-	}
-
-
-	if (health >= 60) {
-		healthCol = 2;
-	} else if (health >= 35) {
-		healthCol = 3;
-	} else if (health >= 15) {
-		healthCol = 8;
-	} else {
-		healthCol = 1;
-	}
-
-	Com_sprintf(healthStr, 12, "H:^%i%i%%", healthCol, health);
-
-	SCR_DrawCondensedString(x, y, 8, healthStr, g_color_table[7], qfalse);
-
-
-}
-
-/*
-=================
 SCR_DrawKills
 =================
 */
@@ -703,7 +659,6 @@ void SCR_Init( void ) {
 	cl_graphscale = Cvar_Get ("graphscale", "1", CVAR_CHEAT);
 	cl_graphshift = Cvar_Get ("graphshift", "0", CVAR_CHEAT);
 
-	cl_drawHealth = Cvar_Get("cl_drawHealth", "0", CVAR_ARCHIVE);
 	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
@@ -774,7 +729,6 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 		case CA_ACTIVE:
 			CL_CGameRendering( stereoFrame );
 			SCR_DrawDemoRecording();
-			SCR_DrawHealth();
 			SCR_DrawKills();
 			break;
 		}
