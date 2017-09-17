@@ -1,20 +1,21 @@
-Clearskies' ioquake3 for Urban Terror
-=====================================
-### Version 4.2.023 ###
-**********
-#Important, please read!
-This is *not* the official ioquake3 Urban Terror client. This is my own personal client, and nothing in it is at all representative of the direction Frozen Sand wishes to take with Urban Terror. This client is not endorsed by Frozen Sand in any way, and any use is at your own discretion. By using it you understand that whatever happens is your responsibility.
+# Clearskies' ioquake3 for Urban Terror #
+
+### 4.3.2-compatible ###
+
 **********
 
-Client
-------
+#### Important, please read! ####
+This is **not** the official ioquake3 Urban Terror client. This is my own personal client, and nothing in it is at all representative of the direction Frozen Sand wishes to take with Urban Terror. This client is not endorsed by Frozen Sand in any way, and any use is at your own discretion. By using it you understand that whatever happens is your responsibility.
+
+**********
+
+## Client ##
 
 ### Cvars ###
    + `s_debug <0|1>` - Enables output of sounds being played. Default is `0`
    + `com_nosplash <0|1>` - Disables the FrozenSand animation. Default is `0`
    + `s_chatsound <0|1>` - Enables the little tick sound when a line of chat comes in. This is only useful for 4.1 because 4.2 already has this in the QVM. Default is `1`
    + `cl_drawHealth <0|1>` - Enables health percentage display on the HUD. Default is `0`
-   + `r_noBorder <0|1>` - Disables the window decoration (border, buttons, titlebar) - has no effect if `r_fullscreen` is 1. Default is `0`
    + `r_jpegQuality <0-100>` - Sets the image quality for screenshots taken with the `screenshotjpeg` command. Default is `90`
    + `cl_drawKills <0|1>` - Enables a kill counter on the HUD. Default is `0`
    + `cl_teamchatIndicator ""` - Enables a customizable indicatpr to indicate that a chat message is a teamchat. Useful on stupid maps like orbital. Default is `""`
@@ -36,7 +37,6 @@ Client
    + `con_fadeIn <0|1>` - Fades the console in/out instead of sliding it down/up. Default is `0`
    + `con_margin <0-50>` - Adds a margin to the top, left, and right sides of the console. If this is greater than `0`, then the console will become a box. Default is `0`
    + `con_showVersion <0|1>` - Shows the client's version number in the console. Default is `1`
-   + `con_tabs <0|1>` - Enables console tabs (see below for description). Default is `0`
    + `con_chatTime <0|1|2>` - Enables a timestamp next to every chat message. `1` adds a 24-hour timestamp and `2` adds a 12-hour timestamp. Default is `0`
    + `con_borderRGB <0-255> <0-255> <0-255> ` - Changes the console border colour. Default is `0 100 100`
    + `cl_deathBind ""` - Executes a command on death. Default is `""`
@@ -75,8 +75,8 @@ Client
 
 **********
 
-Server
-------
+## Server ##
+
 ### Misc ###
    + Rewrote the `tell` system
    + Rewrote the ban system to use an sqlite database, found in the `q3ut4` folder. By default, the file is called `bans.sqlite`. This should eliminate various sources of IO lag, like when an IP is added to or removed from the banlist. This also allows more than 4096 bans to be stored.
