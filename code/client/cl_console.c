@@ -1454,8 +1454,6 @@ Con_DrawConsole
 ==================
 */
 void Con_DrawConsole( void ) {
-	currentCon = &consoles[CONSOLE_ALL];
-
 	if (com_developer && com_developer->integer) {
 		numConsoles = 6;
 	} else {
