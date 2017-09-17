@@ -14,7 +14,7 @@ cache:
 deploy:
   provider: releases
   api_key:
-    secure: gKlSUbKXH0AcjiERxNcNY3tOQIcjvJYZdgfHbqjDG3d4T8dgF5ePeY6kxHArQ343G4e27oiqNyOW3iUzH16AiU7SDU90lt9j8WQ8VChmLVT5i006eOQxopQXL+95zDHQRp6GNNLS7V1DLeQDE42q/xdzkRFuDKr90pvOWU7GGmI=
+    secure: 3j8Y8FC6bhx8U+m7jB9CX8P3BPeKHyxNUdpt2GNchIHA5C3vuHomck0MmxSWJNJyAoqT6bxGWxPIoIZneye0jCG0mA4VYDtCE6vfMDKxAmrJWMosDFIK47zlbV7DpLETA4a5qC23l8O313aKBJuapmvYYGzK0ZXwJvRapxFr6tE=
   file:
     - build/release-linux-x86_64/Quake3-UrT-Clear-Ded.x86_64
     - build/release-linux-x86_64/Quake3-UrT-Clear.x86_64
