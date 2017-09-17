@@ -780,10 +780,13 @@ void CL_ConsolePrint( char *txt ) {
 
 		playerhad = "%s had %s health.";
 		if (sscanf(txt, playerhad, player2, damageString) == 2) {
+			found = qtrue;
+
 			damage = atoi(damageString);
 			damageCol = healthToColour(damage);
 			sprintf(damageString, "^%i%i%%^7", damageCol, damage);
 			sprintf(newtxt, playerhad, player2, damageString);
+
 			txt = newtxt;
 		}
 
@@ -867,10 +870,12 @@ void CL_ConsolePrint( char *txt ) {
 				}
 			}
 
-			if (found == qtrue && txt[strlen(txt) - 1] != '\n') {
-				sprintf(txt, "%s\n", txt);
-			}
+
 		}
+	}
+
+	if (found == qtrue && txt[strlen(txt) - 1] != '\n') {
+		strcat(txt, "\n");
 	}
 
 	writeTextToConsole(&consoles[CONSOLE_ALL], txt, skipnotify);
