@@ -38,6 +38,8 @@ USE_OPENAL         =0
 USE_CURL           =1
 USE_CODEC_VORBIS   =0
 
+USE_LUA            =1
+
 # Server
 USE_SQLITE_BANS    =1
 USE_SERVER_EXTRAS  =1
@@ -170,9 +172,8 @@ UDIR=$(MOUNT_DIR)/unix
 W32DIR=$(MOUNT_DIR)/win32
 SYSDIR=$(MOUNT_DIR)/sys
 
-ifeq ($(USE_SQLITE_BANS),1)
-  SQLITEDIR=$(MOUNT_DIR)/sqlite3
-endif
+LUADIR=$(MOUNT_DIR)/lua
+SQLITEDIR=$(MOUNT_DIR)/sqlite3
 
 GDIR=$(MOUNT_DIR)/game
 CGDIR=$(MOUNT_DIR)/cgame
@@ -297,6 +298,10 @@ ifeq ($(PLATFORM),linux)
 
   THREAD_LDFLAGS=-lpthread
   LDFLAGS=-ldl -lm -pthread
+
+  ifeq ($(USE_LUA),1)
+    LDFLAGS += -llua
+  endif
 
   ifeq ($(USE_SDL),1)
     CLIENT_LDFLAGS=$(shell sdl-config --libs)
@@ -913,6 +918,10 @@ ifeq ($(USE_AUTOMATION),1)
   BASE_CFLAGS += -DUSE_AUTOMATION=1
 endif
 
+ifeq ($(USE_LUA),1)
+  BASE_CFLAGS += -DUSE_LUA=1
+endif
+
 ifeq ($(USE_SQLITE_BANS),1)
   BASE_CFLAGS += -DUSE_SQLITE_BANS=1
 endif
@@ -1250,6 +1259,11 @@ Q3OBJ = \
   $(B)/client/tr_surface.o \
   $(B)/client/tr_world.o \
 
+ifeq ($(USE_LUA),1)
+  Q3OBJ += \
+    $(B)/client/lua_common.o
+endif
+
 ifeq ($(ARCH),i386)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
@@ -1423,6 +1437,11 @@ Q3DOBJ = \
   $(B)/ded/null_client.o \
   $(B)/ded/null_input.o \
   $(B)/ded/null_snddma.o \
+
+ifeq ($(USE_LUA),1)
+  Q3DOBJ += \
+    $(B)/ded/lua_common.o
+endif
 
 ifeq ($(USE_SQLITE_BANS),1)
   Q3DOBJ += \
@@ -1801,6 +1820,10 @@ $(B)/client/%.o: $(W32DIR)/%.c
 $(B)/client/%.o: $(W32DIR)/%.rc
 	$(DO_WINDRES)
 
+ifeq ($(USE_LUA),1)
+$(B)/client/%.o: $(LUADIR)/%.c
+	$(DO_CC)
+endif
 
 $(B)/ded/%.o: $(UDIR)/%.s
 	$(DO_AS)
@@ -1825,6 +1848,11 @@ $(B)/ded/%.o: $(W32DIR)/%.c
 
 $(B)/ded/%.o: $(SYSDIR)/%.c
 	$(DO_DED_CC)
+
+ifeq ($(USE_LUA),1)
+$(B)/ded/%.o: $(LUADIR)/%.c
+	$(DO_DED_CC)
+endif
 
 ifeq ($(USE_SQLITE_BANS),1)
 $(B)/ded/%.o: $(SQLITEDIR)/%.c
