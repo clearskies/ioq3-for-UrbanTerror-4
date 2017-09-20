@@ -140,7 +140,7 @@ void SV_SetConfigstring (int index, const char *val) {
 			if ( index == CS_SERVERINFO && client->gentity && (client->gentity->r.svFlags & SVF_NOSERVERINFO) ) {
 				continue;
 			}
-		
+
 
 			SV_SendConfigstring(client, index);
 		}
@@ -218,7 +218,7 @@ baseline will be transmitted
 */
 void SV_CreateBaseline( void ) {
 	sharedEntity_t *svent;
-	int				entnum;	
+	int				entnum;
 
 	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) {
 		svent = SV_GentityNum(entnum);
@@ -345,7 +345,7 @@ void SV_ChangeMaxClients( void ) {
 
 	// free the old clients on the hunk
 	Hunk_FreeTempMemory( oldClients );
-	
+
 	// allocate new snapshot entities
 	if ( com_dedicated->integer ) {
 		svs.numSnapshotEntities = sv_maxclients->integer * PACKET_BACKUP * 64;
@@ -694,7 +694,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 	// clear physics interaction links
 	SV_ClearWorld ();
-	
+
 	// media configstring setting should be done during
 	// the loading stage, so connected clients don't have
 	// to load during actual gameplay
@@ -717,7 +717,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 	// create a baseline for more efficient communications
 	SV_CreateBaseline ();
-	
+
 	// stop server-side demo (if any)
 	if (com_dedicated->integer)
 		Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
@@ -767,7 +767,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 				}
 			}
 		}
-	}	
+	}
 
 	// run another frame to allow things to look at all the players
 	VM_Call (gvm, GAME_RUN_FRAME, sv.time);
@@ -930,21 +930,53 @@ void SV_Init (void) {
 	sv_strictAuth = Cvar_Get ("sv_strictAuth", "1", CVAR_ARCHIVE );
 
 	sv_demonotice = Cvar_Get ("sv_demonotice", "Smile! You're on camera!", CVAR_ARCHIVE);
-	
-	sv_sayprefix = Cvar_Get ("sv_sayprefix", "console: ", CVAR_ARCHIVE );	
+
+	sv_sayprefix = Cvar_Get ("sv_sayprefix", "console: ", CVAR_ARCHIVE );
 	sv_tellprefix = Cvar_Get ("sv_tellprefix", "console_tell: ", CVAR_ARCHIVE );
 	sv_demofolder = Cvar_Get ("sv_demofolder", "serverdemos", CVAR_ARCHIVE );
-	
+
+
+	sv_allowSuicide = Cvar_Get ("sv_allowSuicide", "1", CVAR_ARCHIVE );
+	sv_allowItemdrop = Cvar_Get ("sv_allowItemdrop", "1", CVAR_ARCHIVE );
+	sv_allowWeapdrop = Cvar_Get ("sv_allowWeapdrop", "1", CVAR_ARCHIVE );
+	sv_allowTell = Cvar_Get ("sv_allowTell", "1", CVAR_ARCHIVE );
+	sv_removeKnife = Cvar_Get ("sv_removeKnife", "0", CVAR_ARCHIVE);
+	sv_antiblock = Cvar_Get("sv_antiblock", "0", CVAR_ARCHIVE);
+	sv_forceGear = Cvar_Get("sv_forceGear", "", CVAR_ARCHIVE);
+	sv_allowVote = Cvar_Get("sv_allowVote", "1", CVAR_ARCHIVE);
+
+	sv_botRace = Cvar_Get("sv_botRace", "2", CVAR_ARCHIVE);
+
+	#ifdef USE_SERVER_EXTRAS
+	sv_chatColor = Cvar_Get("sv_chatColor", "3", CVAR_ARCHIVE);
+	sv_rainbowChat = Cvar_Get("sv_rainbowChat", "0", CVAR_ARCHIVE);
+	sv_infiniteStamina = Cvar_Get("sv_infiniteStamina", "0", CVAR_ARCHIVE);
+	sv_noRecoil = Cvar_Get("sv_noRecoil", "0", CVAR_ARCHIVE);
+	sv_infiniteAmmo = Cvar_Get("sv_infiniteAmmo", "0", CVAR_ARCHIVE);
+	sv_infiniteWalljumps = Cvar_Get("sv_infiniteWalljumps", "0", CVAR_ARCHIVE);
+	sv_weaponCycle = Cvar_Get("sv_weaponCycle", "0", CVAR_ARCHIVE);
+	sv_mapColor = Cvar_Get("sv_mapColor", "7", CVAR_ARCHIVE);
+	sv_colourName = Cvar_Get("sv_colorNames", "0", CVAR_ARCHIVE);
+	#endif
+
 	#ifdef USE_AUTH
 	sv_authServerIP = Cvar_Get("sv_authServerIP", "", CVAR_TEMP | CVAR_ROM);
 	sv_auth_engine = Cvar_Get("sv_auth_engine", "1", CVAR_ROM);
 	#endif
-	
+
 	// initialize bot cvars so they are listed and can be set before loading the botlib
 	SV_BotInitCvars();
 
 	// init the botlib here because we need the pre-compiler in the UI
 	SV_BotInitBotLib();
+
+	#ifdef USE_SQLITE_BANS
+	#ifdef DEDICATED
+	SV_BansInit();
+	Cmd_AddCommand("addip", Bans_AddIP);
+	Cmd_AddCommand("removeip", Bans_RemoveIP);
+	#endif
+	#endif
 }
 
 
@@ -961,7 +993,7 @@ to totally exit after returning from this function.
 void SV_FinalMessage( char *message ) {
 	int			i, j;
 	client_t	*cl;
-	
+
 	// send it twice, ignoring rate
 	for ( j = 0 ; j < 2 ; j++ ) {
 		for (i=0, cl = svs.clients ; i < sv_maxclients->integer ; i++, cl++) {
@@ -998,7 +1030,7 @@ void SV_Shutdown( char *finalmsg ) {
 	// stop server-side demos (if any)
 	if (com_dedicated->integer)
 		Cbuf_ExecuteText(EXEC_NOW, "stopserverdemo all");
-	
+
 	if ( svs.clients && !com_errorEntered ) {
 		SV_FinalMessage( finalmsg );
 	}
@@ -1009,6 +1041,12 @@ void SV_Shutdown( char *finalmsg ) {
 
 	// free current level
 	SV_ClearServer();
+
+	#ifdef USE_SQLITE_BANS
+	#ifdef DEDICATED
+	SV_BansShutdown();
+	#endif
+	#endif
 
 	// free server static data
 	if ( svs.clients ) {
