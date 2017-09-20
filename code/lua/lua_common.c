@@ -1,12 +1,29 @@
 #include "lua_common.h"
 
 /* -----------------------------------------------------------------------------
+            Lua Functions
+----------------------------------------------------------------------------- */
+
+int lua_q_command(lua_State *args) {
+	if (lua_gettop(args) != 1) {
+		return luaL_error(L, "q_command() expects one argument");
+	}
+
+	const char *cmd = lua_tostring(args, 1);
+	Cbuf_ExecuteText(EXEC_NOW, cmd);
+
+	return 0;
+}
+
+/* -----------------------------------------------------------------------------
             Utility Functions
 ----------------------------------------------------------------------------- */
 
 void Lua_Init(void) {
 	L = luaL_newstate();
 	luaL_openlibs(L);
+
+	lua_register(L, "q_command", lua_q_command);
 
 	lua_initialized = qtrue;
 }
