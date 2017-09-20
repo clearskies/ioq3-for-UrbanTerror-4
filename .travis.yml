@@ -8,7 +8,7 @@ install:
   - sudo apt-get install mingw-w64 gcc-mingw-w64-base gcc-mingw-w64 binutils-mingw-w64
 script:
   - make
-  - ./cross-make-mingw.sh
+  # - ./cross-make-mingw.sh
 cache:
   - apt
 deploy:
