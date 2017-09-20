@@ -1,11 +1,39 @@
 #include "lua_common.h"
 
-void lua_exec(char *code) {
-	lua_State *L = luaL_newstate();
+/* -----------------------------------------------------------------------------
+            Utility Functions
+----------------------------------------------------------------------------- */
+
+void Lua_Init(void) {
+	L = luaL_newstate();
 	luaL_openlibs(L);
-	luaL_dostring(L, code);
+
+	lua_initialized = qtrue;
+}
+
+void Lua_Shutdown(void) {
 	lua_close(L);
 }
+
+void Lua_Exec(char *str) {
+	int err;
+
+	if (!lua_initialized) {
+		Com_Error(ERR_FATAL, "Lua call made before initialization\n");
+		return;
+	}
+
+	err = luaL_loadstring(L, str) || lua_pcall(L, 0, LUA_MULTRET, 0);
+
+	if (err) {
+		Com_Printf("Lua error: %s\n", lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
+}
+
+/* -----------------------------------------------------------------------------
+            Commands
+----------------------------------------------------------------------------- */
 
 void Cmd_Lua_Exec_f(void) {
 	char *contents;
@@ -26,7 +54,7 @@ void Cmd_Lua_Exec_f(void) {
 	}
 
 	Com_Printf("Executing %s\n", filename);
-	lua_exec(contents);
+	Lua_Exec(contents);
 
 	FS_FreeFile(contents);
 }

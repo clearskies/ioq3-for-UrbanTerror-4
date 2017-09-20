@@ -300,7 +300,7 @@ ifeq ($(PLATFORM),linux)
   LDFLAGS=-ldl -lm -pthread
 
   ifeq ($(USE_LUA),1)
-    LDFLAGS += -llua
+    LDFLAGS += -llua5.2
   endif
 
   ifeq ($(USE_SDL),1)

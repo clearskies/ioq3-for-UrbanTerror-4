@@ -2446,6 +2446,9 @@ void Com_Init( char *commandLine ) {
 
 	Com_InitJournaling();
 
+	// probably good to do this here
+	Lua_Init();
+
 	Cbuf_AddText ("exec default.cfg\n");
 
 	// skip the q3config.cfg if "safe" is on the command line
@@ -2895,6 +2898,8 @@ void Com_Shutdown (void) {
 		FS_FCloseFile( com_journalFile );
 		com_journalFile = 0;
 	}
+
+	Lua_Shutdown();
 
 }
 
