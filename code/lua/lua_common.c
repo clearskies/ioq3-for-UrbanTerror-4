@@ -4,6 +4,9 @@
             Lua Functions
 ----------------------------------------------------------------------------- */
 
+/* ================
+Executes a string as a command
+================ */
 int lua_q_command(lua_State *args) {
 	if (lua_gettop(args) != 1) {
 		return luaL_error(L, "q_command() expects one argument");
@@ -15,6 +18,35 @@ int lua_q_command(lua_State *args) {
 	return 0;
 }
 
+/* ================
+Prints a string followed by a newline in the console
+================ */
+int lua_q_print(lua_State *args) {
+	if (lua_gettop(args) != 1) {
+		return luaL_error(L, "q_print() expects one argument");
+	}
+
+	const char *cmd = lua_tostring(args, 1);
+	Com_Printf("%s\n", cmd);
+
+	return 0;
+}
+
+/* ================
+Prints a string without a newline in the console
+================ */
+int lua_q_printr(lua_State *args) {
+	if (lua_gettop(args) != 1) {
+		return luaL_error(L, "q_printr() expects one argument");
+	}
+
+	const char *cmd = lua_tostring(args, 1);
+	Com_Printf("%s", cmd);
+
+	return 0;
+}
+
+
 /* -----------------------------------------------------------------------------
             Utility Functions
 ----------------------------------------------------------------------------- */
@@ -24,6 +56,8 @@ void Lua_Init(void) {
 	luaL_openlibs(L);
 
 	lua_register(L, "q_command", lua_q_command);
+	lua_register(L, "q_print", lua_q_print);
+	lua_register(L, "q_printr", lua_q_printr);
 
 	lua_initialized = qtrue;
 }
