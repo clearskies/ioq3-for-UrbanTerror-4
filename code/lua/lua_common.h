@@ -17,5 +17,6 @@ void Lua_Shutdown(void);
 void Lua_Exec(char *str);
 
 void Cmd_Lua_Exec_f(void);
+void Cmd_Lua_Run_f(void);
 
 #endif

@@ -793,6 +793,7 @@ void Cmd_Init (void) {
 
 	#ifdef USE_LUA
 	Cmd_AddCommand ("lua_exec", Cmd_Lua_Exec_f);
+	Cmd_AddCommand ("lua_run", Cmd_Lua_Run_f);
 	#endif
 }
 

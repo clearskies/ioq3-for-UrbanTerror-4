@@ -69,11 +69,6 @@ void Lua_Shutdown(void) {
 void Lua_Exec(char *str) {
 	int err;
 
-	if (!lua_initialized) {
-		Com_Error(ERR_FATAL, "Lua call made before initialization\n");
-		return;
-	}
-
 	err = luaL_loadstring(L, str) || lua_pcall(L, 0, LUA_MULTRET, 0);
 
 	if (err) {
@@ -95,6 +90,11 @@ void Cmd_Lua_Exec_f(void) {
 		return;
 	}
 
+	if (!lua_initialized) {
+		Com_Error(ERR_FATAL, "Lua call made before initialization\n");
+		return;
+	}
+
 	Q_strncpyz(filename, Cmd_Argv(1), sizeof(filename));
 	COM_DefaultExtension(filename, sizeof(filename), ".lua");
 	FS_ReadFile(filename, (void **)&contents);
@@ -108,4 +108,33 @@ void Cmd_Lua_Exec_f(void) {
 	Lua_Exec(contents);
 
 	FS_FreeFile(contents);
+}
+
+void Cmd_Lua_Run_f(void) {
+	char *fn;
+	int i, err;
+
+	if (Cmd_Argc() < 2) {
+		Com_Printf("lua_run <function> [args]: run a lua function\n");
+		return;
+	}
+
+	if (!lua_initialized) {
+		Com_Error(ERR_FATAL, "Lua call made before initialization\n");
+		return;
+	}
+
+	lua_getglobal(L, Cmd_Argv(1));
+
+	for (i = 2; i < Cmd_Argc(); i++) {
+		lua_pushstring(L, Cmd_Argv(i));
+	}
+
+	// Set nresults to 0 because we don't actually want to do anything with the
+	// return values. If this changes, we can make it LUA_MULTRET
+	err = lua_pcall(L, Cmd_Argc() - 2, 0, 0);
+	if (err) {
+		Com_Printf("Lua error: %s\n", lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
 }
