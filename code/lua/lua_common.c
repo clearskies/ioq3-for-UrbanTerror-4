@@ -66,17 +66,6 @@ void Lua_Shutdown(void) {
 	lua_close(L);
 }
 
-void Lua_Exec(char *str) {
-	int err;
-
-	err = luaL_loadstring(L, str) || lua_pcall(L, 0, LUA_MULTRET, 0);
-
-	if (err) {
-		Com_Printf("Lua error: %s\n", lua_tostring(L, -1));
-		lua_pop(L, 1);
-	}
-}
-
 /* -----------------------------------------------------------------------------
             Commands
 ----------------------------------------------------------------------------- */
@@ -84,6 +73,7 @@ void Lua_Exec(char *str) {
 void Cmd_Lua_Exec_f(void) {
 	char *contents;
 	char filename[MAX_QPATH];
+	int err;
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf("lua_exec <filename>: execute a lua file\n");
@@ -105,14 +95,18 @@ void Cmd_Lua_Exec_f(void) {
 	}
 
 	Com_Printf("Executing %s\n", filename);
-	Lua_Exec(contents);
+
+	err = luaL_loadstring(L, contents) || lua_pcall(L, 0, LUA_MULTRET, 0);
+	if (err) {
+		Com_Printf("Lua error: %s\n", lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
 
 	FS_FreeFile(contents);
 }
 
 void Cmd_Lua_Run_f(void) {
-	char *fn;
-	int i, err;
+	int err, i;
 
 	if (Cmd_Argc() < 2) {
 		Com_Printf("lua_run <function> [args]: run a lua function\n");
@@ -125,7 +119,6 @@ void Cmd_Lua_Run_f(void) {
 	}
 
 	lua_getglobal(L, Cmd_Argv(1));
-
 	for (i = 2; i < Cmd_Argc(); i++) {
 		lua_pushstring(L, Cmd_Argv(i));
 	}
