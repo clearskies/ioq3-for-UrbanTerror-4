@@ -7,12 +7,12 @@
 /* ================
 Executes a string as a command
 ================ */
-int lua_q_command(lua_State *args) {
-	if (lua_gettop(args) != 1) {
+int lua_q_command(lua_State *ls) {
+	if (lua_gettop(ls) != 1) {
 		return luaL_error(L, "q_command() expects one argument");
 	}
 
-	const char *cmd = lua_tostring(args, 1);
+	const char *cmd = lua_tostring(ls, 1);
 	Cbuf_ExecuteText(EXEC_NOW, cmd);
 
 	return 0;
@@ -21,13 +21,15 @@ int lua_q_command(lua_State *args) {
 /* ================
 Prints a string followed by a newline in the console
 ================ */
-int lua_q_print(lua_State *args) {
-	if (lua_gettop(args) != 1) {
+int lua_q_print(lua_State *ls) {
+	const char *msg;
+
+	if (lua_gettop(ls) != 1) {
 		return luaL_error(L, "q_print() expects one argument");
 	}
 
-	const char *cmd = lua_tostring(args, 1);
-	Com_Printf("%s\n", cmd);
+	msg = lua_tostring(ls, 1);
+	Com_Printf("%s\n", msg);
 
 	return 0;
 }
@@ -35,17 +37,68 @@ int lua_q_print(lua_State *args) {
 /* ================
 Prints a string without a newline in the console
 ================ */
-int lua_q_printr(lua_State *args) {
-	if (lua_gettop(args) != 1) {
+int lua_q_printr(lua_State *ls) {
+	const char *msg;
+
+	if (lua_gettop(ls) != 1) {
 		return luaL_error(L, "q_printr() expects one argument");
 	}
 
-	const char *cmd = lua_tostring(args, 1);
-	Com_Printf("%s", cmd);
+	msg = lua_tostring(ls, 1);
+	Com_Printf("%s", msg);
 
 	return 0;
 }
 
+/* ================
+Sets the value of a cvar
+================ */
+int lua_q_cvar_set(lua_State *ls) {
+	const char *name, *value;
+
+	if (lua_gettop(ls) != 2) {
+		return luaL_error(L, "q_cvar_set() expects one argument");
+	}
+
+	name = lua_tostring(ls, 1);
+	value = lua_tostring(ls, 2);
+	Cvar_SetLatched(name, value);
+
+	return 0;
+}
+
+
+/* ================
+Gets the string value of a cvar
+================ */
+int lua_q_cvar_gets(lua_State *ls) {
+	const char *var;
+
+	if (lua_gettop(ls) != 1) {
+		return luaL_error(L, "q_cvar_gets() expects one argument");
+	}
+
+	var = lua_tostring(ls, 1);
+	lua_pushstring(ls, Cvar_VariableString(var));
+
+	return 1;
+}
+
+/* ================
+Gets the numeric value of a cvar
+================ */
+int lua_q_cvar_getn(lua_State *ls) {
+	const char *var;
+
+	if (lua_gettop(ls) != 1) {
+		return luaL_error(L, "q_cvar_gets() expects one argument");
+	}
+
+	var = lua_tostring(ls, 1);
+	lua_pushnumber(ls, Cvar_VariableValue(var));
+
+	return 1;
+}
 
 /* -----------------------------------------------------------------------------
             Utility Functions
@@ -58,6 +111,10 @@ void Lua_Init(void) {
 	lua_register(L, "q_command", lua_q_command);
 	lua_register(L, "q_print", lua_q_print);
 	lua_register(L, "q_printr", lua_q_printr);
+
+	lua_register(L, "q_cvar_set", lua_q_cvar_set);
+	lua_register(L, "q_cvar_gets", lua_q_cvar_gets);
+	lua_register(L, "q_cvar_getn", lua_q_cvar_getn);
 
 	lua_initialized = qtrue;
 }
@@ -109,7 +166,7 @@ void Cmd_Lua_Run_f(void) {
 	int err, i;
 
 	if (Cmd_Argc() < 2) {
-		Com_Printf("lua_run <function> [args]: run a lua function\n");
+		Com_Printf("lua_run <function> [arguments]: run a lua function\n");
 		return;
 	}
 
