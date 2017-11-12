@@ -296,7 +296,7 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LDFLAGS=-lpthread
-  LDFLAGS=-ldl -lm -pthread
+  LDFLAGS=-ldl -lm -pthread -Lcode/libs/linux -ldiscord-rpc
 
   ifeq ($(USE_SDL),1)
     CLIENT_LDFLAGS=$(shell sdl-config --libs)
@@ -1101,6 +1101,7 @@ Q3OBJ = \
   $(B)/client/cl_cgame.o \
   $(B)/client/cl_cin.o \
   $(B)/client/cl_console.o \
+  $(B)/client/cl_discord.o \
   $(B)/client/cl_input.o \
   $(B)/client/cl_keys.o \
   $(B)/client/cl_main.o \

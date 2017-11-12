@@ -2692,6 +2692,8 @@ void CL_Frame ( int msec ) {
 		}
 	}
 
+	CL_RunDiscord();
+
 	// update the screen
 	SCR_UpdateScreen();
 
@@ -3229,6 +3231,8 @@ void CL_Init( void ) {
 	Cmd_AddCommand("randomRGB", CL_RandomRGB_f);
 	Cmd_AddCommand("maplist", CL_Maplist_f);
 
+	Cmd_AddCommand("update_discord", CL_UpdateDiscordPresence);
+
 	CL_InitRef();
 
 	SCR_Init ();
@@ -3241,8 +3245,12 @@ void CL_Init( void ) {
 	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
 	CL_UpdateGUID( NULL, 0 );
 
-	if (cl_randomRGB->integer == 1)
+	if (cl_randomRGB->integer == 1) {
 		CL_RandomRGB_f();
+	}
+	
+	CL_InitDiscord();
+	CL_UpdateDiscordPresence();
 
 	Com_Printf( "----- Client Initialization Complete -----\n" );
 }

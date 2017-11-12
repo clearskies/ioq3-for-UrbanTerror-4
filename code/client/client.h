@@ -30,6 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../cgame/cg_public.h"
 #include "../game/bg_public.h"
 
+#include "discord-rpc.h"
+
 #if USE_CURL
 #include "cl_curl.h"
 #endif /* USE_CURL */
@@ -209,8 +211,8 @@ typedef struct {
 	CURL		*downloadCURL;
 	CURLM		*downloadCURLM;
 #endif /* USE_CURL */
-	int		sv_allowDownload;
-  char    mapname[MAX_QPATH];
+	int			sv_allowDownload;
+	char		mapname[MAX_QPATH];
 	char		sv_dlURL[MAX_CVAR_VALUE_STRING];
 	int			downloadNumber;
 	int			downloadBlock;	// block we are waiting for
@@ -462,6 +464,13 @@ int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen )
 qboolean CL_CheckPaused(void);
 
 char *replaceStr(char *string, char *find, char *replace);
+
+//
+// cl_discord
+//
+void CL_InitDiscord(void);
+void CL_RunDiscord(void);
+void CL_UpdateDiscordPresence(void);
 
 //
 // cl_input
