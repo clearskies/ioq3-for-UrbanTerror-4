@@ -50,39 +50,68 @@ void CL_RunDiscord(void) {
 }
 
 void CL_UpdateDiscordPresence(void) {
-    char buffer[256];
+    char details_buffer[256];
+    char partyid_buffer[256];
+    char servername_buffer[256];
 
     DiscordRichPresence discordPresence;
     memset(&discordPresence, 0, sizeof(discordPresence));
 
-    discordPresence.state = "Playing";
-    discordPresence.details = "In Menus";
-    discordPresence.startTimestamp = time(0);
-    discordPresence.endTimestamp = time(0) + 5 * 60;
+    if (cls.state == CA_ACTIVE) {
+        char *s;
+        int i, players, maxplayers;
 
-    if (strlen(clc.mapname)) {
-        Com_sprintf(buffer, sizeof(buffer), "Playing on %s", clc.mapname);
-        discordPresence.details = buffer;
+        char *serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
+
+        // ------------------------------
+        s = Info_ValueForKey(serverInfo, "sv_hostname");
+        Q_strncpyz(servername_buffer, s, sizeof(servername_buffer));
+        Q_CleanStr(servername_buffer);
+        // ------------------------------
+
+        // ------------------------------
+        s = Info_ValueForKey(serverInfo, "sv_maxclients");
+        maxplayers = atoi(s);
+        players = 0;
+        for (i = 0; i < MAX_CLIENTS; i++) {
+            if (cl.gameState.stringOffsets[544 + i]) {
+                players++;
+            }
+        }
+        // ------------------------------
+
+        Com_sprintf(details_buffer, sizeof(details_buffer), "On %s", servername_buffer);
+
+        discordPresence.state = "Playing";
+        discordPresence.details = details_buffer;
+
+        // if we use the servername (actually the address) for this party/join
+        // stuff, we can easily let other people connect to the same server
+        Com_sprintf(partyid_buffer, sizeof(partyid_buffer), "party-%s", cls.servername);
+        discordPresence.partyId = partyid_buffer;
+        discordPresence.joinSecret = cls.servername;
+
+        discordPresence.partySize = players;
+        discordPresence.partyMax = maxplayers;
+    } else if (clc.demoplaying) {
+        discordPresence.state = "Watching Demo";
+    } else {
+        discordPresence.state = "In Menus";
+    }
+
+    if ( cls.state == CA_ACTIVE || clc.demoplaying ) {
+        Com_Printf("Mapname; %s\n", clc.mapname);
 
         // use the large image for the map
         discordPresence.largeImageKey = clc.mapname;
         discordPresence.largeImageText = clc.mapname;
-    } else {
-        discordPresence.details = "In Menus";
+
+        // use the small image for the gametype
+        discordPresence.smallImageKey = "logo_large";
+        discordPresence.smallImageText = "Capture the Flag";
     }
 
-    // use the small image for the gametype
-    discordPresence.smallImageKey = "logo_small";
-    discordPresence.smallImageText = "Capture the Flag";
-
-    discordPresence.partyId = "party1234";
-    discordPresence.partySize = 1;
-    discordPresence.partyMax = 24;
-    discordPresence.matchSecret = "match_secret";
-    discordPresence.joinSecret = "join_secret";
-    discordPresence.spectateSecret = "spectate_secret";
-    discordPresence.instance = 0;
     Discord_UpdatePresence(&discordPresence);
 
-    Com_Printf("\n\n\n\nupdated discord presence\n\n\n\n");
+    Com_Printf("Discord: updated presence\n");
 }
