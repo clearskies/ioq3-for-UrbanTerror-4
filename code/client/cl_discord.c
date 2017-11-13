@@ -1,7 +1,10 @@
 #include "client.h"
 
+#define DISCORD_UPDATE_MSEC 20000
 #define APPLICATION_ID "378976623116025856"
 #define NUM_GAME_TYPES 12
+#define NUM_OFFICIAL_MAPS 34
+
 static const char *GAME_TYPES[NUM_GAME_TYPES] = {
     "Free for All",
     "Last Man Standing",
@@ -16,6 +19,54 @@ static const char *GAME_TYPES[NUM_GAME_TYPES] = {
     "Freeze Tag",
     "Gun Game"
 };
+
+static const char *OFFICIAL_MAPS[NUM_OFFICIAL_MAPS] = {
+    "ut4_abbey",
+    "ut4_algiers",
+    "ut4_austria",
+    "ut4_bohemia",
+    "ut4_casa",
+    "ut4_cascade",
+    "ut4_docks",
+    "ut4_dressingroom",
+    "ut4_eagle",
+    "ut4_elgin",
+    "ut4_firingrange",
+    "ut4_ghosttown",
+    "ut4_herring",
+    "ut4_killroom",
+    "ut4_kingdom",
+    "ut4_kingpin",
+    "ut4_mandolin",
+    "ut4_mykonos_a17",
+    "ut4_oildepot",
+    "ut4_paris",
+    "ut4_prague",
+    "ut4_prominence",
+    "ut4_raiders",
+    "ut4_ramelle",
+    "ut4_ricochet",
+    "ut4_riyadh",
+    "ut4_sanc",
+    "ut4_suburbs",
+    "ut4_subway",
+    "ut4_swim",
+    "ut4_thingley",
+    "ut4_tombs",
+    "ut4_turnpike",
+    "ut4_uptown"
+};
+
+static qboolean is_official_map(char *s) {
+    int i;
+    for (i = 0; i < NUM_OFFICIAL_MAPS; i++) {
+        if (!Q_stricmp(OFFICIAL_MAPS[i], s)) {
+            return qtrue;
+        }
+    }
+
+    return qfalse;
+}
 
 static void handleDiscordReady() {
     Com_Printf("Discord: ready\n");
@@ -54,14 +105,22 @@ void CL_InitDiscord(void) {
 
     Discord_Initialize(APPLICATION_ID, &handlers, 1, NULL);
 
-    Com_Printf("\n\n\n\nDISCORD INITIALIZED\n\n\n\n");
+    Com_Printf("DISCORD: PRESENCE INIIALIZED\n");
 }
 
 void CL_RunDiscord(void) {
+    static int accumulated_time = 0;
+
     #ifdef DISCORD_DISABLE_IO_THREAD
         Discord_UpdateConnection();
     #endif
     Discord_RunCallbacks();
+
+    accumulated_time += cls.frametime;
+    if (accumulated_time >= DISCORD_UPDATE_MSEC) {
+        CL_UpdateDiscordPresence();
+        accumulated_time = 0;
+    }
 }
 
 void CL_UpdateDiscordPresence(void) {
@@ -123,26 +182,44 @@ void CL_UpdateDiscordPresence(void) {
         discordPresence.partySize = players;
         discordPresence.partyMax = maxplayers;
 
+        discordPresence.largeImageKey = clc.mapname;
+        discordPresence.largeImageText = clc.mapname;
+
         // use the small image for the gametype
         discordPresence.smallImageKey = gametype_image;
         discordPresence.smallImageText = gametype_buffer;
-
-        Com_Printf("smallimage %s %s\n", gametype_image, gametype_buffer);
     } else if (clc.demoplaying) {
         discordPresence.state = "Watching Demo";
     } else {
         discordPresence.state = "In Menus";
     }
 
-    if ( cls.state == CA_ACTIVE || clc.demoplaying ) {
-        Com_Printf("Mapname; %s\n", clc.mapname);
+    // use the large image for the map
+    if (strlen(clc.mapname) == 0 || !is_official_map(clc.mapname)) {
+        discordPresence.largeImageKey = "map-default";
 
-        // use the large image for the map
-        discordPresence.largeImageKey = clc.mapname;
-        discordPresence.largeImageText = clc.mapname;
+        if (strlen(clc.mapname) > 0) {
+            discordPresence.largeImageText = clc.mapname;
+        }
     }
 
     Discord_UpdatePresence(&discordPresence);
 
-    Com_Printf("Discord: updated presence\n");
+    Com_Printf("\n\n----------------------------\n");
+    Com_Printf("DISCORD: presence updated\n");
+    Com_Printf("DISCORD: state - %s\n", discordPresence.state);
+    Com_Printf("DISCORD: details - %s\n", discordPresence.details);
+    Com_Printf("DISCORD: startTimestamp - %ld\n", discordPresence.startTimestamp);
+    Com_Printf("DISCORD: endTimestamp - %ld\n", discordPresence.endTimestamp);
+    Com_Printf("DISCORD: largeImageKey - %s\n", discordPresence.largeImageKey);
+    Com_Printf("DISCORD: largeImageText - %s\n", discordPresence.largeImageText);
+    Com_Printf("DISCORD: smallImageKey - %s\n", discordPresence.smallImageKey);
+    Com_Printf("DISCORD: smallImageText - %s\n", discordPresence.smallImageText);
+    Com_Printf("DISCORD: partyId - %s\n", discordPresence.partyId);
+    Com_Printf("DISCORD: party - (%d / %d)\n", discordPresence.partySize, discordPresence.partyMax);
+    Com_Printf("DISCORD: matchSecret - %s\n", discordPresence.matchSecret);
+    Com_Printf("DISCORD: joinSecret - %s\n", discordPresence.joinSecret);
+    Com_Printf("DISCORD: spectateSecret - %s\n", discordPresence.spectateSecret);
+    Com_Printf("DISCORD: instance - %d\n", discordPresence.instance);
+    Com_Printf("----------------------------\n\n");
 }

@@ -1597,6 +1597,8 @@ void CL_Vid_Restart_f( void ) {
 		// send pure checksums
 		CL_SendPureChecksums();
 	}
+
+	CL_UpdateDiscordPresence();
 }
 
 /*
@@ -2791,8 +2793,9 @@ void CL_StartHunkUsers( void ) {
 		return;
 	}
 
-	if (cl_randomRGB->integer == 2)
+	if (cl_randomRGB->integer == 2) {
 		CL_RandomRGB_f();
+	}
 
 	if ( !cls.rendererStarted ) {
 		cls.rendererStarted = qtrue;
