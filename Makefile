@@ -296,7 +296,7 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LDFLAGS=-lpthread
-  LDFLAGS=-ldl -lm -pthread -Lcode/libs/linux -ldiscord-rpc
+  LDFLAGS=-ldl -lm -pthread -Lcode/libs/linux -ldiscord-rpc -lstdc++
 
   ifeq ($(USE_SDL),1)
     CLIENT_LDFLAGS=$(shell sdl-config --libs)

@@ -1,6 +1,21 @@
 #include "client.h"
 
-static const char* APPLICATION_ID = "378976623116025856";
+#define APPLICATION_ID "378976623116025856"
+#define NUM_GAME_TYPES 12
+static const char *GAME_TYPES[NUM_GAME_TYPES] = {
+    "Free for All",
+    "Last Man Standing",
+    "Unknown",
+    "Team Deathmatch",
+    "Team Survivor",
+    "Follow the Leader",
+    "Capture and Hold",
+    "Capture the Flag",
+    "Bomb",
+    "Jump",
+    "Freeze Tag",
+    "Gun Game"
+};
 
 static void handleDiscordReady() {
     Com_Printf("Discord: ready\n");
@@ -52,6 +67,8 @@ void CL_RunDiscord(void) {
 void CL_UpdateDiscordPresence(void) {
     char details_buffer[256];
     char partyid_buffer[256];
+    char gametype_buffer[256];
+    char gametype_image[256];
     char servername_buffer[256];
 
     DiscordRichPresence discordPresence;
@@ -59,7 +76,7 @@ void CL_UpdateDiscordPresence(void) {
 
     if (cls.state == CA_ACTIVE) {
         char *s;
-        int i, players, maxplayers;
+        int i, players, maxplayers, gtype;
 
         char *serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
 
@@ -80,6 +97,18 @@ void CL_UpdateDiscordPresence(void) {
         }
         // ------------------------------
 
+        // ------------------------------
+        s = Info_ValueForKey(serverInfo, "g_gametype");
+        gtype = atoi(s);
+        if (gtype >= 0 && gtype < NUM_GAME_TYPES && gtype != 2) {
+            Com_sprintf(gametype_buffer, sizeof(gametype_buffer), "%s", GAME_TYPES[gtype]);
+            Com_sprintf(gametype_image, sizeof(gametype_image), "gametype-%d", gtype);
+        } else {
+            Com_sprintf(gametype_buffer, sizeof(gametype_buffer), "Unknown Gametype (%d)", gtype);
+            Com_sprintf(gametype_image, sizeof(gametype_image), "gametype-default");
+        }
+        // ------------------------------
+
         Com_sprintf(details_buffer, sizeof(details_buffer), "On %s", servername_buffer);
 
         discordPresence.state = "Playing";
@@ -93,6 +122,12 @@ void CL_UpdateDiscordPresence(void) {
 
         discordPresence.partySize = players;
         discordPresence.partyMax = maxplayers;
+
+        // use the small image for the gametype
+        discordPresence.smallImageKey = gametype_image;
+        discordPresence.smallImageText = gametype_buffer;
+
+        Com_Printf("smallimage %s %s\n", gametype_image, gametype_buffer);
     } else if (clc.demoplaying) {
         discordPresence.state = "Watching Demo";
     } else {
@@ -105,10 +140,6 @@ void CL_UpdateDiscordPresence(void) {
         // use the large image for the map
         discordPresence.largeImageKey = clc.mapname;
         discordPresence.largeImageText = clc.mapname;
-
-        // use the small image for the gametype
-        discordPresence.smallImageKey = "logo_large";
-        discordPresence.smallImageText = "Capture the Flag";
     }
 
     Discord_UpdatePresence(&discordPresence);
