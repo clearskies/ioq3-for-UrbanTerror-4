@@ -371,6 +371,16 @@ qboolean CL_HandleServerCommand(char *s) {
 		return qtrue;
 	}
 
+	if (!strcmp(cmd, "scores")) {
+		cl.scores[0] = atoi(Cmd_Argv(2));
+		cl.scores[1] = atoi(Cmd_Argv(3));
+	}
+
+	if (!strcmp(cmd, "scoresg")) {
+		cl.scores[0] = atoi(Cmd_Argv(1));
+		cl.scores[1] = atoi(Cmd_Argv(2));
+	}
+
 	if (!strcmp(cmd, "scoresd")) {
 		if (atoi(Cmd_Argv(14)) == clc.clientNum) {
 			if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED || cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {

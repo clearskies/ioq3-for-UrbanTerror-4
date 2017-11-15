@@ -68,6 +68,10 @@ static qboolean is_official_map(char *s) {
     return qfalse;
 }
 
+static qboolean is_team_gametype(int g) {
+    return g >= 3 && g != 9 && g != 11;
+}
+
 static void handleDiscordReady() {
     Com_Printf("Discord: ready\n");
 }
@@ -124,6 +128,7 @@ void CL_RunDiscord(void) {
 }
 
 void CL_UpdateDiscordPresence(void) {
+    char state_buffer[256];
     char details_buffer[256];
     char partyid_buffer[256];
     char gametype_buffer[256];
@@ -141,7 +146,7 @@ void CL_UpdateDiscordPresence(void) {
 
         // ---------------------------------------------------------------------
         s = Info_ValueForKey(serverInfo, "sv_hostname");
-        Com_sprintf(details_buffer, sizeof(details_buffer), "On %s", s);
+        Com_sprintf(details_buffer, sizeof(details_buffer), "%s", s);
         Q_CleanStr(details_buffer);
 
         discordPresence.details = details_buffer;
@@ -201,7 +206,17 @@ void CL_UpdateDiscordPresence(void) {
         }
         // ---------------------------------------------------------------------
 
-        discordPresence.state = "In Game";
+
+        // ---------------------------------------------------------------------
+        if (is_team_gametype(gtype)) {
+            Com_sprintf(state_buffer, sizeof(state_buffer), "In Game / %d-%d",
+                cl.scores[0], cl.scores[1]);
+
+            discordPresence.state = state_buffer;
+        } else {
+            discordPresence.state = "In Game";
+        }
+        // ---------------------------------------------------------------------
 
         // if we use the servername (actually the address) for this party/join
         // stuff, we can easily let other people connect to the same server

@@ -2818,6 +2818,8 @@ void CL_StartHunkUsers( void ) {
 	}
 
 	CL_UpdateDiscordPresence();
+	cl.scores[0] = 0;
+	cl.scores[1] = 0;
 }
 
 /*

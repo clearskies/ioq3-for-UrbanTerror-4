@@ -146,6 +146,8 @@ typedef struct {
 	int lastLocation;
 	int lastDeaths;
 
+	int scores[2];
+
 	#ifdef USE_AUTOMATION
 	int lastHealth;
 	#endif
