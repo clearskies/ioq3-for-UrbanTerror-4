@@ -128,7 +128,6 @@ void CL_UpdateDiscordPresence(void) {
     char partyid_buffer[256];
     char gametype_buffer[256];
     char gametype_image[256];
-    char servername_buffer[256];
 
     DiscordRichPresence discordPresence;
     memset(&discordPresence, 0, sizeof(discordPresence));
@@ -136,27 +135,35 @@ void CL_UpdateDiscordPresence(void) {
     if (cls.state == CA_ACTIVE) {
         char *s;
         int i, players, maxplayers, gtype;
+        int time_current, time_start, time_end, now;
 
         char *serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
 
-        // ------------------------------
+        // ---------------------------------------------------------------------
         s = Info_ValueForKey(serverInfo, "sv_hostname");
-        Q_strncpyz(servername_buffer, s, sizeof(servername_buffer));
-        Q_CleanStr(servername_buffer);
-        // ------------------------------
+        Com_sprintf(details_buffer, sizeof(details_buffer), "On %s", s);
+        Q_CleanStr(details_buffer);
 
-        // ------------------------------
+        discordPresence.details = details_buffer;
+        // ---------------------------------------------------------------------
+
+
+        // ---------------------------------------------------------------------
         s = Info_ValueForKey(serverInfo, "sv_maxclients");
         maxplayers = atoi(s);
         players = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {
-            if (cl.gameState.stringOffsets[544 + i]) {
+            if (cl.gameState.stringOffsets[CS_PLAYERS + i]) {
                 players++;
             }
         }
-        // ------------------------------
 
-        // ------------------------------
+        discordPresence.partySize = players;
+        discordPresence.partyMax = maxplayers;
+        // ---------------------------------------------------------------------
+
+
+        // ---------------------------------------------------------------------
         s = Info_ValueForKey(serverInfo, "g_gametype");
         gtype = atoi(s);
         if (gtype >= 0 && gtype < NUM_GAME_TYPES && gtype != 2) {
@@ -166,28 +173,43 @@ void CL_UpdateDiscordPresence(void) {
             Com_sprintf(gametype_buffer, sizeof(gametype_buffer), "Unknown Gametype (%d)", gtype);
             Com_sprintf(gametype_image, sizeof(gametype_image), "gametype-default");
         }
-        // ------------------------------
 
-        Com_sprintf(details_buffer, sizeof(details_buffer), "On %s", servername_buffer);
+        // use the small image for the gametype
+        discordPresence.smallImageKey = gametype_image;
+        discordPresence.smallImageText = gametype_buffer;
+        // ---------------------------------------------------------------------
 
-        discordPresence.state = "Playing";
-        discordPresence.details = details_buffer;
+
+        // ---------------------------------------------------------------------
+        s = cl.gameState.stringData + cl.gameState.stringOffsets[CS_LEVEL_START_TIME];
+        time_start = atoi(s) / 1000;
+
+        time_current = cl.serverTime / 1000;
+
+        s = Info_ValueForKey(serverInfo, "timelimit");
+        time_end = atoi(s) * 60;
+
+        now = (unsigned)time(NULL);
+        discordPresence.startTimestamp = now - time_current;
+
+        if (time_start) {
+            discordPresence.startTimestamp += time_start;
+
+            if (time_end) {
+                discordPresence.endTimestamp = discordPresence.startTimestamp + time_end;
+            }
+        }
+        // ---------------------------------------------------------------------
+
+        discordPresence.state = "In Game";
 
         // if we use the servername (actually the address) for this party/join
         // stuff, we can easily let other people connect to the same server
         Com_sprintf(partyid_buffer, sizeof(partyid_buffer), "party-%s", cls.servername);
         discordPresence.partyId = partyid_buffer;
-        discordPresence.joinSecret = cls.servername;
-
-        discordPresence.partySize = players;
-        discordPresence.partyMax = maxplayers;
 
         discordPresence.largeImageKey = clc.mapname;
         discordPresence.largeImageText = clc.mapname;
-
-        // use the small image for the gametype
-        discordPresence.smallImageKey = gametype_image;
-        discordPresence.smallImageText = gametype_buffer;
     } else if (clc.demoplaying) {
         discordPresence.state = "Watching Demo";
     } else {

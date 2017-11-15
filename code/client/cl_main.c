@@ -2816,6 +2816,8 @@ void CL_StartHunkUsers( void ) {
 		cls.uiStarted = qtrue;
 		CL_InitUI();
 	}
+
+	CL_UpdateDiscordPresence();
 }
 
 /*
