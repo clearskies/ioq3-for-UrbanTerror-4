@@ -225,10 +225,18 @@ void CL_UpdateDiscordPresence(void) {
 
         discordPresence.largeImageKey = clc.mapname;
         discordPresence.largeImageText = clc.mapname;
-    } else if (clc.demoplaying) {
-        discordPresence.state = "Watching Demo";
     } else {
         discordPresence.state = "In Menus";
+    }
+
+    if (clc.demoplaying) {
+        discordPresence.state = "Watching Demo";
+        discordPresence.details = NULL;
+        discordPresence.startTimestamp = 0;
+        discordPresence.endTimestamp = 0;
+        discordPresence.partyId = NULL;
+        discordPresence.partySize = 0;
+        discordPresence.partyMax = 0;
     }
 
     // use the large image for the map
