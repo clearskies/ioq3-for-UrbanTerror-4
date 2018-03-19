@@ -323,16 +323,33 @@ void Con_Dump (console_t *console) {
 	int		l, x, i;
 	short	*line;
 	fileHandle_t	f;
-	char	buffer[1024];
+	int		bufferlen;
+	char	*buffer;
+	char	filename[MAX_QPATH];
 
-	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
-	if (!f)
+	if (Cmd_Argc() != 2)
 	{
-		Com_Printf ("ERROR: couldn't open %s.\n", Cmd_Argv(1));
+		Com_Printf ("usage: condump <filename>\n");
 		return;
 	}
 
-	Com_Printf ("Dumped console text to %s.\n", Cmd_Argv(1) );
+	Q_strncpyz( filename, Cmd_Argv( 1 ), sizeof( filename ) );
+	COM_DefaultExtension( filename, sizeof( filename ), ".txt" );
+
+	if (!COM_CompareExtension(filename, ".txt"))
+	{
+		Com_Printf("Con_Dump_f: Only the \".txt\" extension is supported by this command!\n");
+		return;
+	}
+
+	f = FS_FOpenFileWrite( filename );
+	if (!f)
+	{
+		Com_Printf ("ERROR: couldn't open %s.\n", filename);
+		return;
+	}
+
+	Com_Printf ("Dumped console text to %s.\n", filename );
 
 	// skip empty lines
 	for (l = console->current - console->totallines + 1 ; l <= console->current ; l++)
@@ -345,9 +362,17 @@ void Con_Dump (console_t *console) {
 			break;
 	}
 
+#ifdef _WIN32
+	bufferlen = consoles[CONSOLE_ALL].linewidth + 3 * sizeof ( char );
+#else
+	bufferlen =  consoles[CONSOLE_ALL].linewidth + 2 * sizeof ( char );
+#endif
+
+	buffer = Hunk_AllocateTempMemory( bufferlen );
+
 	// write the remaining lines
-	buffer[console->linewidth] = 0;
-	for ( ; l <= console->current ; l++)
+	buffer[bufferlen-1] = 0;
+	for ( ; l <= consoles[CONSOLE_ALL].current ; l++)
 	{
 		line = console->text + (l%console->totallines)*console->linewidth;
 		for(i=0; i<console->linewidth; i++)
@@ -359,16 +384,15 @@ void Con_Dump (console_t *console) {
 			else
 				break;
 		}
-
-		#ifdef _WIN32
-		strcat(buffer, "\r\n");
-		#else
-		strcat(buffer, "\n");
-		#endif
-
+#ifdef _WIN32
+		Q_strcat(buffer, bufferlen, "\r\n");
+#else
+		Q_strcat(buffer, bufferlen, "\n");
+#endif
 		FS_Write(buffer, strlen(buffer), f);
 	}
 
+	Hunk_FreeTempMemory( buffer );
 	FS_FCloseFile( f );
 }
 
